@@ -20,7 +20,7 @@ Object.assign(window.App, {
         
         const staffSelect = document.getElementById('filterTaskStaff');
         let currentStaff = staffSelect ? staffSelect.value : 'ALL';
-        safeSet('filterTaskStaff', `<option value="ALL">Tất cả nhân viên</option>` + users.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
+        safeSet('filterTaskStaff', `<option value="ALL">Tất cả</option>` + users.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
         if (staffSelect) staffSelect.value = currentStaff;
 
         try {
@@ -41,7 +41,7 @@ Object.assign(window.App, {
             this.showPopup("Lỗi kết nối Kho nhiệm vụ", false);
         } finally {
             this.hideL();
-            this.toggleBulkActionButton(); // Reset nút gom nhóm
+            this.toggleBulkActionButton(); 
         }
     },
 
@@ -59,7 +59,6 @@ Object.assign(window.App, {
                  ((fStatus === 'ALL') || (t.trangThai === fStatus)); 
         });
 
-        // Xắp xếp theo ngày
         filteredList.sort((a, b) => {
             let timeA = new Date(a.rawCreatedAt).getTime();
             let timeB = new Date(b.rawCreatedAt).getTime();
@@ -73,7 +72,6 @@ Object.assign(window.App, {
           let statusColor = isDone ? 'var(--success)' : 'var(--warning)';
           let shortText = t.noiDung.length > 100 ? t.noiDung.substring(0, 100) + "..." : t.noiDung;
           
-          // Nút Checkbox chỉ hiện khi task chưa hoàn thành
           let checkboxHtml = '';
           if (!isDone) {
               checkboxHtml = `<input type="checkbox" class="task-multi-check" value="${t.id}" onchange="App.toggleBulkActionButton()" style="width: 18px; height: 18px; accent-color: var(--success); cursor: pointer; margin-top: 2px;">`;
@@ -96,10 +94,9 @@ Object.assign(window.App, {
         });
         
         safeSet('allTasksContainer', h || '<div style="text-align:center; padding: 20px; font-style:italic; color: var(--text-light);">Không tìm thấy nhiệm vụ nào.</div>', 'html');
-        this.toggleBulkActionButton(); // Ẩn nút nếu chuyển tab lọc
+        this.toggleBulkActionButton(); 
     },
 
-    // Hàm ẩn/hiện nút "Hoàn thành nhiều task"
     toggleBulkActionButton() {
         let checkedBoxes = document.querySelectorAll('.task-multi-check:checked');
         let bulkContainer = document.getElementById('bulkActionContainer');
@@ -111,21 +108,19 @@ Object.assign(window.App, {
         }
     },
 
-    // Hàm Xác nhận và Gọi API Hoàn thành
     confirmCompleteMultipleTasks() {
         let checkedBoxes = document.querySelectorAll('.task-multi-check:checked');
         if (checkedBoxes.length === 0) return;
         
         let idsToComplete = Array.from(checkedBoxes).map(cb => cb.value);
 
-        // Hiển thị Popup xác nhận cực đẹp từ SweetAlert2
         Swal.fire({
           title: 'Xác nhận hoàn thành?',
           text: `Bạn sắp đánh dấu XONG ${idsToComplete.length} nhiệm vụ đã chọn.`,
           icon: 'question',
           showCancelButton: true,
-          confirmButtonColor: '#10b981', // Màu xanh success
-          cancelButtonColor: '#ef4444',  // Màu đỏ danger
+          confirmButtonColor: '#10b981', 
+          cancelButtonColor: '#ef4444', 
           confirmButtonText: 'Có, Hoàn thành ngay!',
           cancelButtonText: 'Hủy bỏ'
         }).then(async (result) => {
@@ -139,7 +134,7 @@ Object.assign(window.App, {
                   if (error) throw error;
                   
                   this.showPopup(`Tuyệt vời! Đã nghiệm thu ${idsToComplete.length} nhiệm vụ.`, true);
-                  this.loadAllTasks(); // Tải lại danh sách
+                  this.loadAllTasks(); 
               } catch (err) {
                   this.showPopup("Lỗi hệ thống: " + err.message, false);
               } finally {
@@ -149,7 +144,6 @@ Object.assign(window.App, {
         });
     },
 
-    // Hàm mở Popup xem chi tiết
     viewTaskDetail(id) {
         let task = this.allTasksList.find(t => String(t.id) === String(id));
         if (task) {
@@ -169,6 +163,7 @@ Object.assign(window.App, {
         const area = document.getElementById('assignFormContainer'); 
         if(!area) return;
         const todayStr = new Date().toISOString().split('T')[0];
+        
         let users = await this.getDbStaffList();
         let receiverOpts = `<option value="">-- Chọn người nhận --</option>` + users.map(x => `<option value="${x}">${x}</option>`).join('');
         let giverOpts = `<option value="">-- Chọn người giao --</option>` + users.map(x => `<option value="${x}" ${x === this.user ? 'selected' : ''}>${x}</option>`).join('');
@@ -177,32 +172,60 @@ Object.assign(window.App, {
           const div = document.createElement('div'); 
           div.className = 'assign-block-item fade-in-up'; 
           div.style.cssText = "background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-top: 4px solid var(--accent);";
+          
           div.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1;">
-                <span style="font-size:11px; font-weight:800; color:var(--primary); text-transform: uppercase;"><i class="fa-solid fa-thumbtack" style="color:var(--accent); margin-right: 6px;"></i> Nhiệm vụ mới</span>
+                <span style="font-size:11px; font-weight:800; color:var(--primary); text-transform: uppercase;">
+                    <i class="fa-solid fa-thumbtack" style="color:var(--accent); margin-right: 6px;"></i> Nhiệm vụ mới
+                </span>
                 <i class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer; font-size: 14px; padding: 5px;" onclick="this.closest('.assign-block-item').remove()" title="Xóa block này"></i>
             </div>
+            
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 12px;">
-                <div><label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NGƯỜI GIAO</label><select class="form-control assign-giver" style="padding:10px; font-size:12px; background-color: #f8fafc; border-color: #cbd5e1;">${giverOpts}</select></div>
-                <div><label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NGƯỜI NHẬN</label><select class="form-control assign-receiver" style="padding:10px; font-size:12px; border-color: #cbd5e1;">${receiverOpts}</select></div>
-                <div><label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">THỜI HẠN</label><input type="date" class="form-control assign-date" value="${todayStr}" style="padding:10px; font-size:12px; border-color: #cbd5e1;"></div>
+                <div>
+                    <label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NGƯỜI GIAO</label>
+                    <select class="form-control assign-giver" style="padding:10px; font-size:12px; background-color: #f8fafc; border-color: #cbd5e1;">
+                        ${giverOpts}
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NGƯỜI NHẬN</label>
+                    <select class="form-control assign-receiver" style="padding:10px; font-size:12px; border-color: #cbd5e1;">
+                        ${receiverOpts}
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">THỜI HẠN (DEADLINE)</label>
+                    <input type="date" class="form-control assign-date" value="${todayStr}" style="padding:10px; font-size:12px; border-color: #cbd5e1;">
+                </div>
             </div>
-            <div><label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NỘI DUNG</label><textarea class="form-control assign-content" rows="2" placeholder="Mô tả chi tiết nhiệm vụ cần thực hiện..." style="padding:10px; font-size:12px; border-color: #cbd5e1; resize: vertical;"></textarea></div>
+            
+            <div>
+                <label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NỘI DUNG CÔNG VIỆC</label>
+                <textarea class="form-control assign-content" rows="2" placeholder="Mô tả chi tiết nhiệm vụ cần thực hiện..." style="padding:10px; font-size:12px; border-color: #cbd5e1; resize: vertical;"></textarea>
+            </div>
           `;
           area.appendChild(div);
         }
     },
 
     async submitAssignTasks() {
-        let tasksToAssign = []; let hasError = false;
+        let tasksToAssign = []; 
+        let hasError = false;
+        
         document.querySelectorAll('.assign-block-item').forEach(block => {
           const giver = block.querySelector('.assign-giver').value; 
           const rec = block.querySelector('.assign-receiver').value; 
           const date = block.querySelector('.assign-date').value; 
           const con = block.querySelector('.assign-content').value;
-          if(rec && giver && con.trim()) { tasksToAssign.push({ giver: giver, receiver: rec, deadline: date || null, content: con, status: 'Chưa hoàn thành' }); } 
-          else if(con.trim() && (!rec || !giver)) { hasError = true; }
+          
+          if(rec && giver && con.trim()) { 
+              tasksToAssign.push({ giver: giver, receiver: rec, deadline: date || null, content: con, status: 'Chưa hoàn thành' }); 
+          } else if(con.trim() && (!rec || !giver)) { 
+              hasError = true; 
+          }
         });
+        
         if(hasError) { alert("Lỗi: Có nhiệm vụ đã nhập nội dung nhưng chưa chọn đủ Người giao và Người nhận!"); return; }
         if(tasksToAssign.length === 0) { alert("Vui lòng điền nội dung và chọn người thực hiện!"); return; }
         
@@ -212,6 +235,10 @@ Object.assign(window.App, {
             if(error) throw error;
             this.showPopup("Phát hành thành công " + tasksToAssign.length + " nhiệm vụ!", true); 
             this.nav('page-task-list'); 
-        } catch(error) { this.showPopup("Lỗi phát hành: " + error.message, false); } finally { this.hideL(); }
+        } catch(error) {
+            this.showPopup("Lỗi phát hành: " + error.message, false);
+        } finally {
+            this.hideL();
+        }
     }
 });
