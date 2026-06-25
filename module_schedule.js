@@ -4,7 +4,6 @@ Object.assign(window.App, {
     async loadSchedule() {
         this.showL();
         try {
-            // 1. Tạo mảng 7 ngày tính từ hôm nay
             this.scheduleDates = [];
             for(let i = 0; i < 7; i++) {
                 let d = new Date();
@@ -12,11 +11,9 @@ Object.assign(window.App, {
                 this.scheduleDates.push(d.toISOString().split('T')[0]);
             }
 
-            // 2. Kéo danh sách nhân sự
             let staff = await this.getDbStaffList();
             staff.sort((a, b) => a.localeCompare(b, 'vi')); 
 
-            // 3. Kéo dữ liệu lịch hiện tại từ Database
             const { data, error } = await supabaseClient
                 .from('data_schedule')
                 .select('*')
@@ -27,7 +24,6 @@ Object.assign(window.App, {
             let dbMap = {};
             (data || []).forEach(row => { dbMap[`${row.staff_name}_${row.date}`] = row; });
 
-            // 4. Vẽ giao diện bảng
             let html = '';
             staff.forEach(name => {
                 html += `<div class="card" style="padding:0; overflow:hidden; margin-bottom:20px; border: 1px solid var(--border);">
@@ -38,7 +34,6 @@ Object.assign(window.App, {
                         <table class="sched-table">
                             <thead><tr><th class="sched-row-label">Ca</th>`;
                 
-                // Tiêu đề ngày
                 this.scheduleDates.forEach(d => {
                     let parts = d.split('-');
                     html += `<th>${parts[2]}/${parts[1]}</th>`;
@@ -86,14 +81,12 @@ Object.assign(window.App, {
         cell.className = `sched-cell ${newClass}`;
     },
 
-    // Hàm lưu vào Supabase
     async saveSchedule() {
         this.showL();
         try {
             let cells = document.querySelectorAll('.sched-cell');
             let updates = {};
 
-            // Gom nhóm dữ liệu trên màn hình lại
             cells.forEach(c => {
                 let staff = c.getAttribute('data-staff');
                 let date = c.getAttribute('data-date');
@@ -112,7 +105,6 @@ Object.assign(window.App, {
                 return;
             }
 
-            // Gửi dữ liệu lên DB (Cập nhật nếu đã có, Thêm mới nếu chưa)
             const { error } = await supabaseClient
                 .from('data_schedule')
                 .upsert(dataToSave, { onConflict: 'staff_name,date' });
