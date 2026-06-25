@@ -119,8 +119,8 @@ Object.assign(window.App, {
             let dateParts = p.date.split('-'); 
             let displayDate = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}` : p.date;
 
-            // KHỐI TIN NHẮN ĐÚNG CHUẨN FORM TELEGRAM (HTML PARSE MODE)
-            let msg = `<b>BÁO CÁO NGÀY ${displayDate}</b>\n`;
+            // KHỐI TIN NHẮN CHUẨN FORM TELEGRAM (Có icon 🚨 nhấp nháy trước Báo Cáo Ngày)
+            let msg = `<b>🚨 BÁO CÁO NGÀY ${displayDate}</b>\n`;
             msg += `*****************************\n`;
             msg += `Tên: ${p.userFullName}\n`;
             msg += `*****************************\n`;
