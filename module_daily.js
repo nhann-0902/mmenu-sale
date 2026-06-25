@@ -120,18 +120,18 @@ Object.assign(window.App, {
             let displayDate = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}` : p.date;
 
             // KHỐI TIN NHẮN CHUẨN FORM TELEGRAM (Có icon 🚨 nhấp nháy trước Báo Cáo Ngày)
-            let msg = `<b>🚨 BÁO CÁO NGÀY ${displayDate}</b>\n`;
+            let msg = `<b>🚨 BÁO CÁO ${displayDate}</b>\n`;
             msg += `*****************************\n`;
             msg += `Tên: ${p.userFullName}\n`;
             msg += `*****************************\n`;
             msg += `<b><i>-Report lead</i></b>\n`;
-            msg += `<b>Total lead:</b> ${p.tong}\n`;
-            msg += `<b>Lead nhận:</b> ${p.nhan}\n`;
-            msg += `<b>Tự tìm:</b> ${p.tu}\n`;
-            msg += `<b>Tiềm năng:</b> ${p.tn}\n`;
-            msg += `<b>Demo/gặp:</b> ${p.dm}\n`;
-            msg += `<b>Báo giá:</b> ${p.bg}\n`;
-            msg += `<b>Từ chối:</b> ${p.tc}\n`;
+            msg += `<i>Total lead:<i> ${p.tong}\n`;
+            msg += `<i>Lead nhận:<i> ${p.nhan}\n`;
+            msg += `<i>Tự tìm:<i> ${p.tu}\n`;
+            msg += `<i>Tiềm năng:<i> ${p.tn}\n`;
+            msg += `<i>Demo/gặp:<i> ${p.dm}\n`;
+            msg += `<i>Báo giá:<i> ${p.bg}\n`;
+            msg += `<i>Từ chối:<i> ${p.tc}\n`;
             msg += `*****************************\n`;
             msg += `<b><i>-Task done</i></b>\n`;
 
@@ -139,7 +139,7 @@ Object.assign(window.App, {
                 p.completedTaskDetails.forEach((txt, idx) => {
                     let taskNum = (idx + 1).toString().padStart(2, '0');
                     // In nghiêng nguyên khối Task
-                    msg += `<i>Task ${taskNum}: ${txt}\n         __${p.date}__</i>\n`;
+                    msg += `<i>Task ${taskNum}: ${txt}\n         ${p.date}</i>\n`;
                 });
             } else {
                 msg += `<i>(Không có nhiệm vụ hoàn thành)</i>`;
