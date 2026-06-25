@@ -135,7 +135,7 @@ Object.assign(window.App, {
                   
                   let msg = `✅ <b>NGHIỆM THU NHIỆM VỤ</b>\n`;
                   msg += `👤 Nhân sự: <b>${this.user}</b>\n`;
-                  msg += `🎉 Vừa đánh dấu HOÀN THÀNH ${idsToComplete.length} nhiệm vụ từ Kho.`;
+                  msg += `🎉 Vừa đánh dấu HOÀN THÀNH ${idsToComplete.length} nhiệm vụ!.`;
                   
                   if (typeof this.sendTelegram === 'function') {
                       this.sendTelegram(msg);
