@@ -45,7 +45,7 @@ Object.assign(window.App, {
             if (err.message === "WRONG_CREDENTIALS") {
                 // SỬA TẠI ĐÂY: Dùng link ảnh trực tiếp thay vì base64 để tránh lỗi
                 // Bạn có thể thay link này bằng link ảnh troll của bạn
-                const imageUrl = "https://i.imgflip.com/1ur9b0.jpg"; 
+                const imageUrl = "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/gau-truc-meme-mat-tham-4.webp"; 
 
                 const errorHtml = `
                     <div style="text-align: center;">
