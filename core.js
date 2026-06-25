@@ -69,3 +69,18 @@ window.App = {
     }
 };
 window.onload = function() { window.App.initData(); };
+// HÀM BẢO HIỂM: Cập nhật DOM an toàn
+window.safeSet = (id, value, type = 'text') => {
+    const el = document.getElementById(id);
+    if (el) {
+        if (type === 'text') el.innerText = value;
+        else if (type === 'html') el.innerHTML = value;
+        else if (type === 'value') el.value = value;
+    }
+};
+
+// HÀM BẢO HIỂM: Cập nhật Style an toàn
+window.safeStyle = (id, prop, value) => {
+    const el = document.getElementById(id);
+    if (el) el.style[prop] = value;
+};
