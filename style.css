@@ -10,7 +10,6 @@ body { background: var(--bg); color: var(--text); overflow-x: hidden; font-size:
 input, button, select, textarea, a { font-family: inherit; text-decoration: none; outline: none; }
 .container { max-width: 1000px; margin: 0 auto; padding: 0 15px; } 
 
-/* HEADER: Luôn cố định full chiều ngang màn hình */
 .header { position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); z-index: 1000; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 15px; transition: all 0.3s ease; }
 .hamburger { font-size: 20px; color: var(--primary); cursor: pointer; padding: 10px; transition: 0.2s; display: block; }
 .page { display: none !important; padding-top: 80px; padding-bottom: 40px; animation: slideUp 0.3s ease-out; width: 100%; transition: all 0.3s ease; }
@@ -49,22 +48,33 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
 .task-normal { border-left: 4px solid var(--accent) !important; }
 .task-done { border-left: 4px solid var(--success) !important; opacity: 0.7; }
 
-/* SIDEBAR: Đưa về dạng Popup Overlay chuẩn trên mọi thiết bị */
-.sidebar-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 9999; display: none !important; opacity: 0; transition: opacity 0.2s; }
-.sidebar-overlay.active { display: block !important; opacity: 1; }
-.sidebar-menu { position: absolute; top: 0; left: 0; background: #fff; width: var(--sidebar-width); height: 100vh; padding: 20px 15px; box-shadow: 10px 0 30px rgba(0,0,0,0.1); transform: translateX(-100%); transition: transform 0.3s ease; overflow-y: auto; display: flex; flex-direction: column; }
-.sidebar-overlay.active .sidebar-menu { transform: translateX(0); }
+/* SIDEBAR: Z-index cao hơn Header để không bị lỗi click */
+.sidebar-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); z-index: 9999; display: none !important; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+.sidebar-overlay.open-active { display: block !important; opacity: 1; pointer-events: auto; }
+.sidebar-menu { position: absolute; top: 0; left: 0; background: #fff; width: var(--sidebar-width); height: 100vh; padding: 20px 15px; box-shadow: 10px 0 30px rgba(0,0,0,0.1); transform: translateX(-100%); transition: transform 0.3s ease; overflow-y: auto; display: flex; flex-direction: column; z-index: 10001; pointer-events: auto; }
+.sidebar-overlay.open-active .sidebar-menu { transform: translateX(0); }
 .menu-item { display: flex; align-items: center; gap: 12px; padding: 12px 15px; font-weight: 700; color: var(--text-light); font-size: 13px; border-radius: 8px; margin-bottom: 4px; transition: all 0.2s ease; cursor: pointer; user-select: none; }
 .menu-item i { width: 18px; text-align: center; font-size: 16px; }
 .menu-item:hover { background: #f1f5f9; color: var(--primary); }
 .menu-item.active { background: rgba(59, 130, 246, 0.1); color: var(--accent); font-weight: 800; }
 
-/* ĐOẠN ĐÃ SỬA: Loại bỏ cơ chế ép hiển thị chia đôi màn hình trên PC */
+/* BỐ CỤC PC KHI ĐÃ ĐĂNG NHẬP */
 @media (min-width: 1024px) {
+  .sidebar-overlay { display: block !important; opacity: 1; pointer-events: none; background: transparent; width: var(--sidebar-width); right: auto; bottom: 0; }
+  .sidebar-menu { transform: translateX(0); box-shadow: 1px 0 0 var(--border); pointer-events: auto; }
+  .header { left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 0 20px; }
+  .hamburger { display: none !important; }
+  .page { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding-top: 80px; padding-bottom: 40px; }
   .container { max-width: 1200px; padding: 0 20px; }
   .chart-container { height: 200px; } 
 }
 
+/* ÉP ẨN SIDEBAR & CĂN GIỮA KHI Ở TRANG LOGIN (RẤT QUAN TRỌNG) */
+body.is-login .sidebar-overlay { display: none !important; }
+body.is-login .header { display: none !important; }
+body.is-login .page { margin-left: 0 !important; width: 100% !important; }
+
+/* HIỆU ỨNG TẢI & POPUP */
 .loading-screen { position: fixed; inset: 0; background: rgba(255,255,255,0.8); z-index: 99999; display: none !important; flex-direction: column; align-items: center; justify-content: center; }
 .loading-screen.active { display: flex !important; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
