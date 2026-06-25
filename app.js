@@ -1,20 +1,16 @@
 const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 
-// Đã đổi tên biến thành 'supabaseClient' để không đụng độ với thư viện gốc
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Chức năng Test kết nối và Insert dữ liệu
 document.getElementById('btn-test-task').addEventListener('click', async () => {
-    // Custom Popup Notification giản lược thay thế alert()
     const btn = document.getElementById('btn-test-task');
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang gửi...';
     btn.disabled = true;
 
     try {
-        // Sử dụng biến 'supabaseClient' mới để gọi data
         const { data, error } = await supabaseClient
-            .from('DATA_TASKS')
+            .from('data_tasks') // <-- ĐÃ SỬA THÀNH CHỮ THƯỜNG Ở ĐÂY
             .insert([
                 {
                     giver: 'Admin Test',
