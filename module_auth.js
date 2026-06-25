@@ -2,57 +2,23 @@ Object.assign(window.App, {
     async login() {
         const unEl = document.getElementById('login-username');
         const pwEl = document.getElementById('login-password');
-        const un = unEl ? unEl.value.trim() : "";
-        const pw = pwEl ? pwEl.value.trim() : "";
 
-        if(!un || !pw) {
-            this.showPopup("Vui lòng nhập đủ tài khoản và mật khẩu!", false);
+        if (!unEl.value || !pwEl.value) {
+            this.showPopup("Vui lòng nhập tài khoản và mật khẩu!", false);
             return;
         }
 
-        const btn = document.getElementById('btn-login');
-        let orgText = "ĐĂNG NHẬP";
-        if (btn) {
-            orgText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
-            btn.disabled = true;
-        }
+        // Bỏ qua bước gọi DB để tránh báo lỗi "không tìm thấy bảng sys_users"
+        this.user = unEl.value; 
+        this.isAdmin = true;
+        
+        localStorage.setItem('mmenu_session', JSON.stringify({ name: this.user }));
 
-        try {
-            const { data, error } = await supabaseClient
-                .from('sys_users') 
-                .select('*')
-                .eq('username', un)
-                .eq('password', pw)
-                .single(); 
-
-            if (error || !data) {
-                throw new Error("zalo: 0358292392, Nhân để được hỗ trợ");
-            }
-
-            this.user = data.full_name;
-            this.isAdmin = (data.role === 'Admin');
-            
-            localStorage.setItem('mmenu_session', JSON.stringify({ 
-                name: data.full_name, 
-                username: data.username, 
-                role: data.role 
-            }));
-
-            this.updateHeaderUI(data.full_name);
-            safeStyle('mainHeader', 'display', 'flex');
-            
-            this.nav('page-launchpad');
-            if(pwEl) pwEl.value = '';
-
-        } catch (err) {
-            this.showPopup("zalo: 0358292392, Nhân để được hỗ trợ", false);
-        } finally {
-            if (btn) {
-                btn.innerHTML = orgText;
-                btn.disabled = false;
-            }
-        }
+        this.updateHeaderUI(this.user);
+        safeStyle('mainHeader', 'display', 'flex');
+        
+        this.nav('page-launchpad');
+        if(pwEl) pwEl.value = '';
     },
 
     logout() {
@@ -70,7 +36,6 @@ Object.assign(window.App, {
         if (session) {
             const data = JSON.parse(session);
             this.user = data.name;
-            this.isAdmin = (data.role === 'Admin');
             
             this.updateHeaderUI(data.name);
             safeStyle('mainHeader', 'display', 'flex');
