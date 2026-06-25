@@ -11,22 +11,20 @@ Object.assign(window.App, {
         let total = pm + pc + ot; 
         let paid = paidEl ? Number(paidEl.value) : 0; 
         
-        // Công nợ = Tổng - Đã thanh toán
         let debt = total - paid;
         
         safeSet('displayTotal', this.fmtFull(total));
         
-        // Cập nhật số tiền Âm/Dương và đổi màu
         let debtStr = this.fmtFull(debt);
         const debtEl = document.getElementById('displayDebt');
         if (debtEl) {
             if (debt > 0) {
-                debtStr = "+" + debtStr; // Nợ dương
-                debtEl.style.color = 'var(--danger)'; // Màu đỏ
+                debtStr = "+" + debtStr; 
+                debtEl.style.color = 'var(--danger)'; 
             } else if (debt < 0) {
-                debtEl.style.color = 'var(--warning)'; // Âm (Trả dư) -> Màu cam
+                debtEl.style.color = 'var(--warning)'; 
             } else {
-                debtEl.style.color = 'var(--success)'; // Khớp (0đ) -> Màu xanh
+                debtEl.style.color = 'var(--success)'; 
             }
         }
         safeSet('displayDebt', debtStr);
@@ -83,6 +81,18 @@ Object.assign(window.App, {
                 rev_software: p.pm, rev_hardware: p.pc, rev_other: p.ot, total_contract: p.total, paid_amount: p.paid, debt_amount: p.debt
             }]);
             if(error) throw error;
+
+            let msg = `💰 <b>DOANH THU MỚI</b>\n`;
+            msg += `👤 Nhân sự: <b>${p.userFullName}</b>\n`;
+            msg += `🤝 Khách hàng: <b>${p.name}</b>\n`;
+            msg += `🏷️ Phân loại: ${p.type} | Nguồn: ${p.source}\n`;
+            msg += `💵 Tổng hợp đồng: <b>${this.fmtFull(p.total)}</b>\n`;
+            msg += `✅ Đã thanh toán: ${this.fmtFull(p.paid)}\n`;
+            msg += `⚠️ Công nợ: ${this.fmtFull(p.debt)}`;
+            
+            if (typeof this.sendTelegram === 'function') {
+                this.sendTelegram(msg);
+            }
 
             document.querySelectorAll('.rev-input').forEach(el => { 
               if (el.type === 'number' || el.type === 'text') el.value = ''; 
