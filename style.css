@@ -104,18 +104,63 @@ main {
     background-color: #2563eb;
 }
 
-/* Bottom/Slide-up animation */
 .fade-in-up {
     animation: fadeInUp 0.4s ease-out;
 }
 
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
+
+/* --- BỔ SUNG CHO MODULE KHO NHIỆM VỤ --- */
+.form-control {
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: var(--font-family);
+    font-size: 14px;
+    outline: none;
+}
+.form-control:focus {
+    border-color: var(--primary-color);
+}
+.btn-secondary {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-family);
+}
+.table-responsive {
+    overflow-x: auto;
+}
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+.data-table th, .data-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+.data-table th {
+    background-color: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+}
+.data-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+.status-blue { background-color: #dbeafe; color: #1e40af; } 
+.status-green { background-color: #dcfce3; color: #166534; } 
+.status-red { background-color: #fee2e2; color: #991b1b; }
