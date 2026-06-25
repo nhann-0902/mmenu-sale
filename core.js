@@ -2,13 +2,16 @@ const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// CẤU HÌNH TELEGRAM BOT Ở ĐÂY
+const TELEGRAM_BOT_TOKEN = 8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c; 
+const TELEGRAM_CHAT_ID = -1003689002066; 
+
 function formatDateStr(dateStr) {
     if(!dateStr) return '-';
     const d = new Date(dateStr);
     return d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
 }
 
-// Hàm bảo hiểm: Tránh lỗi null khi load HTML chậm
 window.safeSet = (id, value, type = 'text') => {
     const el = document.getElementById(id);
     if (el) {
@@ -30,6 +33,19 @@ window.App = {
     sourceList: ["Tự tìm", "Marketing", "Giới thiệu"],
     typeList: ["Phần mềm", "Phần cứng", "Combo", "Gia hạn"],
     chartInstances: {}, 
+
+    // HÀM BẮN THÔNG BÁO TELEGRAM
+    sendTelegram(message) {
+        if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID || TELEGRAM_BOT_TOKEN.includes('ĐIỀN_TOKEN')) return;
+        
+        // Nếu bạn dùng Webhook trung gian bằng Google Apps Script thì đổi URL ở đây
+        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' })
+        }).catch(err => console.error('Lỗi gửi Telegram:', err));
+    },
     
     showL() { const el = document.getElementById('globalLoading'); if(el) el.classList.add('active'); },
     hideL() { const el = document.getElementById('globalLoading'); if(el) el.classList.remove('active'); },
@@ -85,8 +101,6 @@ window.App = {
         safeSet('assignFormContainer', '', 'html');
         this.addAssignBlock(2);
       }
-      
-      // Đã tích hợp lệnh kích hoạt trang Lịch làm việc vào đây
       if (id === 'page-schedule' && typeof this.loadSchedule === 'function') this.loadSchedule();
     },
 
