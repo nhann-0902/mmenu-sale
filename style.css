@@ -59,14 +59,14 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
 .menu-item.active { background: rgba(59, 130, 246, 0.1); color: var(--accent); font-weight: 800; }
 
 /* BỐ CỤC PC KHI ĐÃ ĐĂNG NHẬP */
+/* Xóa bỏ các thuộc tính ép buộc mở Sidebar trên PC */
 @media (min-width: 1024px) {
-  .sidebar-overlay { display: block !important; opacity: 1; pointer-events: none; background: transparent; width: var(--sidebar-width); right: auto; bottom: 0; }
-  .sidebar-menu { transform: translateX(0); box-shadow: 1px 0 0 var(--border); pointer-events: auto; }
-  .header { left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding: 0 20px; }
-  .hamburger { display: none !important; }
-  .page { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); padding-top: 80px; padding-bottom: 40px; }
-  .container { max-width: 1200px; padding: 0 20px; }
-  .chart-container { height: 200px; } 
+  /* Giữ header và page toàn màn hình, không đẩy sang phải nữa */
+  .header { left: 0; width: 100%; padding: 0 20px; }
+  .page { margin-left: 0; width: 100%; padding-top: 80px; padding-bottom: 40px; }
+  
+  /* Đảm bảo nút hamburger luôn hiển thị */
+  .hamburger { display: block !important; }
 }
 
 /* ÉP ẨN SIDEBAR & CĂN GIỮA KHI Ở TRANG LOGIN (RẤT QUAN TRỌNG) */
