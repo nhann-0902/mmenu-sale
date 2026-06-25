@@ -1,49 +1,58 @@
 Object.assign(window.App, {
     calcRev() { 
-        let pm = document.getElementById('r_pm') ? Number(document.getElementById('r_pm').value) : 0; 
-        let pc = document.getElementById('r_pc') ? Number(document.getElementById('r_pc').value) : 0; 
-        let ot = document.getElementById('r_ot') ? Number(document.getElementById('r_ot').value) : 0;
+        let pmEl = document.getElementById('r_pm');
+        let pcEl = document.getElementById('r_pc');
+        let otEl = document.getElementById('r_ot');
+        let paidEl = document.getElementById('r_paid');
+        
+        let pm = pmEl ? Number(pmEl.value) : 0; 
+        let pc = pcEl ? Number(pcEl.value) : 0; 
+        let ot = otEl ? Number(otEl.value) : 0;
         let total = pm + pc + ot; 
-        let paid = document.getElementById('r_paid') ? Number(document.getElementById('r_paid').value) : 0; 
+        let paid = paidEl ? Number(paidEl.value) : 0; 
         let debt = total - paid;
         
-        if(document.getElementById('displayTotal')) document.getElementById('displayTotal').innerText = this.fmtFull(total); 
-        if(document.getElementById('displayDebt')) document.getElementById('displayDebt').innerText = this.fmtFull(debt); 
+        safeSet('displayTotal', this.fmtFull(total));
+        safeSet('displayDebt', this.fmtFull(debt));
+        safeStyle('debtSection', 'display', debt > 0 ? 'block' : 'none');
         
-        let debtSec = document.getElementById('debtSection'); 
-        if(debtSec) {
-            if (debt > 0) { debtSec.style.display = 'block'; } else { debtSec.style.display = 'none'; } 
-        }
         return { total, debt, paid, pm, pc, ot };
     },
 
     renderRevConfirm() { 
         let c = this.calcRev();
-        let name = (document.getElementById('r_name') && document.getElementById('r_name').value) ? document.getElementById('r_name').value : '<span style="color:var(--danger)">[CHƯA NHẬP TÊN]</span>'; 
-        let date = document.getElementById('r_date') ? document.getElementById('r_date').value : ''; 
-        let type = (document.getElementById('r_type') && document.getElementById('r_type').value) ? document.getElementById('r_type').value : 'Không phân loại'; 
+        let nameEl = document.getElementById('r_name');
+        let dateEl = document.getElementById('r_date');
+        let typeEl = document.getElementById('r_type');
         
-        let container = document.getElementById('revConfirmStats');
-        if(container) {
-            container.innerHTML = ` 
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Ngày GD:</span> <b>${date}</b></div> 
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Tên khách/đối tác:</span> <b style="color:var(--primary); text-transform:uppercase;">${name}</b></div> 
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Loại Hợp đồng:</span> <b>${type}</b></div> 
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0; margin-top: 10px;"><span style="color:var(--text-light);">Tổng HĐ:</span> <b style="color:var(--accent); font-size:14px;">${this.fmtFull(c.total)}</b></div> 
-              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Đã thanh toán:</span> <b style="color:var(--success); font-size:14px;">${this.fmtFull(c.paid)}</b></div> 
-              <div style="display:flex; justify-content:space-between; padding:6px 0; margin-top: 10px;"><span style="color:var(--danger); font-weight:800;">Công nợ còn lại:</span> <b style="color:var(--danger); font-size:14px;">${this.fmtFull(c.debt)}</b></div> 
-            `; 
-        }
+        let name = (nameEl && nameEl.value) ? nameEl.value : '<span style="color:var(--danger)">[CHƯA NHẬP TÊN]</span>'; 
+        let date = dateEl ? dateEl.value : ''; 
+        let type = (typeEl && typeEl.value) ? typeEl.value : 'Không phân loại'; 
+        
+        let htmlStr = ` 
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Ngày GD:</span> <b>${date}</b></div> 
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Tên khách/đối tác:</span> <b style="color:var(--primary); text-transform:uppercase;">${name}</b></div> 
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Loại Hợp đồng:</span> <b>${type}</b></div> 
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0; margin-top: 10px;"><span style="color:var(--text-light);">Tổng HĐ:</span> <b style="color:var(--accent); font-size:14px;">${this.fmtFull(c.total)}</b></div> 
+          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Đã thanh toán:</span> <b style="color:var(--success); font-size:14px;">${this.fmtFull(c.paid)}</b></div> 
+          <div style="display:flex; justify-content:space-between; padding:6px 0; margin-top: 10px;"><span style="color:var(--danger); font-weight:800;">Công nợ còn lại:</span> <b style="color:var(--danger); font-size:14px;">${this.fmtFull(c.debt)}</b></div> 
+        `; 
+        safeSet('revConfirmStats', htmlStr, 'html');
     },
 
     async submitRevenue() { 
         let c = this.calcRev(); 
+        let dateEl = document.getElementById('r_date');
+        let srcEl = document.getElementById('r_src');
+        let typeEl = document.getElementById('r_type');
+        let nameEl = document.getElementById('r_name');
+        
         let p = {
-          date: document.getElementById('r_date').value, 
+          date: dateEl ? dateEl.value : '', 
           userFullName: this.user,
-          source: document.getElementById('r_src').value, 
-          type: document.getElementById('r_type').value,
-          name: document.getElementById('r_name').value, 
+          source: srcEl ? srcEl.value : '', 
+          type: typeEl ? typeEl.value : '',
+          name: nameEl ? nameEl.value : '', 
           pm: c.pm, pc: c.pc, ot: c.ot, total: c.total, paid: c.paid, debt: c.debt
         };
 
