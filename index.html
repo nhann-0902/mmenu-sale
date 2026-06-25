@@ -166,23 +166,37 @@
         <div class="title-main" style="margin-bottom: 0;">KHO NHIỆM VỤ</div>
         <button class="btn btn-primary" style="width: auto; padding: 10px 15px;" onclick="App.nav('page-task-assign')"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Giao Việc</button>
       </div>
-      <div class="card grid-3" style="padding: 15px; margin-bottom: 15px;">
-        <div>
+
+      <div class="card" style="padding: 15px; margin-bottom: 15px;">
+        <div style="margin-bottom: 12px;">
           <label class="form-label">Bộ Lọc Nhân Viên</label>
           <select id="filterTaskStaff" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả nhân viên</option></select>
         </div>
-        <div>
-          <label class="form-label">Trạng Thái</label>
-          <select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả</option><option value="Chưa hoàn thành">Đang xử lý</option><option value="Hoàn thành">Đã Xong</option></select>
-        </div>
-        <div>
-          <label class="form-label">Thời gian</label>
-          <select id="filterTaskSort" class="form-control" onchange="App.renderAllTasks()">
-            <option value="DESC">Mới nhất</option>
-            <option value="ASC">Cũ nhất</option>
-          </select>
+        <div class="grid-2">
+          <div>
+            <label class="form-label">Trạng Thái</label>
+            <select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()">
+              <option value="ALL">Tất cả</option>
+              <option value="Chưa hoàn thành" selected>Đang xử lý</option>
+              <option value="Hoàn thành">Đã Xong</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">Thời gian</label>
+            <select id="filterTaskSort" class="form-control" onchange="App.renderAllTasks()">
+              <option value="DESC">Mới nhất</option>
+              <option value="ASC">Cũ nhất</option>
+            </select>
+          </div>
         </div>
       </div>
+
+      <div id="bulkActionContainer" style="margin-bottom: 15px; display: none;">
+          <button class="btn" style="background: var(--success); color: #fff; box-shadow: 0 4px 10px rgba(16,185,129,0.3);" onclick="App.confirmCompleteMultipleTasks()">
+              <i class="fa-solid fa-check-double" style="margin-right: 8px;"></i> ĐÃ HOÀN THÀNH (<span id="bulkCount">0</span>) NHIỆM VỤ ĐÃ CHỌN
+          </button>
+      </div>
+
       <div id="allTasksContainer"></div>
     </div>
   </section>
