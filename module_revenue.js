@@ -1,35 +1,39 @@
-// MODULE 5: BÁO CÁO DOANH THU & CÔNG NỢ
 Object.assign(window.App, {
     calcRev() { 
-        let pm = Number(document.getElementById('r_pm').value) || 0; 
-        let pc = Number(document.getElementById('r_pc').value) || 0; 
-        let ot = Number(document.getElementById('r_ot').value) || 0;
+        let pm = document.getElementById('r_pm') ? Number(document.getElementById('r_pm').value) : 0; 
+        let pc = document.getElementById('r_pc') ? Number(document.getElementById('r_pc').value) : 0; 
+        let ot = document.getElementById('r_ot') ? Number(document.getElementById('r_ot').value) : 0;
         let total = pm + pc + ot; 
-        let paid = Number(document.getElementById('r_paid').value) || 0; 
+        let paid = document.getElementById('r_paid') ? Number(document.getElementById('r_paid').value) : 0; 
         let debt = total - paid;
         
-        document.getElementById('displayTotal').innerText = this.fmtFull(total); 
-        document.getElementById('displayDebt').innerText = this.fmtFull(debt); 
+        if(document.getElementById('displayTotal')) document.getElementById('displayTotal').innerText = this.fmtFull(total); 
+        if(document.getElementById('displayDebt')) document.getElementById('displayDebt').innerText = this.fmtFull(debt); 
         
         let debtSec = document.getElementById('debtSection'); 
-        if (debt > 0) { debtSec.style.display = 'block'; } else { debtSec.style.display = 'none'; } 
+        if(debtSec) {
+            if (debt > 0) { debtSec.style.display = 'block'; } else { debtSec.style.display = 'none'; } 
+        }
         return { total, debt, paid, pm, pc, ot };
     },
 
     renderRevConfirm() { 
         let c = this.calcRev();
-        let name = document.getElementById('r_name').value || '<span style="color:var(--danger)">[CHƯA NHẬP TÊN]</span>'; 
-        let date = document.getElementById('r_date').value; 
-        let type = document.getElementById('r_type').value || 'Không phân loại'; 
+        let name = (document.getElementById('r_name') && document.getElementById('r_name').value) ? document.getElementById('r_name').value : '<span style="color:var(--danger)">[CHƯA NHẬP TÊN]</span>'; 
+        let date = document.getElementById('r_date') ? document.getElementById('r_date').value : ''; 
+        let type = (document.getElementById('r_type') && document.getElementById('r_type').value) ? document.getElementById('r_type').value : 'Không phân loại'; 
         
-        document.getElementById('revConfirmStats').innerHTML = ` 
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Ngày GD:</span> <b>${date}</b></div> 
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Tên khách/đối tác:</span> <b style="color:var(--primary); text-transform:uppercase;">${name}</b></div> 
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Loại Hợp đồng:</span> <b>${type}</b></div> 
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0; margin-top: 10px;"><span style="color:var(--text-light);">Tổng HĐ:</span> <b style="color:var(--accent); font-size:14px;">${this.fmtFull(c.total)}</b></div> 
-          <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Đã thanh toán:</span> <b style="color:var(--success); font-size:14px;">${this.fmtFull(c.paid)}</b></div> 
-          <div style="display:flex; justify-content:space-between; padding:6px 0; margin-top: 10px;"><span style="color:var(--danger); font-weight:800;">Công nợ còn lại:</span> <b style="color:var(--danger); font-size:14px;">${this.fmtFull(c.debt)}</b></div> 
-        `; 
+        let container = document.getElementById('revConfirmStats');
+        if(container) {
+            container.innerHTML = ` 
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Ngày GD:</span> <b>${date}</b></div> 
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Tên khách/đối tác:</span> <b style="color:var(--primary); text-transform:uppercase;">${name}</b></div> 
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Loại Hợp đồng:</span> <b>${type}</b></div> 
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0; margin-top: 10px;"><span style="color:var(--text-light);">Tổng HĐ:</span> <b style="color:var(--accent); font-size:14px;">${this.fmtFull(c.total)}</b></div> 
+              <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Đã thanh toán:</span> <b style="color:var(--success); font-size:14px;">${this.fmtFull(c.paid)}</b></div> 
+              <div style="display:flex; justify-content:space-between; padding:6px 0; margin-top: 10px;"><span style="color:var(--danger); font-weight:800;">Công nợ còn lại:</span> <b style="color:var(--danger); font-size:14px;">${this.fmtFull(c.debt)}</b></div> 
+            `; 
+        }
     },
 
     async submitRevenue() { 
@@ -62,7 +66,6 @@ Object.assign(window.App, {
             this.showPopup("Giao dịch đã được ghi nhận vào hệ thống!", true); 
             this.nav('page-launchpad'); 
         } catch(error) {
-            console.error(error);
             this.showPopup("Lỗi lưu doanh thu: " + error.message, false);
         } finally {
             this.hideL();
