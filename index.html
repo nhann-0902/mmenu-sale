@@ -32,7 +32,7 @@
     </div>
   </header>
 
-  <div id="globalSidebar" class="sidebar-overlay" onclick="App.closeSidebar(event)">
+  <div id="globalSidebar" class="sidebar-overlay" onclick="App.closeSidebar(event)" style="display: none;">
     <div class="sidebar-menu" onclick="event.stopPropagation()">
       <div style="text-align: left; font-size: 18px; color: var(--accent); font-weight: 900; margin-bottom: 25px; padding-left: 10px;"><i class="fa-solid fa-bolt"></i> MMENU SALE</div>
       <div style="font-size: 9px; font-weight: 800; color: var(--text-light); margin-bottom: 8px; padding-left: 10px; letter-spacing: 0.5px;">MENU CHÍNH</div>
@@ -230,5 +230,47 @@
   <script src="module_daily.js"></script>
   <script src="module_revenue.js"></script>
   <script src="module_dashboard.js"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const sidebar = document.getElementById("globalSidebar");
+      const loginPage = document.getElementById("page-login");
+
+      // Hàm kiểm tra trạng thái trang Login để quyết định ẩn/hiện Sidebar
+      function checkSidebarVisibility() {
+        if (loginPage && loginPage.classList.contains("active")) {
+          sidebar.style.setProperty("display", "none", "important");
+        } else {
+          sidebar.style.removeProperty("display");
+        }
+      }
+
+      // Khởi chạy kiểm tra ngay lập tức khi tải xong DOM
+      checkSidebarVisibility();
+
+      // Sử dụng MutationObserver theo dõi sự thay đổi class của #page-login (khi đăng nhập thành công)
+      if (loginPage) {
+        const observer = new MutationObserver(checkSidebarVisibility);
+        observer.observe(loginPage, { attributes: true, attributeFilter: ["class"] });
+      }
+
+      // Lớp bảo mật bổ sung: Chặn đứng mọi hành vi điều hướng qua App.nav khi chưa đăng nhập
+      if (typeof App !== "undefined" && App.nav) {
+        const originalNav = App.nav;
+        App.nav = function (pageId) {
+          if (loginPage && loginPage.classList.contains("active") && pageId !== "page-login") {
+            Swal.fire({
+              icon: "warning",
+              title: "Yêu cầu hệ thống",
+              text: "Vui lòng đăng nhập tài khoản trước khi truy cập các tính năng điều hướng!",
+              confirmButtonColor: "#0f172a"
+            });
+            return; // Ngắt luôn lệnh, không cho chuyển trang
+          }
+          originalNav.apply(this, arguments);
+        };
+      }
+    });
+  </script>
 </body>
 </html>
