@@ -1,4 +1,3 @@
-// MODULE 3: MASTER DASHBOARD (LIVE DATA)
 Object.assign(window.App, {
     async loadDashboards() { 
         if (typeof Chart === 'undefined') return;
@@ -82,8 +81,7 @@ Object.assign(window.App, {
             if(document.getElementById('kpiPercentNum')) document.getElementById('kpiPercentNum').innerText = pct + "%"; 
             if(document.getElementById('kpiProgressBar')) setTimeout(() => { document.getElementById('kpiProgressBar').style.width = Math.min(pct, 100) + "%"; }, 200); 
             
-            // --- FIX LỖI TẠI ĐÂY ---
-            // Tự động khởi tạo biến nếu chưa có để tránh lỗi null/undefined
+            // Fix lỗi khởi tạo biểu đồ
             this.chartInstances = this.chartInstances || {};
             Object.values(this.chartInstances).forEach(chart => { if(chart) chart.destroy(); }); 
             this.chartInstances = {}; 
