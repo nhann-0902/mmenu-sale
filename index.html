@@ -8,83 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-
-  <style>
-    /* 1. Triệt tiêu hoàn toàn căn lề trái của CSS gốc trên toàn hệ thống */
-    html, body {
-      padding-left: 0 !important;
-      margin-left: 0 !important;
-      display: block !important;
-      width: 100% !important;
-      overflow-x: hidden !important;
-      background-color: var(--bg, #f8fafc) !important;
-    }
-
-    /* 2. Loại bỏ khoảng trống 260px bên trái của tất cả các trang và vùng chứa */
-    .page, section, main, .container {
-      padding-left: 15px !important;
-      padding-right: 15px !important;
-      margin-left: auto !important;
-      margin-right: auto !important;
-      left: 0 !important;
-      right: 0 !important;
-      width: 100% !important;
-      max-width: 100% !important;
-      box-sizing: border-box !important;
-    }
-    .container {
-      max-width: 1200px !important; /* Đưa nội dung chính về giữa màn hình */
-    }
-
-    /* 3. SỬA LỖI ẢNH 2: Cấu trúc lại Header đưa về chính giữa, không bị rách hay đẩy lên trên */
-    #mainHeader {
-      position: relative !important; /* Đưa về luồng tự nhiên để margin: 0 auto có tác dụng */
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      width: 100% !important;
-      max-width: 1200px !important;
-      margin: 0 auto !important;
-      height: 60px !important;
-      padding: 0 20px !important;
-      box-sizing: border-box !important;
-      display: none; /* JS sẽ kích hoạt flex khi vào trang trong */
-      align-items: center !important;
-      justify-content: space-between !important;
-      background: #ffffff !important;
-      border-bottom: 1px solid var(--border, #e2e8f0) !important;
-    }
-
-    /* 4. SỬA LỖI ẢNH 1: Khóa chết Sidebar rút khỏi luồng hiển thị (không chiếm diện tích ngang nữa) */
-    #globalSidebar {
-      display: none !important;
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      z-index: 99999 !important;
-      background-color: rgba(0, 0, 0, 0.5) !important;
-    }
-
-    /* Trạng thái mở menu dạng Pop-up phủ lên trên */
-    body #globalSidebar.open-active {
-      display: block !important;
-    }
-
-    #globalSidebar .sidebar-menu {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      height: 100% !important;
-      width: 260px !important;
-      box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2) !important;
-      background: #ffffff !important;
-      display: flex !important;
-      flex-direction: column !important;
-      padding: 20px 15px !important;
-    }
-  </style>
 </head>
 <body>
 
@@ -100,7 +23,7 @@
 
   <header class="header" id="mainHeader">
     <div style="display: flex; align-items: center;">
-      <i class="fa-solid fa-bars hamburger" onclick="App.openSidebar()" style="cursor: pointer; font-size: 18px; padding: 5px;"></i>
+      <i class="fa-solid fa-bars hamburger" onclick="App.openSidebar()" style="cursor: pointer; padding: 5px;"></i>
       <span style="font-weight: 900; font-size: 16px; margin-left: 15px; color: var(--primary);">MMENU SALE</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
@@ -215,92 +138,14 @@
     </div>
   </section>
 
-  <section id="page-daily-confirm" class="page">
-    <div class="container" style="max-width: 600px;">
-      <div class="title-main">XÁC NHẬN BÁO CÁO</div>
-      <div class="card">
-        <div style="font-size: 11px; font-weight: 800; color: var(--accent); margin-bottom: 10px; text-transform: uppercase;">1. THỐNG KÊ LEAD:</div>
-        <div id="dailyConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: var(--bg); padding: 12px; border-radius: 8px;"></div>
-        <div style="font-size: 11px; font-weight: 800; color: var(--success); margin-bottom: 10px; text-transform: uppercase;">2. CÔNG VIỆC ĐÃ DONE:</div>
-        <div id="dailyConfirmTasksList" style="margin-bottom: 20px;"></div>
-        <div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-daily')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitDaily()">Gửi báo cáo</button></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="page-revenue" class="page">
-    <div class="container" style="max-width: 600px;">
-      <div class="title-main">DÒNG TIỀN & CÔNG NỢ</div>
-      <div class="card">
-        <div class="grid-2">
-          <div class="form-group"><label class="form-label">Ngày giao dịch</label><input type="date" id="r_date" class="form-control rev-input default-today"></div>
-          <div class="form-group"><label class="form-label">Nguồn khách</label><select class="form-control rev-input" id="r_src"><option value="">Chọn nguồn...</option></select></div>
-        </div>
-        <div class="grid-2">
-          <div class="form-group"><label class="form-label">Loại Hợp đồng</label><select class="form-control rev-input" id="r_type"><option value="">Chọn loại...</option></select></div>
-          <div class="form-group"><label class="form-label">Tên đối tác / Khách hàng</label><input type="text" id="r_name" class="form-control rev-input" placeholder="VD: Nhà hàng abc..."></div>
-        </div>
-        <div style="border-top: 1px dashed var(--border); margin: 15px 0;"></div>
-        <div class="form-label" style="color:var(--accent);">CƠ CẤU DOANH THU</div>
-        <div class="grid-3">
-          <div class="form-group"><label class="form-label">Phần mềm</label><input type="number" id="r_pm" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div>
-          <div class="form-group"><label class="form-label">Phần cứng</label><input type="number" id="r_pc" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div>
-          <div class="form-group"><label class="form-label">Khác</label><input type="number" id="r_ot" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div>
-        </div>
-        <div style="background: rgba(59, 130, 246, 0.05); padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(59, 130, 246, 0.2);">
-          <span style="font-weight: 800; font-size: 11px; color: var(--primary);">TỔNG HỢP ĐỒNG:</span><span id="displayTotal" style="font-weight: 900; font-size: 16px; color: var(--accent);">0đ</span>
-        </div>
-        <div style="border-top: 1px dashed var(--border); margin: 15px 0;"></div>
-        <div class="form-group">
-          <label class="form-label" style="color: var(--success);">ĐÃ THANH TOÁN (VNĐ)</label>
-          <input type="number" id="r_paid" class="form-control rev-input" style="font-size:15px; color: var(--success); font-weight: 800;" placeholder="Nhập số tiền..." oninput="App.calcRev()">
-        </div>
-        <div id="debtSection" style="display:none; background: #fef2f2; padding: 12px 15px; border-radius: 8px; border: 1px solid #fecaca; margin-bottom: 15px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-             <span style="font-weight: 800; font-size: 11px; color: var(--danger);">CÔNG NỢ CÒN LẠI:</span><span id="displayDebt" style="font-weight: 900; font-size: 16px; color: var(--danger);">0đ</span>
-          </div>
-        </div>
-        <button class="btn btn-primary" style="margin-top:10px;" onclick="App.nav('page-revenue-confirm')">XÁC NHẬN CHỐT SỔ</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="page-revenue-confirm" class="page">
-    <div class="container" style="max-width: 500px;">
-      <div class="title-main">CHỐT SỔ KẾ TOÁN</div>
-      <div class="card">
-        <div id="revConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: rgba(241, 245, 249, 0.8); padding: 15px; border-radius: 8px;"></div>
-        <div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-revenue')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitRevenue()">Khóa sổ & Gửi</button></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="page-task-list" class="page">
-    <div class="container">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-          <div class="title-main" style="margin-bottom: 0;">KHO NHIỆM VỤ</div>
-          <button class="btn btn-primary" style="width: auto; padding: 10px 15px;" onclick="App.nav('page-task-assign')"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Giao Việc</button>
-      </div>
-      <div class="card grid-2" style="padding: 15px; margin-bottom: 15px;">
-         <div><label class="form-label">Bộ Lọc Nhân Viên</label><select id="filterTaskStaff" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả nhân viên</option></select></div>
-         <div><label class="form-label">Trạng Thái</label><select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả</option><option value="Chưa hoàn thành">Đang xử lý</option><option value="Hoàn thành">Đã Xong</option></select></div>
-      </div>
-      <div id="allTasksContainer"></div>
-    </div>
-  </section>
-
-  <section id="page-task-assign" class="page">
-    <div class="container">
-      <div class="title-main">PHÁT HÀNH NHIỆM VỤ TẬP THỂ</div>
-      <div id="assignFormContainer" class="grid-2"></div> 
-      <div style="text-align: center; margin-top: 10px;"><button class="btn btn-outline" style="width: auto; padding: 10px 20px; display: inline-block; font-size: 11px;" onclick="App.addAssignBlock(1)">+ THÊM 1 BLOCK</button></div>
-      <div style="margin-top: 20px; max-width: 300px; margin-left: auto; margin-right: auto;"><button class="btn btn-primary" onclick="App.submitAssignTasks()">PHÁT HÀNH TOÀN BỘ</button></div>
-    </div>
-  </section>
+  <section id="page-daily-confirm" class="page"><div class="container" style="max-width: 600px;"><div class="title-main">XÁC NHẬN BÁO CÁO</div><div class="card"><div id="dailyConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: var(--bg); padding: 12px; border-radius: 8px;"></div><div id="dailyConfirmTasksList" style="margin-bottom: 20px;"></div><div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-daily')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitDaily()">Gửi báo cáo</button></div></div></div></section>
+  <section id="page-revenue" class="page"><div class="container" style="max-width: 600px;"><div class="title-main">DÒNG TIỀN & CÔNG NỢ</div><div class="card"><div class="grid-2"><div class="form-group"><label class="form-label">Ngày giao dịch</label><input type="date" id="r_date" class="form-control rev-input default-today"></div><div class="form-group"><label class="form-label">Nguồn khách</label><select class="form-control rev-input" id="r_src"><option value="">Chọn nguồn...</option></select></div></div><div class="grid-2"><div class="form-group"><label class="form-label">Loại Hợp đồng</label><select class="form-control rev-input" id="r_type"><option value="">Chọn loại...</option></select></div><div class="form-group"><label class="form-label">Tên đối tác / Khách hàng</label><input type="text" id="r_name" class="form-control rev-input" placeholder="VD: Nhà hàng abc..."></div></div><div style="border-top: 1px dashed var(--border); margin: 15px 0;"></div><div class="form-label" style="color:var(--accent);">CƠ CẤU DOANH THU</div><div class="grid-3"><div class="form-group"><label class="form-label">Phần mềm</label><input type="number" id="r_pm" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div><div class="form-group"><label class="form-label">Phần cứng</label><input type="number" id="r_pc" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div><div class="form-group"><label class="form-label">Khác</label><input type="number" id="r_ot" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div></div><div style="background: rgba(59, 130, 246, 0.05); padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(59, 130, 246, 0.2);"><span style="font-weight: 800; font-size: 11px; color: var(--primary);">TỔNG HỢP ĐỒNG:</span><span id="displayTotal" style="font-weight: 900; font-size: 16px; color: var(--accent);">0đ</span></div><div style="border-top: 1px dashed var(--border); margin: 15px 0;"></div><div class="form-group"><label class="form-label" style="color: var(--success);">ĐÃ THANH TOÁN (VNĐ)</label><input type="number" id="r_paid" class="form-control rev-input" style="font-size:15px; color: var(--success); font-weight: 800;" placeholder="Nhập số tiền..." oninput="App.calcRev()"></div><div id="debtSection" style="display:none; background: #fef2f2; padding: 12px 15px; border-radius: 8px; border: 1px solid #fecaca; margin-bottom: 15px;"><div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-weight: 800; font-size: 11px; color: var(--danger);">CÔNG NỢ CÒN LẠI:</span><span id="displayDebt" style="font-weight: 900; font-size: 16px; color: var(--danger);">0đ</span></div></div><button class="btn btn-primary" style="margin-top:10px;" onclick="App.nav('page-revenue-confirm')">XÁC NHẬN CHỐT SỔ</button></div></div></section>
+  <section id="page-revenue-confirm" class="page"><div class="container" style="max-width: 500px;"><div class="title-main">CHỐT SỔ KẾ TOÁN</div><div class="card"><div id="revConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: rgba(241, 245, 249, 0.8); padding: 15px; border-radius: 8px;"></div><div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-revenue')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitRevenue()">Khóa sổ & Gửi</button></div></div></div></section>
+  <section id="page-task-list" class="page"><div class="container"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;"><div class="title-main" style="margin-bottom: 0;">KHO NHIỆM VỤ</div><button class="btn btn-primary" style="width: auto; padding: 10px 15px;" onclick="App.nav('page-task-assign')"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Giao Việc</button></div><div class="card grid-2" style="padding: 15px; margin-bottom: 15px;"><div><label class="form-label">Bộ Lọc Nhân Viên</label><select id="filterTaskStaff" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả nhân viên</option></select></div><div><label class="form-label">Trạng Thái</label><select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả</option><option value="Chưa hoàn thành">Đang xử lý</option><option value="Hoàn thành">Đã Xong</option></select></div></div><div id="allTasksContainer"></div></div></section>
+  <section id="page-task-assign" class="page"><div class="container"><div class="title-main">PHÁT HÀNH NHIỆM VỤ TẬP THỂ</div><div id="assignFormContainer" class="grid-2"></div><div style="text-align: center; margin-top: 10px;"><button class="btn btn-outline" style="width: auto; padding: 10px 20px; display: inline-block; font-size: 11px;" onclick="App.addAssignBlock(1)">+ THÊM 1 BLOCK</button></div><div style="margin-top: 20px; max-width: 300px; margin-left: auto; margin-right: auto;"><button class="btn btn-primary" onclick="App.submitAssignTasks()">PHÁT HÀNH TOÀN BỘ</button></div></div></section>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  
   <script src="core.js"></script>
   <script src="module_auth.js"></script>
   <script src="module_tasks.js"></script>
@@ -311,27 +156,26 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const loginPage = document.getElementById("page-login");
-      const header = document.getElementById("mainHeader");
-      const sidebar = document.getElementById("globalSidebar");
 
-      // Đồng bộ hiển thị Header ẩn/hiện tùy thuộc trạng thái Login
-      function handleAuthUI() {
+      // Hàm quản lý class 'is-login' của Body để CSS tự động điều chỉnh Layout
+      function updateBodyState() {
         if (loginPage && loginPage.classList.contains("active")) {
-          if (header) header.style.setProperty("display", "none", "important");
-          if (sidebar) sidebar.classList.remove("open-active");
+          document.body.classList.add("is-login");
         } else {
-          if (header) header.style.setProperty("display", "flex", "important");
+          document.body.classList.remove("is-login");
         }
       }
 
-      handleAuthUI();
+      // Khởi chạy lúc load trang
+      updateBodyState();
 
+      // Theo dõi (Observe) mọi thay đổi Class của trang Login
       if (loginPage) {
-        const observer = new MutationObserver(handleAuthUI);
+        const observer = new MutationObserver(updateBodyState);
         observer.observe(loginPage, { attributes: true, attributeFilter: ["class"] });
       }
 
-      // Đè chức năng điều khiển đóng mở của core.js bằng mô hình Class Độc Lập
+      // Nối lại các hàm mở / đóng Sidebar cho core.js (Nút Hamburger trên Mobile/Tablet)
       window.addEventListener("load", function() {
         if (typeof App !== "undefined") {
           
@@ -346,13 +190,13 @@
             if (sb) sb.classList.remove("open-active");
           };
 
-          // Tự động đóng Sidebar khi bấm đổi trang tính năng thành công
+          // Tự động đóng Sidebar khi bấm menu trên điện thoại
           const originalNav = App.nav;
           if (originalNav) {
             App.nav = function(pageId) {
               const sb = document.getElementById("globalSidebar");
               if (sb) sb.classList.remove("open-active");
-              originalNav(pageId);
+              originalNav(pageId); // Chuyển trang bình thường
             };
           }
         }
