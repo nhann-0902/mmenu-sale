@@ -234,41 +234,41 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const sidebar = document.getElementById("globalSidebar");
+      const header = document.getElementById("mainHeader");
       const loginPage = document.getElementById("page-login");
 
-      // Hàm kiểm tra trạng thái trang Login để quyết định ẩn/hiện Sidebar
-      function checkSidebarVisibility() {
+      // Hàm đồng bộ trạng thái hiển thị của Sidebar & Header dựa trên trạng thái trang Đăng nhập
+      function handleAuthUI() {
         if (loginPage && loginPage.classList.contains("active")) {
-          sidebar.style.setProperty("display", "none", "important");
+          // Khi trang Login đang hiển thị (chưa đăng nhập): Ẩn hoàn toàn và chặn mọi tương tác click chuột
+          if (sidebar) {
+            sidebar.style.setProperty("display", "none", "important");
+            sidebar.style.setProperty("pointer-events", "none", "important");
+          }
+          if (header) {
+            header.style.setProperty("display", "none", "important");
+            header.style.setProperty("pointer-events", "none", "important");
+          }
         } else {
-          sidebar.style.removeProperty("display");
+          // Khi trang Login ẩn đi (đã đăng nhập thành công hoặc đang ở các trang tính năng): Mở khóa giao diện bình thường
+          if (sidebar) {
+            sidebar.style.removeProperty("display");
+            sidebar.style.removeProperty("pointer-events");
+          }
+          if (header) {
+            header.style.removeProperty("display");
+            header.style.removeProperty("pointer-events");
+          }
         }
       }
 
-      // Khởi chạy kiểm tra ngay lập tức khi tải xong DOM
-      checkSidebarVisibility();
+      // Kích hoạt kiểm tra ngay khi trang web được tải
+      handleAuthUI();
 
-      // Sử dụng MutationObserver theo dõi sự thay đổi class của #page-login (khi đăng nhập thành công)
+      // Sử dụng MutationObserver để theo dõi phản ứng thay đổi thuộc tính class của trang login tự động
       if (loginPage) {
-        const observer = new MutationObserver(checkSidebarVisibility);
+        const observer = new MutationObserver(handleAuthUI);
         observer.observe(loginPage, { attributes: true, attributeFilter: ["class"] });
-      }
-
-      // Lớp bảo mật bổ sung: Chặn đứng mọi hành vi điều hướng qua App.nav khi chưa đăng nhập
-      if (typeof App !== "undefined" && App.nav) {
-        const originalNav = App.nav;
-        App.nav = function (pageId) {
-          if (loginPage && loginPage.classList.contains("active") && pageId !== "page-login") {
-            Swal.fire({
-              icon: "warning",
-              title: "Yêu cầu hệ thống",
-              text: "Vui lòng đăng nhập tài khoản trước khi truy cập các tính năng điều hướng!",
-              confirmButtonColor: "#0f172a"
-            });
-            return; // Ngắt luôn lệnh, không cho chuyển trang
-          }
-          originalNav.apply(this, arguments);
-        };
       }
     });
   </script>
