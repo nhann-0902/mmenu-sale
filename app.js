@@ -1,6 +1,6 @@
 // Khởi tạo Supabase Client
-const SUPABASE_URL = 'DÁN_PROJECT_URL_CỦA_BẠN_VÀO_ĐÂY';
-const SUPABASE_ANON_KEY = 'DÁN_PROJECT_API_KEY_CỦA_BẠN_VÀO_ĐÂY';
+const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
