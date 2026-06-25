@@ -75,11 +75,12 @@ Object.assign(window.App, {
                 else dash.task.pending++;
             });
 
-            if(document.getElementById('kpiActualNum')) document.getElementById('kpiActualNum').innerText = this.fmt(dash.kpi.actual); 
-            if(document.getElementById('kpiTargetNum')) document.getElementById('kpiTargetNum').innerText = "Target: " + this.fmt(dash.kpi.target); 
-            let pct = dash.kpi.target > 0 ? Math.round((dash.kpi.actual / dash.kpi.target) * 100) : 0; 
-            if(document.getElementById('kpiPercentNum')) document.getElementById('kpiPercentNum').innerText = pct + "%"; 
-            if(document.getElementById('kpiProgressBar')) setTimeout(() => { document.getElementById('kpiProgressBar').style.width = Math.min(pct, 100) + "%"; }, 200); 
+            // Thay vì: document.getElementById('kpiActualNum').innerText = ...
+// Bạn sửa thành:
+safeSet('kpiActualNum', this.fmt(dash.kpi.actual));
+safeSet('kpiTargetNum', "Target: " + this.fmt(dash.kpi.target));
+safeSet('kpiPercentNum', pct + "%");
+safeStyle('kpiProgressBar', 'width', Math.min(pct, 100) + "%"); 
             
             // Fix lỗi khởi tạo biểu đồ
             this.chartInstances = this.chartInstances || {};
