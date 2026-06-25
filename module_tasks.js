@@ -28,7 +28,8 @@ Object.assign(window.App, {
                 let isOverdue = (rawTime > 0 && rawTime < new Date().getTime() && t.status !== "Hoàn thành");
                 return {
                     id: t.id, ngayGiao: formatDateStr(t.created_at), nguoiGiao: t.giver || '', nguoiNhan: t.receiver || '',
-                    noiDung: t.content || '', thoiHan: formatDateStr(t.deadline), trangThai: t.status || 'Chưa hoàn thành', isOverdue: isOverdue
+                    noiDung: t.content || '', thoiHan: formatDateStr(t.deadline), trangThai: t.status || 'Chưa hoàn thành', 
+                    isOverdue: isOverdue, rawCreatedAt: t.created_at
                 };
             });
             this.renderAllTasks();
@@ -42,12 +43,22 @@ Object.assign(window.App, {
     renderAllTasks() {
         const elStaff = document.getElementById('filterTaskStaff');
         const elStatus = document.getElementById('filterTaskStatus');
+        const elSort = document.getElementById('filterTaskSort');
+        
         let fStaff = elStaff ? elStaff.value : 'ALL';
         let fStatus = elStatus ? elStatus.value : 'ALL';
+        let fSort = elSort ? elSort.value : 'DESC';
         
         let filteredList = this.allTasksList.filter(t => { 
           return ((fStaff === 'ALL') || (t.nguoiNhan === fStaff || t.nguoiGiao === fStaff)) && 
                  ((fStatus === 'ALL') || (t.trangThai === fStatus)); 
+        });
+
+        // Xử lý bộ lọc sắp xếp thời gian
+        filteredList.sort((a, b) => {
+            let timeA = new Date(a.rawCreatedAt).getTime();
+            let timeB = new Date(b.rawCreatedAt).getTime();
+            return fSort === 'ASC' ? (timeA - timeB) : (timeB - timeA);
         });
 
         let h = '';
@@ -55,9 +66,16 @@ Object.assign(window.App, {
           let isDone = t.trangThai === 'Hoàn thành'; 
           let borderClass = isDone ? 'task-done' : (t.isOverdue ? 'task-alert-overdue' : 'task-normal'); 
           let statusColor = isDone ? 'var(--success)' : 'var(--warning)';
+          
+          // Xử lý rút ngắn text hiển thị ~100 ký tự
+          let shortText = t.noiDung.length > 100 ? t.noiDung.substring(0, 100) + "..." : t.noiDung;
+          
           h += `
             <div class="card ${borderClass}" style="padding: 12px; margin-bottom: 12px;">
-              <div style="font-weight: 800; font-size: 13px; color: var(--primary); margin-bottom: 8px;">${t.noiDung}</div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div style="font-weight: 800; font-size: 13px; color: var(--primary); padding-right: 15px;">${shortText}</div>
+                <i class="fa-solid fa-eye" style="color: var(--accent); cursor: pointer; font-size: 16px; padding: 5px; background: rgba(59,130,246,0.1); border-radius: 6px; flex-shrink: 0;" onclick="App.viewTaskDetail('${t.id}')" title="Xem chi tiết"></i>
+              </div>
               <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed var(--border); padding-top: 8px;">
                 <div style="font-size: 10px; color: var(--text-light);">Giao bởi: <b>${t.nguoiGiao}</b> ➔ <b>${t.nguoiNhan}</b><br><span style="color:${statusColor}; font-weight:800;">${t.trangThai.toUpperCase()}</span></div>
                 <div style="text-align: right;"><span style="font-size:9px; color:var(--text-light); display:block;">Tạo: ${t.ngayGiao}</span><span style="font-size:10px; color:var(--danger); font-weight:700;">Hạn: ${t.thoiHan}</span></div>
@@ -66,6 +84,23 @@ Object.assign(window.App, {
         });
         
         safeSet('allTasksContainer', h || '<div style="text-align:center; padding: 20px; font-style:italic; color: var(--text-light);">Không tìm thấy nhiệm vụ nào.</div>', 'html');
+    },
+
+    // Hàm hiển thị Popup Chi tiết
+    viewTaskDetail(id) {
+        let task = this.allTasksList.find(t => String(t.id) === String(id));
+        if (task) {
+            safeSet('taskDetailContent', task.noiDung);
+            const modal = document.getElementById('taskDetailPopup');
+            if(modal) modal.classList.add('active');
+        }
+    },
+    
+    // Hàm đóng Popup
+    closeTaskDetail(e) {
+        if (e && e.target && e.target.id !== 'taskDetailPopup') return; 
+        const modal = document.getElementById('taskDetailPopup');
+        if(modal) modal.classList.remove('active');
     },
 
     async addAssignBlock(count) {
