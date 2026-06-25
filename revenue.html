@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doanh Thu & Công Nợ - MMENU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="glass-header">
+            <div class="header-content">
+                <h2>
+                    <a href="index.html" style="color: inherit; text-decoration: none; margin-right: 10px;">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </a>
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Doanh Thu & Công Nợ
+                </h2>
+                <div class="user-info">Cấp Quản Lý</div>
+            </div>
+        </header>
+
+        <main class="fade-in-up">
+            <div class="card">
+                <h3><i class="fa-solid fa-file-signature"></i> Tạo Hợp Đồng / Doanh Thu Mới</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    
+                    <input type="date" id="rev-date" class="form-control" title="Ngày giao dịch">
+                    <input type="text" id="rev-customer" placeholder="Tên khách hàng" class="form-control">
+                    <select id="rev-source" class="form-control">
+                        <option value="">-- Chọn nguồn khách --</option>
+                        <option value="Tự tìm">Tự tìm</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Giới thiệu">Giới thiệu</option>
+                    </select>
+                    <select id="rev-type" class="form-control">
+                        <option value="">-- Loại hợp đồng --</option>
+                        <option value="Phần mềm">Phần mềm</option>
+                        <option value="Phần cứng">Phần cứng</option>
+                        <option value="Combo">Combo</option>
+                        <option value="Gia hạn">Gia hạn</option>
+                    </select>
+
+                    <div style="grid-column: 1 / -1; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <h4 style="margin-bottom: 10px; color: #475569;">Cơ cấu doanh thu (VNĐ)</h4>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <input type="number" id="rev-software" placeholder="DT Phần mềm" class="form-control calc-input" style="flex: 1;" min="0">
+                            <input type="number" id="rev-hardware" placeholder="DT Phần cứng" class="form-control calc-input" style="flex: 1;" min="0">
+                            <input type="number" id="rev-other" placeholder="DT Khác" class="form-control calc-input" style="flex: 1;" min="0">
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                            <input type="number" id="rev-paid" placeholder="Đã thanh toán (Thực thu)" class="form-control calc-input" style="flex: 1;" min="0">
+                        </div>
+
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px dashed #cbd5e1; display: flex; justify-content: space-between; font-size: 16px;">
+                            <div><strong>Tổng Hợp Đồng: </strong><span id="label-total" style="color: #047857;">0</span> VNĐ</div>
+                            <div><strong>Công Nợ: </strong><span id="label-debt" style="color: #b91c1c;">0</span> VNĐ</div>
+                        </div>
+                    </div>
+
+                    <div style="grid-column: 1 / -1; display: flex; justify-content: flex-end;">
+                        <button id="btn-submit-rev" class="btn-primary" style="padding: 12px 30px;"><i class="fa-solid fa-check"></i> Chốt Doanh Thu</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Lịch sử giao dịch</h3>
+                    <button id="btn-refresh-rev" class="btn-secondary"><i class="fa-solid fa-rotate-right"></i> Làm mới</button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Khách hàng</th>
+                                <th>Loại HĐ</th>
+                                <th>Tổng tiền</th>
+                                <th>Thực thu</th>
+                                <th>Công nợ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rev-table-body">
+                            <tr><td colspan="6" style="text-align: center;">Đang tải dữ liệu...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="revenue.js"></script>
+</body>
+</html>
