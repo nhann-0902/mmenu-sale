@@ -242,7 +242,7 @@ Object.assign(window.App, {
             const { error } = await supabaseClient.from('data_tasks').insert(tasksToAssign);
             if(error) throw error;
 
-            let msg = `📌 <b>PHÁT HÀNH NHIỆM VỤ MỚI</b>\n`;
+            let msg = `📌 <b>NHIỆM VỤ MỚI</b>\n`;
             msg += `👤 Người giao: <b>${this.user}</b>\n`;
             msg += `📋 Số lượng: ${tasksToAssign.length} nhiệm vụ\n`;
             tasksToAssign.forEach((t, i) => {
