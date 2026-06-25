@@ -133,6 +133,14 @@ Object.assign(window.App, {
                   
                   if (error) throw error;
                   
+                  let msg = `✅ <b>NGHIỆM THU NHIỆM VỤ</b>\n`;
+                  msg += `👤 Nhân sự: <b>${this.user}</b>\n`;
+                  msg += `🎉 Vừa đánh dấu HOÀN THÀNH ${idsToComplete.length} nhiệm vụ từ Kho.`;
+                  
+                  if (typeof this.sendTelegram === 'function') {
+                      this.sendTelegram(msg);
+                  }
+
                   this.showPopup(`Tuyệt vời! Đã nghiệm thu ${idsToComplete.length} nhiệm vụ.`, true);
                   this.loadAllTasks(); 
               } catch (err) {
@@ -233,6 +241,19 @@ Object.assign(window.App, {
         try {
             const { error } = await supabaseClient.from('data_tasks').insert(tasksToAssign);
             if(error) throw error;
+
+            let msg = `📌 <b>PHÁT HÀNH NHIỆM VỤ MỚI</b>\n`;
+            msg += `👤 Người giao: <b>${this.user}</b>\n`;
+            msg += `📋 Số lượng: ${tasksToAssign.length} nhiệm vụ\n`;
+            tasksToAssign.forEach((t, i) => {
+                let shortCon = t.content.length > 50 ? t.content.substring(0, 50) + "..." : t.content;
+                msg += `\n${i+1}. Giao cho <b>${t.receiver}</b> (Hạn: ${t.deadline || 'Không'}):\n👉 ${shortCon}`;
+            });
+            
+            if (typeof this.sendTelegram === 'function') {
+                this.sendTelegram(msg);
+            }
+
             this.showPopup("Phát hành thành công " + tasksToAssign.length + " nhiệm vụ!", true); 
             this.nav('page-task-list'); 
         } catch(error) {
