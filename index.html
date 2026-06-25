@@ -10,38 +10,17 @@
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* 1. Triệt tiêu khoảng trống cố định bên trái của file style.css cũ (nếu có) */
-    body {
+    /* 1. Reset layout đè lên style.css để triệt tiêu khoảng trống cố định bên trái trên PC */
+    body, html {
       padding-left: 0 !important;
       margin-left: 0 !important;
       display: block !important;
-      background-color: var(--bg, #f8fafc);
+      background-color: var(--bg, #f8fafc) !important;
     }
 
-    /* 2. Ép thanh điều hướng luôn là dạng Overlay nổi lên trên, không chiếm diện tích ngang của PC */
-    #globalSidebar {
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100vw !important;
-      height: 100vh !important;
-      z-index: 99999 !important;
-      background-color: rgba(0, 0, 0, 0.4) !important; /* Làm mờ nền phía sau khi menu mở */
-    }
-
-    /* Giữ độ rộng cố định cho menu trượt bên trong */
-    #globalSidebar .sidebar-menu {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      height: 100% !important;
-      width: 260px !important;
-      box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15) !important;
-    }
-
-    /* 3. Ép thanh Header và tất cả các Container nội dung luôn ở CHÍNH GIỮA màn hình */
+    /* 2. Ép Thanh tiêu đề và Nội dung các trang luôn nằm CHÍNH GIỮA màn hình */
     #mainHeader, .container {
-      max-width: 1200px !important; /* Độ rộng hiển thị tiêu chuẩn tối đa trên màn hình lớn */
+      max-width: 1200px !important; /* Độ rộng hiển thị tối đa trên màn hình lớn */
       margin-left: auto !important;
       margin-right: auto !important;
       width: 100% !important;
@@ -49,7 +28,38 @@
     }
 
     #mainHeader {
+      display: none; /* Mặc định ẩn, sẽ được JS điều khiển hiển thị sau khi login thành công */
       padding: 15px 20px !important;
+    }
+
+    /* 3. Ép thanh điều hướng LUÔN ẨN TUYỆT ĐỐI khi ở trạng thái đóng (Sửa lỗi tối màn hình ở ảnh 2) */
+    #globalSidebar {
+      display: none !important;
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      z-index: 99999 !important;
+      background-color: rgba(0, 0, 0, 0.5) !important; /* Lớp nền tối chỉ xuất hiện khi mở menu */
+    }
+
+    /* 4. CHỈ hiển thị dạng Overlay trượt lên trên khi có class kích hoạt từ nút 3 gạch */
+    #globalSidebar.sidebar-js-open {
+      display: block !important;
+    }
+
+    /* Giữ form menu bên trong cố định 260px đổ bóng từ cạnh trái */
+    #globalSidebar .sidebar-menu {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      height: 100% !important;
+      width: 260px !important;
+      box-shadow: 5px 0 25px rgba(0, 0, 0, 0.2) !important;
+      background: #fff !important;
+      display: flex !important;
+      flex-direction: column !important;
     }
   </style>
 </head>
@@ -65,9 +75,9 @@
     </div>
   </div>
 
-  <header class="header" id="mainHeader" style="display: none;">
+  <header class="header" id="mainHeader">
     <div style="display: flex; align-items: center;">
-      <i class="fa-solid fa-bars hamburger" onclick="App.openSidebar()" style="cursor: pointer; font-size: 20px;"></i>
+      <i class="fa-solid fa-bars hamburger" onclick="App.openSidebar()" style="cursor: pointer; font-size: 18px; padding: 5px;"></i>
       <span class="hamburger" style="font-weight: 900; font-size: 16px; margin-left: 15px;">MMENU SALE</span>
     </div>
     <div style="display: flex; align-items: center; gap: 10px;">
@@ -76,7 +86,7 @@
     </div>
   </header>
 
-  <div id="globalSidebar" class="sidebar-overlay" onclick="App.closeSidebar(event)" style="display: none;">
+  <div id="globalSidebar" class="sidebar-overlay" onclick="App.closeSidebar(event)">
     <div class="sidebar-menu" onclick="event.stopPropagation()">
       <div style="text-align: left; font-size: 18px; color: var(--accent); font-weight: 900; margin-bottom: 25px; padding-left: 10px;"><i class="fa-solid fa-bolt"></i> MMENU SALE</div>
       <div style="font-size: 9px; font-weight: 800; color: var(--text-light); margin-bottom: 8px; padding-left: 10px; letter-spacing: 0.5px;">MENU CHÍNH</div>
@@ -277,31 +287,54 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const sidebar = document.getElementById("globalSidebar");
-      const header = document.getElementById("mainHeader");
       const loginPage = document.getElementById("page-login");
+      const header = document.getElementById("mainHeader");
+      const sidebar = document.getElementById("globalSidebar");
 
+      // 1. Quản lý hiển thị Header dựa trên trạng thái Đăng nhập
       function handleAuthUI() {
         if (loginPage && loginPage.classList.contains("active")) {
-          // Khóa cứng ẩn cả Header lẫn Sidebar nếu chưa đăng nhập
-          if (sidebar) sidebar.style.setProperty("display", "none", "important");
           if (header) header.style.setProperty("display", "none", "important");
+          if (sidebar) sidebar.classList.remove("sidebar-js-open");
         } else {
-          // Khi đã đăng nhập xong: Giải phóng quyền ẩn hiển Sidebar về cho core.js (bấm 3 gạch mới hiện)
-          if (sidebar) sidebar.style.removeProperty("display");
-          // Hiện thanh tiêu đề chứa nút menu 3 gạch ra giữa màn hình
           if (header) header.style.setProperty("display", "flex", "important");
         }
       }
 
-      // Chạy kiểm tra ngay lập tức khi tải trang xong
       handleAuthUI();
 
-      // Theo dõi biến đổi class của form đăng nhập để tự động mở khóa giao diện
       if (loginPage) {
         const observer = new MutationObserver(handleAuthUI);
         observer.observe(loginPage, { attributes: true, attributeFilter: ["class"] });
       }
+
+      // 2. Đợi tất cả file JS core chạy xong, thực hiện ghi đè hành vi đóng/mở sidebar sang dạng quản lý bằng Class
+      window.addEventListener("load", function() {
+        if (typeof App !== "undefined") {
+          
+          // Ghi đè hàm mở Sidebar từ core.js
+          App.openSidebar = function() {
+            const sb = document.getElementById("globalSidebar");
+            if (sb) sb.classList.add("sidebar-js-open");
+          };
+          
+          // Ghi đè hàm đóng Sidebar từ core.js
+          App.closeSidebar = function(event) {
+            if (event) event.stopPropagation();
+            const sb = document.getElementById("globalSidebar");
+            if (sb) sb.classList.remove("sidebar-js-open");
+          };
+
+          // Tự động đóng Sidebar mỗi khi thực hiện chuyển trang tính năng
+          const originalNav = App.nav;
+          if (originalNav) {
+            App.nav = function(pageId) {
+              App.closeSidebar();
+              originalNav(pageId);
+            };
+          }
+        }
+      });
     });
   </script>
 </body>
