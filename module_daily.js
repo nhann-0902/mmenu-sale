@@ -87,14 +87,18 @@ Object.assign(window.App, {
           bg: d_bg ? d_bg.value : 0,
           tc: d_tc ? d_tc.value : 0, 
           completedTaskIds: [], 
-          taskNotes: ""
+          taskNotes: "",
+          completedTaskDetails: [] // Mảng mới để lưu text ném qua Telegram
         };
 
+        // Giữ nguyên logic lặp lấy dữ liệu của bạn
         document.querySelectorAll('.task-item').forEach(item => {
            const cb = item.querySelector('.task-check');
            if(cb && cb.checked) {
                p.completedTaskIds.push(cb.value); 
-               p.taskNotes += "Xong: " + item.querySelector('.task-content').getAttribute('data-text') + " | ";
+               let txt = item.querySelector('.task-content').getAttribute('data-text');
+               p.taskNotes += "Xong: " + txt + " | ";
+               p.completedTaskDetails.push(txt); // Lưu nội dung chi tiết
            }
         });
 
@@ -110,6 +114,34 @@ Object.assign(window.App, {
                 const { error: err2 } = await supabaseClient.from('data_tasks')
                     .update({ status: 'Hoàn thành', updated_at: new Date().toISOString() }).in('id', p.completedTaskIds);
                 if(err2) throw err2;
+            }
+
+            // FORMAT TELEGRAM ĐÚNG CHUẨN YÊU CẦU CỦA BẠN
+            let msg = `<b>BÁO CÁO NGÀY [${p.date}]</b>\n`;
+            msg += `_________________\n`;
+            msg += `Tên: ${p.userFullName}\n`;
+            msg += `_________________\n`;
+            msg += `__report lead__\n`;
+            msg += `__Total lead: [${p.tong}]__\n`;
+            msg += `__Lead nhận: [${p.nhan}]__\n`;
+            msg += `__Tự tìm: [${p.tu}]__\n`;
+            msg += `__Tiềm năng: [${p.tn}]__\n`;
+            msg += `__Demo/gặp: [${p.dm}]__\n`;
+            msg += `__Báo giá: [${p.bg}]__\n`;
+            msg += `__Từ chối: [${p.tc}]__\n`;
+            msg += `*****************\n`;
+            msg += `__task done__\n`;
+
+            if (p.completedTaskDetails.length > 0) {
+                p.completedTaskDetails.forEach((txt, idx) => {
+                    let taskNum = (idx + 1).toString().padStart(2, '0');
+                    msg += `Task ${taskNum}: __${txt}__\n         __${p.date}__\n`;
+                });
+            }
+
+            // Gửi Telegram
+            if (typeof this.sendTelegram === 'function') {
+                this.sendTelegram(msg);
             }
 
             document.querySelectorAll('.daily-input').forEach(el => el.value = ''); 
