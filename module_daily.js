@@ -88,17 +88,16 @@ Object.assign(window.App, {
           tc: d_tc ? d_tc.value : 0, 
           completedTaskIds: [], 
           taskNotes: "",
-          completedTaskDetails: [] // Mảng mới để lưu text ném qua Telegram
+          completedTaskDetails: [] 
         };
 
-        // Giữ nguyên logic lặp lấy dữ liệu của bạn
         document.querySelectorAll('.task-item').forEach(item => {
            const cb = item.querySelector('.task-check');
            if(cb && cb.checked) {
                p.completedTaskIds.push(cb.value); 
                let txt = item.querySelector('.task-content').getAttribute('data-text');
                p.taskNotes += "Xong: " + txt + " | ";
-               p.completedTaskDetails.push(txt); // Lưu nội dung chi tiết
+               p.completedTaskDetails.push(txt); 
            }
         });
 
@@ -116,7 +115,6 @@ Object.assign(window.App, {
                 if(err2) throw err2;
             }
 
-            // FORMAT TELEGRAM ĐÚNG CHUẨN YÊU CẦU CỦA BẠN
             let msg = `<b>BÁO CÁO NGÀY [${p.date}]</b>\n`;
             msg += `_________________\n`;
             msg += `Tên: ${p.userFullName}\n`;
@@ -139,7 +137,6 @@ Object.assign(window.App, {
                 });
             }
 
-            // Gửi Telegram
             if (typeof this.sendTelegram === 'function') {
                 this.sendTelegram(msg);
             }
