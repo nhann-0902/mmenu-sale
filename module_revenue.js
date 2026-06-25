@@ -10,11 +10,26 @@ Object.assign(window.App, {
         let ot = otEl ? Number(otEl.value) : 0;
         let total = pm + pc + ot; 
         let paid = paidEl ? Number(paidEl.value) : 0; 
+        
+        // Công nợ = Tổng - Đã thanh toán
         let debt = total - paid;
         
         safeSet('displayTotal', this.fmtFull(total));
-        safeSet('displayDebt', this.fmtFull(debt));
-        safeStyle('debtSection', 'display', debt > 0 ? 'block' : 'none');
+        
+        // Cập nhật số tiền Âm/Dương và đổi màu
+        let debtStr = this.fmtFull(debt);
+        const debtEl = document.getElementById('displayDebt');
+        if (debtEl) {
+            if (debt > 0) {
+                debtStr = "+" + debtStr; // Nợ dương
+                debtEl.style.color = 'var(--danger)'; // Màu đỏ
+            } else if (debt < 0) {
+                debtEl.style.color = 'var(--warning)'; // Âm (Trả dư) -> Màu cam
+            } else {
+                debtEl.style.color = 'var(--success)'; // Khớp (0đ) -> Màu xanh
+            }
+        }
+        safeSet('displayDebt', debtStr);
         
         return { total, debt, paid, pm, pc, ot };
     },
@@ -29,13 +44,15 @@ Object.assign(window.App, {
         let date = dateEl ? dateEl.value : ''; 
         let type = (typeEl && typeEl.value) ? typeEl.value : 'Không phân loại'; 
         
+        let debtColor = c.debt > 0 ? 'var(--danger)' : (c.debt < 0 ? 'var(--warning)' : 'var(--success)');
+        
         let htmlStr = ` 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Ngày GD:</span> <b>${date}</b></div> 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Tên khách/đối tác:</span> <b style="color:var(--primary); text-transform:uppercase;">${name}</b></div> 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Loại Hợp đồng:</span> <b>${type}</b></div> 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0; margin-top: 10px;"><span style="color:var(--text-light);">Tổng HĐ:</span> <b style="color:var(--accent); font-size:14px;">${this.fmtFull(c.total)}</b></div> 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Đã thanh toán:</span> <b style="color:var(--success); font-size:14px;">${this.fmtFull(c.paid)}</b></div> 
-          <div style="display:flex; justify-content:space-between; padding:6px 0; margin-top: 10px;"><span style="color:var(--danger); font-weight:800;">Công nợ còn lại:</span> <b style="color:var(--danger); font-size:14px;">${this.fmtFull(c.debt)}</b></div> 
+          <div style="display:flex; justify-content:space-between; padding:6px 0; margin-top: 10px;"><span style="font-weight:800; color:${debtColor};">Công nợ (Âm/Dương):</span> <b style="color:${debtColor}; font-size:14px;">${this.fmtFull(c.debt)}</b></div> 
         `; 
         safeSet('revConfirmStats', htmlStr, 'html');
     },
