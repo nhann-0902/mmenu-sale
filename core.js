@@ -2,8 +2,9 @@ const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const TELEGRAM_BOT_TOKEN = 'ĐIỀN_TOKEN_BOT_CỦA_BẠN_VÀO_ĐÂY'; 
-const TELEGRAM_CHAT_ID = 'ĐIỀN_CHAT_ID_CỦA_BẠN_VÀO_ĐÂY'; 
+// ĐÃ ĐIỀN THÔNG TIN CẤU HÌNH TELEGRAM CỦA BẠN VÀO ĐÂY
+const TELEGRAM_BOT_TOKEN = '8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c'; 
+const TELEGRAM_CHAT_ID = '-5308795881'; 
 
 function formatDateStr(dateStr) {
     if(!dateStr) return '-';
@@ -11,6 +12,7 @@ function formatDateStr(dateStr) {
     return d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
 }
 
+// Hàm bảo hiểm: Tránh lỗi null khi load HTML chậm
 window.safeSet = (id, value, type = 'text') => {
     const el = document.getElementById(id);
     if (el) {
