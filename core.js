@@ -1,3 +1,4 @@
+// Khởi tạo Supabase Client
 const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -92,6 +93,10 @@ window.App = {
       
       const elType = document.getElementById('r_type');
       if(elType) elType.innerHTML = `<option value="">Chọn loại...</option>` + this.typeList.map(x => `<option value="${x}">${x}</option>`).join('');
+
+      if (typeof this.checkSession === 'function') {
+          this.checkSession();
+      }
     }
 };
 
