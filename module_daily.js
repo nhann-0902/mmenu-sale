@@ -10,7 +10,7 @@ Object.assign(window.App, {
                 .order('deadline', { ascending: true });
             if(error) throw error;
 
-            this.tasks = data.map(t => {
+            this.tasks = (data || []).map(t => {
                 let rawTime = t.deadline ? new Date(t.deadline).getTime() : 0;
                 let isOverdue = (rawTime > 0 && rawTime < new Date().getTime());
                 let formattedDate = t.deadline ? new Date(t.deadline).toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'}) : '-';
@@ -33,8 +33,7 @@ Object.assign(window.App, {
                   </div>`; 
             }); 
             
-            const container = document.getElementById('dailyTaskList');
-            if(container) container.innerHTML = html || '<div style="text-align:center; font-style:italic; font-size:12px; color:var(--text-light);">Bạn đã dọn dẹp sạch sẽ task cá nhân!</div>'; 
+            safeSet('dailyTaskList', html || '<div style="text-align:center; font-style:italic; font-size:12px; color:var(--text-light);">Bạn đã dọn dẹp sạch sẽ task cá nhân!</div>', 'html'); 
         } catch(error) {
             console.error(error);
         } finally {
@@ -52,9 +51,7 @@ Object.assign(window.App, {
           let val = el ? el.value : 0; 
           htmlStats += `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">${labels[idx]}</span> <b style="color:var(--primary)">${val}</b></div>`; 
         }); 
-        
-        const statsContainer = document.getElementById('dailyConfirmStats');
-        if(statsContainer) statsContainer.innerHTML = htmlStats; 
+        safeSet('dailyConfirmStats', htmlStats, 'html'); 
         
         let taskHtml = ''; let countDone = 0; 
         document.querySelectorAll('.task-item').forEach(item => { 
@@ -66,22 +63,29 @@ Object.assign(window.App, {
           } 
         });
         if(countDone === 0) taskHtml = `<div style="text-align:center; font-size:11px; color:var(--text-light); font-style:italic;">Bạn chưa hoàn thành nhiệm vụ nào.</div>`; 
-        
-        const taskContainer = document.getElementById('dailyConfirmTasksList');
-        if(taskContainer) taskContainer.innerHTML = taskHtml;
+        safeSet('dailyConfirmTasksList', taskHtml, 'html');
     },
 
     async submitDaily() { 
+        let d_date = document.getElementById('d_date');
+        let d_tong = document.getElementById('d_tong');
+        let d_nhan = document.getElementById('d_nhan');
+        let d_tu = document.getElementById('d_tu');
+        let d_tn = document.getElementById('d_tn');
+        let d_dm = document.getElementById('d_dm');
+        let d_bg = document.getElementById('d_bg');
+        let d_tc = document.getElementById('d_tc');
+        
         let p = {
-          date: document.getElementById('d_date') ? document.getElementById('d_date').value : '',
+          date: d_date ? d_date.value : '',
           userFullName: this.user,
-          tong: document.getElementById('d_tong') ? document.getElementById('d_tong').value : 0, 
-          nhan: document.getElementById('d_nhan') ? document.getElementById('d_nhan').value : 0,
-          tu: document.getElementById('d_tu') ? document.getElementById('d_tu').value : 0, 
-          tn: document.getElementById('d_tn') ? document.getElementById('d_tn').value : 0,
-          dm: document.getElementById('d_dm') ? document.getElementById('d_dm').value : 0, 
-          bg: document.getElementById('d_bg') ? document.getElementById('d_bg').value : 0,
-          tc: document.getElementById('d_tc') ? document.getElementById('d_tc').value : 0, 
+          tong: d_tong ? d_tong.value : 0, 
+          nhan: d_nhan ? d_nhan.value : 0,
+          tu: d_tu ? d_tu.value : 0, 
+          tn: d_tn ? d_tn.value : 0,
+          dm: d_dm ? d_dm.value : 0, 
+          bg: d_bg ? d_bg.value : 0,
+          tc: d_tc ? d_tc.value : 0, 
           completedTaskIds: [], 
           taskNotes: ""
         };
