@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
   <div id="globalLoading" class="loading-screen"><div class="spinner"></div><div style="font-weight: 800; color: var(--primary); letter-spacing: 1px; font-size: 11px;">ĐANG XỬ LÝ...</div></div>
   <div id="customPopup" class="custom-popup-overlay">
     <div class="custom-popup-card">
@@ -34,11 +35,13 @@
   <div id="globalSidebar" class="sidebar-overlay" onclick="App.closeSidebar(event)">
     <div class="sidebar-menu" onclick="event.stopPropagation()">
       <div style="text-align: left; font-size: 18px; color: var(--accent); font-weight: 900; margin-bottom: 25px; padding-left: 10px;"><i class="fa-solid fa-bolt"></i> MMENU SALE</div>
+      <div style="font-size: 9px; font-weight: 800; color: var(--text-light); margin-bottom: 8px; padding-left: 10px; letter-spacing: 0.5px;">MENU CHÍNH</div>
       <div class="menu-item active" onclick="App.nav('page-launchpad')"><i class="fa-solid fa-house"></i> Trang chủ</div>
       <div class="menu-item" onclick="App.nav('page-dashboard')"><i class="fa-solid fa-chart-pie"></i> Tổng quan</div>
       <div class="menu-item" onclick="App.nav('page-daily')"><i class="fa-solid fa-pen-to-square"></i> Báo cáo ngày</div>
       <div class="menu-item" onclick="App.nav('page-revenue')"><i class="fa-solid fa-money-bill-trend-up"></i> Báo cáo doanh thu</div>
       <div class="menu-item" onclick="App.nav('page-task-list')"><i class="fa-solid fa-list-check"></i> Kho nhiệm vụ</div>
+      <div style="border-top: 1px solid var(--border); margin: 15px 10px;"></div>
       <div class="menu-item" style="color: var(--danger);" onclick="App.logout()"><i class="fa-solid fa-power-off"></i> Đăng xuất</div>
     </div>
   </div>
@@ -61,8 +64,5 @@
   <script src="module_daily.js" defer></script>
   <script src="module_revenue.js" defer></script>
   <script src="module_dashboard.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="core.js" defer></script>
 </body>
 </html>
