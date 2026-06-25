@@ -12,11 +12,11 @@ Object.assign(window.App, {
                 this.scheduleDates.push(d.toISOString().split('T')[0]);
             }
 
-            // 2. Kéo danh sách nhân sự & sắp xếp A-Z
+            // 2. Kéo danh sách nhân sự
             let staff = await this.getDbStaffList();
             staff.sort((a, b) => a.localeCompare(b, 'vi')); 
 
-            // 3. Kéo dữ liệu lịch từ Database
+            // 3. Kéo dữ liệu lịch hiện tại từ Database
             const { data, error } = await supabaseClient
                 .from('data_schedule')
                 .select('*')
@@ -38,7 +38,7 @@ Object.assign(window.App, {
                         <table class="sched-table">
                             <thead><tr><th class="sched-row-label">Ca</th>`;
                 
-                // In tiêu đề ngày (VD: 25/06)
+                // Tiêu đề ngày
                 this.scheduleDates.forEach(d => {
                     let parts = d.split('-');
                     html += `<th>${parts[2]}/${parts[1]}</th>`;
@@ -67,13 +67,13 @@ Object.assign(window.App, {
             safeSet('scheduleContainer', html, 'html');
 
         } catch (err) {
+            console.error("LỖI TẢI LỊCH: ", err);
             this.showPopup("Lỗi tải lịch làm việc!", false);
         } finally {
             this.hideL();
         }
     },
 
-    // Xử lý Click vòng lặp: Rỗi -> Demo -> Bận -> Rỗi
     toggleSchedule(cell) {
         let current = cell.innerText.trim().toLowerCase();
         let nextStatus = 'Rỗi'; let newClass = 'sched-roi';
@@ -86,13 +86,14 @@ Object.assign(window.App, {
         cell.className = `sched-cell ${newClass}`;
     },
 
-    // Lưu toàn bộ dữ liệu đang hiển thị lên DB
+    // Hàm lưu vào Supabase
     async saveSchedule() {
         this.showL();
         try {
             let cells = document.querySelectorAll('.sched-cell');
             let updates = {};
 
+            // Gom nhóm dữ liệu trên màn hình lại
             cells.forEach(c => {
                 let staff = c.getAttribute('data-staff');
                 let date = c.getAttribute('data-date');
@@ -104,14 +105,23 @@ Object.assign(window.App, {
                 updates[key][shift] = status;
             });
 
-            // Upsert (Cập nhật nếu đã có, Thêm mới nếu chưa)
+            let dataToSave = Object.values(updates);
+            if (dataToSave.length === 0) {
+                this.showPopup("Không có dữ liệu để lưu!", false);
+                this.hideL();
+                return;
+            }
+
+            // Gửi dữ liệu lên DB (Cập nhật nếu đã có, Thêm mới nếu chưa)
             const { error } = await supabaseClient
                 .from('data_schedule')
-                .upsert(Object.values(updates), { onConflict: 'staff_name, date' });
+                .upsert(dataToSave, { onConflict: 'staff_name,date' });
 
             if (error) throw error;
-            this.showPopup("Đã lưu lịch làm việc thành công!", true);
+            
+            this.showPopup("Đã lưu lịch làm việc thành công vào Supabase!", true);
         } catch(err) {
+            console.error("LỖI LƯU LỊCH:", err);
             this.showPopup("Lỗi lưu lịch: " + err.message, false);
         } finally {
             this.hideL();
