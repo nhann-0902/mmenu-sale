@@ -12,12 +12,27 @@
 <body>
 
   <div id="globalLoading" class="loading-screen"><div class="spinner"></div><div style="font-weight: 800; color: var(--primary); letter-spacing: 1px; font-size: 11px;">ĐANG XỬ LÝ...</div></div>
+  
   <div id="customPopup" class="custom-popup-overlay">
     <div class="custom-popup-card">
       <div id="popupIcon" style="font-size: 40px; color: var(--info); margin-bottom: 15px;"></div>
       <div id="popupTitle" style="font-weight: 800; font-size: 16px; margin-bottom: 10px; color: var(--primary);">THÔNG BÁO</div>
       <div id="popupMessage" style="font-size: 13px; color: var(--text-light); margin-bottom: 25px; line-height:1.5;">Nội dung</div>
       <button class="btn btn-primary" onclick="App.closePopup()">ĐÓNG VÀ TRỞ LẠI</button>
+    </div>
+  </div>
+
+  <div id="taskDetailPopup" class="custom-popup-overlay" onclick="App.closeTaskDetail(event)">
+    <div class="custom-popup-card" style="max-width: 500px; text-align: left; padding: 25px;" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
+        <div style="font-weight: 900; font-size: 15px; color: var(--primary); text-transform: uppercase;"><i class="fa-solid fa-list-check" style="color:var(--accent); margin-right:8px;"></i>CHI TIẾT NHIỆM VỤ</div>
+        <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 20px; color: var(--danger);" onclick="App.closeTaskDetail()"></i>
+      </div>
+      <div id="taskDetailContent" style="font-size: 13px; color: var(--text); line-height: 1.6; white-space: pre-wrap; margin-bottom: 20px; max-height: 60vh; overflow-y: auto;">
+        </div>
+      <div style="text-align: right;">
+        <button class="btn btn-outline" style="width: auto; padding: 10px 25px; display: inline-block; font-size: 12px;" onclick="App.closeTaskDetail()">ĐÓNG</button>
+      </div>
     </div>
   </div>
 
@@ -59,37 +74,15 @@
         <div class="card">
           <div class="form-group" style="margin-bottom: 15px;"><label class="form-label">NGÀY BÁO CÁO</label><input type="date" id="d_date" class="form-control default-today"></div>
           <div class="form-label" style="font-size:11px; margin-bottom: 15px; color: var(--primary); text-align: center;">CHỈ SỐ LEAD TRONG NGÀY</div>
-          
           <div style="border: 1px solid var(--border); border-radius: 8px; background: #fff; padding: 15px;">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px 20px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;">
-                <label class="form-label" style="margin:0;">Tổng Lead</label>
-                <input type="number" id="d_tong" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;">
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;">
-                <label class="form-label" style="margin:0;">Tiềm năng</label>
-                <input type="number" id="d_tn" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;">
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;">
-                <label class="form-label" style="margin:0;">Lead nhận</label>
-                <input type="number" id="d_nhan" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;">
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;">
-                <label class="form-label" style="margin:0;">Demo/Gặp</label>
-                <input type="number" id="d_dm" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;">
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;">
-                <label class="form-label" style="margin:0;">Lead tự tìm</label>
-                <input type="number" id="d_tu" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;">
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;">
-                <label class="form-label" style="margin:0;">Báo giá</label>
-                <input type="number" id="d_bg" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;">
-              </div>
-              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;">
-                <label class="form-label" style="margin:0; color: var(--danger);">Từ chối / Fail</label>
-                <input type="number" id="d_tc" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #fca5a5; font-weight: 700; color: var(--danger); background: #fef2f2; font-size: 13px;">
-              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0;">Tổng Lead</label><input type="number" id="d_tong" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0;">Tiềm năng</label><input type="number" id="d_tn" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0;">Lead nhận</label><input type="number" id="d_nhan" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0;">Demo/Gặp</label><input type="number" id="d_dm" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0;">Lead tự tìm</label><input type="number" id="d_tu" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0;">Báo giá</label><input type="number" id="d_bg" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 13px;"></div>
+              <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0; color: var(--danger);">Từ chối / Fail</label><input type="number" id="d_tc" class="daily-input" placeholder="0" style="width: 55px; padding: 6px; text-align: center; border-radius: 6px; border: 1px solid #fca5a5; font-weight: 700; color: var(--danger); background: #fef2f2; font-size: 13px;"></div>
             </div>
           </div>
         </div>
@@ -138,7 +131,6 @@
             <span id="displayDebt" style="font-weight: 900; font-size: 16px; color: var(--success);">0đ</span>
           </div>
         </div>
-
         <button class="btn btn-primary" style="margin-top:10px;" onclick="App.nav('page-revenue-confirm')">XÁC NHẬN CHỐT SỔ</button>
       </div>
     </div>
@@ -146,20 +138,6 @@
   
   <section id="page-revenue-confirm" class="page"><div class="container" style="max-width: 500px;"><div class="title-main">CHỐT SỔ KẾ TOÁN</div><div class="card"><div id="revConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: rgba(241, 245, 249, 0.8); padding: 15px; border-radius: 8px;"></div><div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-revenue')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitRevenue()">Khóa sổ & Gửi</button></div></div></div></section>
   
- <div id="taskDetailPopup" class="custom-popup-overlay" onclick="App.closeTaskDetail(event)">
-    <div class="custom-popup-card" style="max-width: 500px; text-align: left; padding: 25px;" onclick="event.stopPropagation()">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
-        <div style="font-weight: 900; font-size: 15px; color: var(--primary); text-transform: uppercase;"><i class="fa-solid fa-list-check" style="color:var(--accent); margin-right:8px;"></i>CHI TIẾT NHIỆM VỤ</div>
-        <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 20px; color: var(--danger);" onclick="App.closeTaskDetail()"></i>
-      </div>
-      <div id="taskDetailContent" style="font-size: 13px; color: var(--text); line-height: 1.6; white-space: pre-wrap; margin-bottom: 20px; max-height: 60vh; overflow-y: auto;">
-        </div>
-      <div style="text-align: right;">
-        <button class="btn btn-outline" style="width: auto; padding: 10px 25px; display: inline-block; font-size: 12px;" onclick="App.closeTaskDetail()">ĐÓNG</button>
-      </div>
-    </div>
-  </div>
-
   <section id="page-task-list" class="page">
     <div class="container">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
@@ -167,23 +145,23 @@
         <button class="btn btn-primary" style="width: auto; padding: 10px 15px;" onclick="App.nav('page-task-assign')"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Giao Việc</button>
       </div>
 
-      <div class="card" style="padding: 15px; margin-bottom: 15px;">
-        <div style="margin-bottom: 12px;">
-          <label class="form-label">Bộ Lọc Nhân Viên</label>
-          <select id="filterTaskStaff" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả nhân viên</option></select>
-        </div>
-        <div class="grid-2">
+      <div class="card" style="padding: 12px 15px; margin-bottom: 15px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px;">
           <div>
-            <label class="form-label">Trạng Thái</label>
-            <select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()">
+            <label class="form-label" style="margin-bottom: 4px;">Nhân Viên</label>
+            <select id="filterTaskStaff" class="form-control" onchange="App.renderAllTasks()" style="padding: 8px 10px; font-size: 12px;"><option value="ALL">Tất cả</option></select>
+          </div>
+          <div>
+            <label class="form-label" style="margin-bottom: 4px;">Trạng Thái</label>
+            <select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()" style="padding: 8px 10px; font-size: 12px;">
               <option value="ALL">Tất cả</option>
               <option value="Chưa hoàn thành" selected>Đang xử lý</option>
               <option value="Hoàn thành">Đã Xong</option>
             </select>
           </div>
           <div>
-            <label class="form-label">Thời gian</label>
-            <select id="filterTaskSort" class="form-control" onchange="App.renderAllTasks()">
+            <label class="form-label" style="margin-bottom: 4px;">Thời gian</label>
+            <select id="filterTaskSort" class="form-control" onchange="App.renderAllTasks()" style="padding: 8px 10px; font-size: 12px;">
               <option value="DESC">Mới nhất</option>
               <option value="ASC">Cũ nhất</option>
             </select>
@@ -193,7 +171,7 @@
 
       <div id="bulkActionContainer" style="margin-bottom: 15px; display: none;">
           <button class="btn" style="background: var(--success); color: #fff; box-shadow: 0 4px 10px rgba(16,185,129,0.3);" onclick="App.confirmCompleteMultipleTasks()">
-              <i class="fa-solid fa-check-double" style="margin-right: 8px;"></i> ĐÃ HOÀN THÀNH (<span id="bulkCount">0</span>) NHIỆM VỤ ĐÃ CHỌN
+              <i class="fa-solid fa-check-double" style="margin-right: 8px;"></i> ĐÃ HOÀN THÀNH (<span id="bulkCount">0</span>) TASK ĐÃ CHỌN
           </button>
       </div>
 
