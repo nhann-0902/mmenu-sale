@@ -2,7 +2,8 @@
 const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Đã đổi tên biến thành 'supabaseClient' để không đụng độ với thư viện gốc
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Chức năng Test kết nối và Insert dữ liệu
 document.getElementById('btn-test-task').addEventListener('click', async () => {
@@ -12,7 +13,8 @@ document.getElementById('btn-test-task').addEventListener('click', async () => {
     btn.disabled = true;
 
     try {
-        const { data, error } = await supabase
+        // Sử dụng biến 'supabaseClient' mới để gọi data
+        const { data, error } = await supabaseClient
             .from('DATA_TASKS')
             .insert([
                 {
