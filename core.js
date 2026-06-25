@@ -2,8 +2,8 @@ const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-const TELEGRAM_BOT_TOKEN = 8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c; 
-const TELEGRAM_CHAT_ID = -1003689002066; 
+const TELEGRAM_BOT_TOKEN = 'ĐIỀN_TOKEN_BOT_CỦA_BẠN_VÀO_ĐÂY'; 
+const TELEGRAM_CHAT_ID = 'ĐIỀN_CHAT_ID_CỦA_BẠN_VÀO_ĐÂY'; 
 
 function formatDateStr(dateStr) {
     if(!dateStr) return '-';
