@@ -115,28 +115,37 @@ Object.assign(window.App, {
                 if(err2) throw err2;
             }
 
-            let msg = `<b>BÁO CÁO NGÀY [${p.date}]</b>\n`;
-            msg += `_________________\n`;
+            // Đổi định dạng ngày YYYY-MM-DD sang DD-MM-YYYY
+            let dateParts = p.date.split('-'); 
+            let displayDate = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}` : p.date;
+
+            // KHỐI TIN NHẮN ĐÚNG CHUẨN FORM TELEGRAM (HTML PARSE MODE)
+            let msg = `<b>BÁO CÁO NGÀY ${displayDate}</b>\n`;
+            msg += `*****************************\n`;
             msg += `Tên: ${p.userFullName}\n`;
-            msg += `_________________\n`;
-            msg += `__report lead__\n`;
-            msg += `__Total lead: [${p.tong}]__\n`;
-            msg += `__Lead nhận: [${p.nhan}]__\n`;
-            msg += `__Tự tìm: [${p.tu}]__\n`;
-            msg += `__Tiềm năng: [${p.tn}]__\n`;
-            msg += `__Demo/gặp: [${p.dm}]__\n`;
-            msg += `__Báo giá: [${p.bg}]__\n`;
-            msg += `__Từ chối: [${p.tc}]__\n`;
-            msg += `*****************\n`;
-            msg += `__task done__\n`;
+            msg += `*****************************\n`;
+            msg += `<b><i>-Report lead</i></b>\n`;
+            msg += `<b>Total lead:</b> ${p.tong}\n`;
+            msg += `<b>Lead nhận:</b> ${p.nhan}\n`;
+            msg += `<b>Tự tìm:</b> ${p.tu}\n`;
+            msg += `<b>Tiềm năng:</b> ${p.tn}\n`;
+            msg += `<b>Demo/gặp:</b> ${p.dm}\n`;
+            msg += `<b>Báo giá:</b> ${p.bg}\n`;
+            msg += `<b>Từ chối:</b> ${p.tc}\n`;
+            msg += `*****************************\n`;
+            msg += `<b><i>-Task done</i></b>\n`;
 
             if (p.completedTaskDetails.length > 0) {
                 p.completedTaskDetails.forEach((txt, idx) => {
                     let taskNum = (idx + 1).toString().padStart(2, '0');
-                    msg += `Task ${taskNum}: __${txt}__\n         __${p.date}__\n`;
+                    // In nghiêng nguyên khối Task
+                    msg += `<i>Task ${taskNum}: ${txt}\n         __${p.date}__</i>\n`;
                 });
+            } else {
+                msg += `<i>(Không có nhiệm vụ hoàn thành)</i>`;
             }
 
+            // Gửi Telegram
             if (typeof this.sendTelegram === 'function') {
                 this.sendTelegram(msg);
             }
