@@ -8,8 +8,24 @@ function formatDateStr(dateStr) {
     return d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
 }
 
+// Hàm bảo hiểm: Tránh lỗi null khi load HTML chậm
+window.safeSet = (id, value, type = 'text') => {
+    const el = document.getElementById(id);
+    if (el) {
+        if (type === 'text') el.innerText = value;
+        else if (type === 'html') el.innerHTML = value;
+        else if (type === 'value') el.value = value;
+    }
+};
+
+window.safeStyle = (id, prop, value) => {
+    const el = document.getElementById(id);
+    if (el) el.style[prop] = value;
+};
+
 window.App = {
     user: "Nhân", 
+    isAdmin: true, 
     staffList: ["Anh Cường", "Văn Nhân", "Huyền Trang", "Minh Hoàng", "Thanh Dung", "CSKH"],
     sourceList: ["Tự tìm", "Marketing", "Giới thiệu"],
     typeList: ["Phần mềm", "Phần cứng", "Combo", "Gia hạn"],
@@ -22,9 +38,18 @@ window.App = {
       const msgEl = document.getElementById('popupMessage');
       if(!msgEl) return;
       msgEl.innerText = msg;
+      
+      const iconEl = document.getElementById('popupIcon');
+      if(iconEl) {
+          iconEl.innerHTML = isSuccess ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-code"></i>';
+          iconEl.style.color = isSuccess ? 'var(--success)' : 'var(--info)';
+      }
+      
+      safeSet('popupTitle', isSuccess ? 'THÀNH CÔNG' : 'THÔNG BÁO');
       const popEl = document.getElementById('customPopup');
       if(popEl) popEl.classList.add('active');
     },
+    
     closePopup() { const el = document.getElementById('customPopup'); if(el) el.classList.remove('active'); },
 
     openSidebar() { const el = document.getElementById('globalSidebar'); if(el) el.classList.add('active'); },
@@ -41,20 +66,23 @@ window.App = {
       if(target) { 
         target.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' }); 
-        if(id === 'page-login') document.body.classList.add('is-login');
-        else document.body.classList.remove('is-login');
       }
+      
+      if(id === 'page-login') document.body.classList.add('is-login');
+      else document.body.classList.remove('is-login');
+      
       if(window.innerWidth < 1024) this.closeSidebar(true);
       document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
       let activeMenu = document.querySelector(`.menu-item[onclick*="${id}"]`);
       if(activeMenu) activeMenu.classList.add('active');
-      
-      if (typeof this.loadDashboards === 'function' && id === 'page-dashboard') this.loadDashboards();
-      if (typeof this.loadDailyTasks === 'function' && id === 'page-daily') this.loadDailyTasks();
-      if (typeof this.loadAllTasks === 'function' && id === 'page-task-list') this.loadAllTasks();
-      if (typeof this.addAssignBlock === 'function' && id === 'page-task-assign') { 
-        const container = document.getElementById('assignFormContainer');
-        if(container) container.innerHTML = ''; 
+
+      if (id === 'page-dashboard' && typeof this.loadDashboards === 'function') this.loadDashboards();
+      if (id === 'page-daily' && typeof this.loadDailyTasks === 'function') this.loadDailyTasks();
+      if (id === 'page-daily-confirm' && typeof this.renderDailyConfirm === 'function') this.renderDailyConfirm();
+      if (id === 'page-revenue-confirm' && typeof this.renderRevConfirm === 'function') this.renderRevConfirm();
+      if (id === 'page-task-list' && typeof this.loadAllTasks === 'function') this.loadAllTasks();
+      if (id === 'page-task-assign' && typeof this.addAssignBlock === 'function') { 
+        safeSet('assignFormContainer', '', 'html');
         this.addAssignBlock(2);
       }
     },
@@ -65,22 +93,12 @@ window.App = {
     initData() { 
       const today = new Date().toISOString().split('T')[0];
       document.querySelectorAll('.default-today').forEach(el => { if(!el.value) el.value = today; }); 
+      
+      safeSet('r_src', `<option value="">Chọn nguồn...</option>` + this.sourceList.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
+      safeSet('r_type', `<option value="">Chọn loại...</option>` + this.typeList.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
+
       if (typeof this.checkSession === 'function') this.checkSession();
     }
 };
-window.onload = function() { window.App.initData(); };
-// HÀM BẢO HIỂM: Cập nhật DOM an toàn
-window.safeSet = (id, value, type = 'text') => {
-    const el = document.getElementById(id);
-    if (el) {
-        if (type === 'text') el.innerText = value;
-        else if (type === 'html') el.innerHTML = value;
-        else if (type === 'value') el.value = value;
-    }
-};
 
-// HÀM BẢO HIỂM: Cập nhật Style an toàn
-window.safeStyle = (id, prop, value) => {
-    const el = document.getElementById(id);
-    if (el) el.style[prop] = value;
-};
+window.onload = function() { window.App.initData(); };
