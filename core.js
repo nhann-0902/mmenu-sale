@@ -1,4 +1,3 @@
-// Khởi tạo Supabase Client
 const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -16,14 +15,9 @@ window.App = {
     sourceList: ["Tự tìm", "Marketing", "Giới thiệu"],
     typeList: ["Phần mềm", "Phần cứng", "Combo", "Gia hạn"],
     
-    showL() { 
-        const el = document.getElementById('globalLoading');
-        if(el) el.classList.add('active'); 
-    },
-    hideL() { 
-        const el = document.getElementById('globalLoading');
-        if(el) el.classList.remove('active'); 
-    },
+    // UI Loading & Popups
+    showL() { const el = document.getElementById('globalLoading'); if(el) el.classList.add('active'); },
+    hideL() { const el = document.getElementById('globalLoading'); if(el) el.classList.remove('active'); },
     
     showPopup(msg, isSuccess = false) {
       if(!document.getElementById('popupMessage')) return;
@@ -33,19 +27,13 @@ window.App = {
       document.getElementById('popupTitle').innerText = isSuccess ? 'THÀNH CÔNG' : 'THÔNG BÁO';
       document.getElementById('customPopup').classList.add('active');
     },
-    closePopup() { 
-        const el = document.getElementById('customPopup');
-        if(el) el.classList.remove('active'); 
-    },
+    closePopup() { const el = document.getElementById('customPopup'); if(el) el.classList.remove('active'); },
 
-    openSidebar() { 
-        const el = document.getElementById('globalSidebar');
-        if(el) el.classList.add('active'); 
-    },
+    // Sidebar & Navigation
+    openSidebar() { document.getElementById('globalSidebar').classList.add('active'); },
     closeSidebar(e) { 
       if (e === true || e.target.id === 'globalSidebar') {
-        const el = document.getElementById('globalSidebar');
-        if(el) el.classList.remove('active');
+        document.getElementById('globalSidebar').classList.remove('active');
       }
     },
 
@@ -55,6 +43,10 @@ window.App = {
       if(target) { 
         target.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' }); 
+        
+        // Cập nhật class 'is-login' cho body nếu đang ở trang Login
+        if(id === 'page-login') document.body.classList.add('is-login');
+        else document.body.classList.remove('is-login');
       }
       
       if(window.innerWidth < 1024) this.closeSidebar(true);
@@ -74,15 +66,8 @@ window.App = {
       }
     },
 
-    fmt(n) { 
-        if(n === 0) return '0đ';
-        if(n >= 1e6) return (n/1e6).toFixed(1) + 'M'; 
-        return n.toLocaleString('vi-VN') + 'đ';
-    },
-    fmtFull(n) { 
-        if(!n) return '0đ'; 
-        return Number(n).toLocaleString('vi-VN') + 'đ';
-    },
+    fmt(n) { return (n || 0).toLocaleString('vi-VN') + 'đ'; },
+    fmtFull(n) { return (n || 0).toLocaleString('vi-VN') + 'đ'; },
     
     initData() { 
       const today = new Date().toISOString().split('T')[0];
