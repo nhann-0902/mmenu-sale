@@ -1,7 +1,9 @@
 Object.assign(window.App, {
     async login() {
-        const un = document.getElementById('login-username').value.trim();
-        const pw = document.getElementById('login-password').value.trim();
+        const unEl = document.getElementById('login-username');
+        const pwEl = document.getElementById('login-password');
+        const un = unEl ? unEl.value.trim() : "";
+        const pw = pwEl ? pwEl.value.trim() : "";
 
         if(!un || !pw) {
             this.showPopup("Vui lòng nhập đủ tài khoản và mật khẩu!", false);
@@ -9,21 +11,23 @@ Object.assign(window.App, {
         }
 
         const btn = document.getElementById('btn-login');
-        const orgText = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
-        btn.disabled = true;
+        let orgText = "ĐĂNG NHẬP";
+        if (btn) {
+            orgText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG XỬ LÝ...';
+            btn.disabled = true;
+        }
 
         try {
             const { data, error } = await supabaseClient
-                .from('sys_users')
+                .from('sys_users') 
                 .select('*')
                 .eq('username', un)
                 .eq('password', pw)
                 .single(); 
 
             if (error || !data) {
-                // Ném ra một lỗi cụ thể để nhận biết việc nhập sai tài khoản/mật khẩu
-                throw new Error("WRONG_CREDENTIALS");
+                throw new Error("zalo: 0358292392, Nhân để được hỗ trợ");
             }
 
             this.user = data.full_name;
@@ -36,41 +40,18 @@ Object.assign(window.App, {
             }));
 
             this.updateHeaderUI(data.full_name);
-            document.getElementById('mainHeader').style.display = 'flex';
+            safeStyle('mainHeader', 'display', 'flex');
             
             this.nav('page-launchpad');
-            document.getElementById('login-password').value = '';
+            if(pwEl) pwEl.value = '';
 
         } catch (err) {
-            if (err.message === "WRONG_CREDENTIALS") {
-                const imageUrl = "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/gau-truc-meme-mat-tham-4.webp"; 
-
-                // Sử dụng SweetAlert2 để tự động tạo một popup đẹp và hiện được ảnh luôn
-                Swal.fire({
-                    title: 'THÔNG BÁO',
-                    html: '<b>Sai thông tin đăng nhập rồi lêu lêu!<br/>Zalo: 0358292392 (Nhân) để được hỗ trợ</b>',
-                    imageUrl: imageUrl,
-                    imageWidth: 150,
-                    imageAlt: 'Troll Image',
-                    confirmButtonText: 'ĐÓNG VÀ TRỞ LẠI',
-                    confirmButtonColor: '#171e30', // Màu nút giống thiết kế của bạn
-                    customClass: {
-                        popup: 'my-custom-popup-class'
-                    }
-                });
-
-            } else {
-                // Bạn cũng có thể dùng Swal cho lỗi hệ thống để đồng bộ giao diện
-                Swal.fire({
-                    title: 'THÔNG BÁO',
-                    text: 'Lỗi kết nối hoặc hệ thống, vui lòng thử lại sau!',
-                    icon: 'error',
-                    confirmButtonText: 'ĐÓNG'
-                });
-            }
+            this.showPopup("zalo: 0358292392, Nhân để được hỗ trợ", false);
         } finally {
-            btn.innerHTML = orgText;
-            btn.disabled = false;
+            if (btn) {
+                btn.innerHTML = orgText;
+                btn.disabled = false;
+            }
         }
     },
 
@@ -79,7 +60,7 @@ Object.assign(window.App, {
         localStorage.removeItem('mmenu_session');
         this.user = "";
         
-        document.getElementById('mainHeader').style.display = 'none';
+        safeStyle('mainHeader', 'display', 'none');
         this.nav('page-login');
         this.closeSidebar(true);
     },
@@ -92,22 +73,18 @@ Object.assign(window.App, {
             this.isAdmin = (data.role === 'Admin');
             
             this.updateHeaderUI(data.name);
-            document.getElementById('mainHeader').style.display = 'flex';
+            safeStyle('mainHeader', 'display', 'flex');
             this.nav('page-launchpad');
         } else {
-            document.getElementById('mainHeader').style.display = 'none';
+            safeStyle('mainHeader', 'display', 'none');
             this.nav('page-login');
         }
     },
 
     updateHeaderUI(fullName) {
-        if (document.getElementById('userGreet')) {
-            document.getElementById('userGreet').innerText = fullName.toUpperCase();
-        }
-        if (document.getElementById('userAvatarLetter')) {
-            let nameParts = fullName.trim().split(' ');
-            let lastName = nameParts[nameParts.length - 1];
-            document.getElementById('userAvatarLetter').innerText = lastName.charAt(0).toUpperCase();
-        }
+        safeSet('userGreet', fullName.toUpperCase());
+        let nameParts = fullName.trim().split(' ');
+        let lastName = nameParts[nameParts.length - 1];
+        safeSet('userAvatarLetter', lastName.charAt(0).toUpperCase());
     }
 });
