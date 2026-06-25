@@ -85,6 +85,9 @@ window.App = {
         safeSet('assignFormContainer', '', 'html');
         this.addAssignBlock(2);
       }
+      
+      // Đã tích hợp lệnh kích hoạt trang Lịch làm việc vào đây
+      if (id === 'page-schedule' && typeof this.loadSchedule === 'function') this.loadSchedule();
     },
 
     fmt(n) { return (n || 0).toLocaleString('vi-VN') + 'đ'; },
