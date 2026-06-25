@@ -4,7 +4,7 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_
 
 // ĐÃ ĐIỀN THÔNG TIN CẤU HÌNH TELEGRAM CỦA BẠN VÀO ĐÂY
 const TELEGRAM_BOT_TOKEN = '8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c'; 
-const TELEGRAM_CHAT_ID = '-5308795881'; 
+const TELEGRAM_CHAT_ID = '-1004487632704'; 
 
 function formatDateStr(dateStr) {
     if(!dateStr) return '-';
