@@ -11,6 +11,7 @@
 </head>
 <body>
 
+  <!-- UI OVERLAYS -->
   <div id="globalLoading" class="loading-screen"><div class="spinner"></div><div style="font-weight: 800; color: var(--primary); letter-spacing: 1px; font-size: 11px;">ĐANG XỬ LÝ...</div></div>
   
   <div id="customPopup" class="custom-popup-overlay">
@@ -22,6 +23,7 @@
     </div>
   </div>
 
+  <!-- POPUP CHI TIẾT NHIỆM VỤ -->
   <div id="taskDetailPopup" class="custom-popup-overlay" onclick="App.closeTaskDetail(event)">
     <div class="custom-popup-card" style="max-width: 500px; text-align: left; padding: 25px;" onclick="event.stopPropagation()">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
@@ -29,13 +31,15 @@
         <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 20px; color: var(--danger);" onclick="App.closeTaskDetail()"></i>
       </div>
       <div id="taskDetailContent" style="font-size: 13px; color: var(--text); line-height: 1.6; white-space: pre-wrap; margin-bottom: 20px; max-height: 60vh; overflow-y: auto;">
-        </div>
+        <!-- Nội dung đổ vào đây -->
+      </div>
       <div style="text-align: right;">
         <button class="btn btn-outline" style="width: auto; padding: 10px 25px; display: inline-block; font-size: 12px;" onclick="App.closeTaskDetail()">ĐÓNG</button>
       </div>
     </div>
   </div>
 
+  <!-- HEADER -->
   <header class="header" id="mainHeader">
     <div style="display: flex; align-items: center;">
       <i class="fa-solid fa-bars hamburger" onclick="App.openSidebar()" style="cursor: pointer; padding: 5px;"></i>
@@ -47,6 +51,7 @@
     </div>
   </header>
 
+  <!-- SIDEBAR -->
   <div id="globalSidebar" class="sidebar-overlay" onclick="App.closeSidebar(event)">
     <div class="sidebar-menu" onclick="event.stopPropagation()">
       <div style="text-align: left; font-size: 18px; color: var(--accent); font-weight: 900; margin-bottom: 25px; padding-left: 10px;"><i class="fa-solid fa-bolt"></i> MMENU SALE</div>
@@ -56,17 +61,22 @@
       <div class="menu-item" onclick="App.nav('page-daily')"><i class="fa-solid fa-pen-to-square"></i> Báo cáo ngày</div>
       <div class="menu-item" onclick="App.nav('page-revenue')"><i class="fa-solid fa-money-bill-trend-up"></i> Báo cáo doanh thu</div>
       <div class="menu-item" onclick="App.nav('page-task-list')"><i class="fa-solid fa-list-check"></i> Kho nhiệm vụ</div>
+      <div class="menu-item" onclick="App.nav('page-schedule')"><i class="fa-solid fa-calendar-days"></i> Lịch làm việc</div>
       <div style="border-top: 1px solid var(--border); margin: 15px 10px;"></div>
       <div class="menu-item" style="color: var(--danger);" onclick="App.logout()"><i class="fa-solid fa-power-off"></i> Đăng xuất</div>
     </div>
   </div>
 
+  <!-- #1. LOGIN PAGE -->
   <section id="page-login" class="page active"><div style="display: flex; align-items: center; justify-content: center; min-height: 80vh;"><div class="card" style="width: 100%; max-width: 360px; padding: 40px 25px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center;"><i class="fa-solid fa-bolt" style="font-size: 32px; color: var(--accent); margin-bottom: 10px;"></i><h2 style="font-weight: 900; color: var(--primary); letter-spacing: 1px; margin-bottom: 5px;">MMENU SALE</h2><div style="font-size: 12px; color: var(--text-light); margin-bottom: 30px;">Hệ thống quản lý nội bộ</div><div class="form-group" style="text-align: left;"><label class="form-label">Tài khoản</label><input type="text" id="login-username" class="form-control" placeholder="Nhập tài khoản..." style="padding: 12px 14px;"></div><div class="form-group" style="text-align: left; margin-bottom: 25px;"><label class="form-label">Mật khẩu</label><input type="password" id="login-password" class="form-control" placeholder="Nhập mật khẩu..." style="padding: 12px 14px;"></div><button id="btn-login" class="btn btn-primary" onclick="App.login()" style="padding: 14px; font-size: 13px;">ĐĂNG NHẬP</button></div></div></section>
   
-  <section id="page-launchpad" class="page"><div class="container" style="display: flex; flex-direction: column; justify-content: center; min-height: calc(100vh - 120px); max-width: 450px;"><div class="title-main" style="text-align: center;">HÔM NAY BẠN CẦN LÀM GÌ?</div><div class="card" style="padding: 20px; background: transparent; box-shadow: none; border: none; margin: 0 auto; width: 100%;"><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-dashboard')"><i class="fa-solid fa-chart-pie" style="color:var(--primary); font-size:16px; margin-right:12px; width:20px;"></i> TỔNG QUAN</button><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-daily')"><i class="fa-solid fa-pen-to-square" style="color:var(--accent); font-size:16px; margin-right:12px; width:20px;"></i> BÁO CÁO NGÀY</button><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-revenue')"><i class="fa-solid fa-money-bill-trend-up" style="color:var(--success); font-size:16px; margin-right:12px; width:20px;"></i> DOANH THU & CÔNG NỢ</button><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-task-list')"><i class="fa-solid fa-list-check" style="color:var(--warning); font-size:16px; margin-right:12px; width:20px;"></i> KHO NHIỆM VỤ</button></div></div></section>
+  <!-- #2. LAUNCHPAD -->
+  <section id="page-launchpad" class="page"><div class="container" style="display: flex; flex-direction: column; justify-content: center; min-height: calc(100vh - 120px); max-width: 450px;"><div class="title-main" style="text-align: center;">HÔM NAY BẠN CẦN LÀM GÌ?</div><div class="card" style="padding: 20px; background: transparent; box-shadow: none; border: none; margin: 0 auto; width: 100%;"><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-dashboard')"><i class="fa-solid fa-chart-pie" style="color:var(--primary); font-size:16px; margin-right:12px; width:20px;"></i> TỔNG QUAN</button><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-daily')"><i class="fa-solid fa-pen-to-square" style="color:var(--accent); font-size:16px; margin-right:12px; width:20px;"></i> BÁO CÁO NGÀY</button><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-revenue')"><i class="fa-solid fa-money-bill-trend-up" style="color:var(--success); font-size:16px; margin-right:12px; width:20px;"></i> DOANH THU & CÔNG NỢ</button><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-task-list')"><i class="fa-solid fa-list-check" style="color:var(--warning); font-size:16px; margin-right:12px; width:20px;"></i> KHO NHIỆM VỤ</button><button class="btn btn-outline" style="margin-bottom:10px; padding: 22px;" onclick="App.nav('page-schedule')"><i class="fa-solid fa-calendar-days" style="color:var(--info); font-size:16px; margin-right:12px; width:20px;"></i> LỊCH LÀM VIỆC</button></div></div></section>
   
+  <!-- #3. MASTER DASHBOARD -->
   <section id="page-dashboard" class="page"><div class="container"><div class="title-main">TỔNG QUAN CHIẾN DỊCH</div><div class="card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border:none; margin-bottom: 15px;"><div style="display:flex; justify-content:space-between; align-items:center;"><div><div style="font-size:10px; font-weight:800; color:#94a3b8; text-transform:uppercase; margin-bottom:3px;">MỤC TIÊU DOANH THU THÁNG (KPI)</div><div style="font-size:24px; font-weight:900; color:#fff;" id="kpiActualNum">0đ</div></div><div style="text-align:right;"><div style="font-size:14px; font-weight:900; color:var(--success);" id="kpiPercentNum">0%</div><div style="font-size:10px; font-weight:600; color:#64748b;" id="kpiTargetNum">Target: 0đ</div></div></div><div class="kpi-progress-bg"><div class="kpi-progress-fill" id="kpiProgressBar"></div></div></div><div class="card"><div class="chart-title">1. XU HƯỚNG DOANH THU & CÔNG NỢ (7 NGÀY)</div><div class="chart-container" style="height: 220px;"><canvas id="chartTrendRev"></canvas></div></div><div class="grid-3"><div class="card"><div class="chart-title">2. CƠ CẤU SẢN PHẨM</div><div class="chart-container"><canvas id="chartProduct"></canvas></div></div><div class="card"><div class="chart-title">3. THỰC THU VS CÔNG NỢ</div><div class="chart-container"><canvas id="chartDebt"></canvas></div></div><div class="card"><div class="chart-title">4. PHỄU TRẠNG THÁI LEAD</div><div class="chart-container"><canvas id="chartLeadStatus"></canvas></div></div></div><div class="grid-3"><div class="card"><div class="chart-title">5. XU HƯỚNG LEAD MỚI</div><div class="chart-container"><canvas id="chartLeadTrend"></canvas></div></div><div class="card"><div class="chart-title">6. NGUỒN KHÁCH HÀNG</div><div class="chart-container"><canvas id="chartSource"></canvas></div></div><div class="card"><div class="chart-title">7. TIẾN ĐỘ NHIỆM VỤ</div><div class="chart-container"><canvas id="chartTask"></canvas></div></div></div><div class="card"><div class="chart-title">8. BẢNG XẾP HẠNG DOANH SỐ NHÂN SỰ</div><div class="chart-container" style="height: 180px;"><canvas id="chartStaffRank"></canvas></div></div></div></section>
   
+  <!-- #4. BÁO CÁO NGÀY -->
   <section id="page-daily" class="page">
     <div class="container">
       <div class="title-main">BÁO CÁO NGÀY</div>
@@ -97,8 +107,10 @@
     </div>
   </section>
 
+  <!-- #4. XÁC NHẬN BÁO CÁO NGÀY -->
   <section id="page-daily-confirm" class="page"><div class="container" style="max-width: 600px;"><div class="title-main">XÁC NHẬN BÁO CÁO</div><div class="card"><div id="dailyConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: var(--bg); padding: 12px; border-radius: 8px;"></div><div id="dailyConfirmTasksList" style="margin-bottom: 20px;"></div><div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-daily')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitDaily()">Gửi báo cáo</button></div></div></div></section>
   
+  <!-- #5. BÁO CÁO DOANH THU & CÔNG NỢ -->
   <section id="page-revenue" class="page">
     <div class="container" style="max-width: 600px;">
       <div class="title-main">DÒNG TIỀN & CÔNG NỢ</div>
@@ -136,8 +148,10 @@
     </div>
   </section>
   
+  <!-- #5. XÁC NHẬN BÁO CÁO DOANH THU -->
   <section id="page-revenue-confirm" class="page"><div class="container" style="max-width: 500px;"><div class="title-main">CHỐT SỔ KẾ TOÁN</div><div class="card"><div id="revConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: rgba(241, 245, 249, 0.8); padding: 15px; border-radius: 8px;"></div><div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-revenue')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitRevenue()">Khóa sổ & Gửi</button></div></div></div></section>
   
+  <!-- #6. KHO NHIỆM VỤ -->
   <section id="page-task-list" class="page">
     <div class="container">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
@@ -179,8 +193,23 @@
     </div>
   </section>
   
+  <!-- #6. PHÁT HÀNH NHIỆM VỤ -->
   <section id="page-task-assign" class="page"><div class="container"><div class="title-main">PHÁT HÀNH NHIỆM VỤ TẬP THỂ</div><div id="assignFormContainer" class="grid-2"></div><div style="text-align: center; margin-top: 10px;"><button class="btn btn-outline" style="width: auto; padding: 10px 20px; display: inline-block; font-size: 11px;" onclick="App.addAssignBlock(1)">+ THÊM 1 BLOCK</button></div><div style="margin-top: 20px; max-width: 300px; margin-left: auto; margin-right: auto;"><button class="btn btn-primary" onclick="App.submitAssignTasks()">PHÁT HÀNH TOÀN BỘ</button></div></div></section>
 
+  <!-- #8. QUẢN LÝ LỊCH LÀM VIỆC -->
+  <section id="page-schedule" class="page">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+        <div class="title-main" style="margin-bottom: 0;">LỊCH LÀM VIỆC (7 NGÀY TỚI)</div>
+        <button class="btn btn-primary" style="width: auto; padding: 10px 15px;" onclick="App.saveSchedule()">
+          <i class="fa-solid fa-floppy-disk" style="margin-right: 8px;"></i> Lưu Thay Đổi
+        </button>
+      </div>
+      <div id="scheduleContainer"></div>
+    </div>
+  </section>
+
+  <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="core.js" defer></script>
@@ -189,5 +218,6 @@
   <script src="module_daily.js" defer></script>
   <script src="module_revenue.js" defer></script>
   <script src="module_dashboard.js" defer></script>
+  <script src="module_schedule.js" defer></script>
 </body>
 </html>
