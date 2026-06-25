@@ -10,10 +10,6 @@ Object.assign(window.App, {
                 supabaseClient.from('data_tasks').select('*')
             ]);
             
-            if (revRes.error) throw revRes.error;
-            if (leadRes.error) throw leadRes.error;
-            if (taskRes.error) throw taskRes.error;
-
             let dash = {
               kpi: { actual: 0, target: 1000000000 }, 
               rev: { sw: 0, hw: 0, ot: 0, paid: 0, debt: 0 },
@@ -75,14 +71,12 @@ Object.assign(window.App, {
                 else dash.task.pending++;
             });
 
-            // Thay vì: document.getElementById('kpiActualNum').innerText = ...
-// Bạn sửa thành:
-safeSet('kpiActualNum', this.fmt(dash.kpi.actual));
-safeSet('kpiTargetNum', "Target: " + this.fmt(dash.kpi.target));
-safeSet('kpiPercentNum', pct + "%");
-safeStyle('kpiProgressBar', 'width', Math.min(pct, 100) + "%"); 
+            safeSet('kpiActualNum', this.fmt(dash.kpi.actual)); 
+            safeSet('kpiTargetNum', "Target: " + this.fmt(dash.kpi.target)); 
+            let pct = dash.kpi.target > 0 ? Math.round((dash.kpi.actual / dash.kpi.target) * 100) : 0; 
+            safeSet('kpiPercentNum', pct + "%"); 
+            setTimeout(() => { safeStyle('kpiProgressBar', 'width', Math.min(pct, 100) + "%"); }, 200); 
             
-            // Fix lỗi khởi tạo biểu đồ
             this.chartInstances = this.chartInstances || {};
             Object.values(this.chartInstances).forEach(chart => { if(chart) chart.destroy(); }); 
             this.chartInstances = {}; 
