@@ -43,20 +43,30 @@ Object.assign(window.App, {
 
         } catch (err) {
             if (err.message === "WRONG_CREDENTIALS") {
-                // SỬA TẠI ĐÂY: Dùng link ảnh trực tiếp thay vì base64 để tránh lỗi
-                // Bạn có thể thay link này bằng link ảnh troll của bạn
                 const imageUrl = "https://theselfishmeme.co.uk/wp-content/uploads/2025/09/gau-truc-meme-mat-tham-4.webp"; 
 
-                const errorHtml = `
-                    <div style="text-align: center;">
-                        <img src="${imageUrl}" alt="Troll Image" style="max-width: 150px; border-radius: 8px; margin-bottom: 10px; display: inline-block;" />
-                        <br/>
-                        <b>Sai thông tin đăng nhập rồi lêu lêu!<br/>Zalo: 0358292392 (Nhân) để được hỗ trợ</b>
-                    </div>
-                `;
-                this.showPopup(errorHtml, false);
+                // Sử dụng SweetAlert2 để tự động tạo một popup đẹp và hiện được ảnh luôn
+                Swal.fire({
+                    title: 'THÔNG BÁO',
+                    html: '<b>Sai thông tin đăng nhập rồi lêu lêu!<br/>Zalo: 0358292392 (Nhân) để được hỗ trợ</b>',
+                    imageUrl: imageUrl,
+                    imageWidth: 150,
+                    imageAlt: 'Troll Image',
+                    confirmButtonText: 'ĐÓNG VÀ TRỞ LẠI',
+                    confirmButtonColor: '#171e30', // Màu nút giống thiết kế của bạn
+                    customClass: {
+                        popup: 'my-custom-popup-class'
+                    }
+                });
+
             } else {
-                this.showPopup("Lỗi kết nối hoặc hệ thống, vui lòng thử lại sau!", false);
+                // Bạn cũng có thể dùng Swal cho lỗi hệ thống để đồng bộ giao diện
+                Swal.fire({
+                    title: 'THÔNG BÁO',
+                    text: 'Lỗi kết nối hoặc hệ thống, vui lòng thử lại sau!',
+                    icon: 'error',
+                    confirmButtonText: 'ĐÓNG'
+                });
             }
         } finally {
             btn.innerHTML = orgText;
