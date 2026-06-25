@@ -125,13 +125,13 @@ Object.assign(window.App, {
             msg += `Tên: ${p.userFullName}\n`;
             msg += `*****************************\n`;
             msg += `<b><i>-Report lead</i></b>\n`;
-            msg += `<i>Total lead:<i> ${p.tong}\n`;
-            msg += `<i>Lead nhận:<i> ${p.nhan}\n`;
-            msg += `<i>Tự tìm:<i> ${p.tu}\n`;
-            msg += `<i>Tiềm năng:<i> ${p.tn}\n`;
-            msg += `<i>Demo/gặp:<i> ${p.dm}\n`;
-            msg += `<i>Báo giá:<i> ${p.bg}\n`;
-            msg += `<i>Từ chối:<i> ${p.tc}\n`;
+            msg += `</i>Total lead:</i> ${p.tong}\n`;
+            msg += `</i>Lead nhận:</i> ${p.nhan}\n`;
+            msg += `</i>Tự tìm:</i> ${p.tu}\n`;
+            msg += `</i>Tiềm năng:</i> ${p.tn}\n`;
+            msg += `</i>Demo/gặp:</i> ${p.dm}\n`;
+            msg += `</i>Báo giá:</i> ${p.bg}\n`;
+            msg += `</i>Từ chối:</i> ${p.tc}\n`;
             msg += `*****************************\n`;
             msg += `<b><i>-Task done</i></b>\n`;
 
