@@ -31,8 +31,8 @@ window.App = {
     user: "Nhân", 
     isAdmin: true, 
     staffList: ["Anh Cường", "Văn Nhân", "Huyền Trang", "Minh Hoàng", "Thanh Dung", "CSKH"],
-    sourceList: ["Tự tìm", "Marketing", "Giới thiệu"],
-    typeList: ["Phần mềm", "Phần cứng", "Combo", "Gia hạn"],
+    sourceList: ["Tự tìm kiếm", "Marketing","BOD", "KH Giới thiệu"],
+    typeList: ["Mới", "Upsell tính năng", "Mua thiết bị", "Gia hạn"],
     chartInstances: {}, 
 
     sendTelegram(message) {
