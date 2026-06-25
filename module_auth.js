@@ -15,7 +15,7 @@ Object.assign(window.App, {
 
         try {
             const { data, error } = await supabaseClient
-                .from('SYS_USERS')
+                .from('sys_users') // <-- LỖI ĐÃ ĐƯỢC SỬA THÀNH CHỮ THƯỜNG Ở ĐÂY
                 .select('*')
                 .eq('username', un)
                 .eq('password', pw)
