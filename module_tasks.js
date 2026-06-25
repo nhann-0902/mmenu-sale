@@ -80,12 +80,39 @@ Object.assign(window.App, {
         for(let i = 0; i < count; i++) {
           const div = document.createElement('div'); 
           div.className = 'assign-block-item fade-in-up'; 
-          div.style.cssText = "background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-top: 4px solid var(--accent);";
+          div.style.cssText = "background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border-top: 4px solid var(--accent);";
+          
           div.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dashed #cbd5e1;"><span style="font-size:12px; font-weight:800; color:var(--primary); text-transform: uppercase;"><i class="fa-solid fa-thumbtack" style="color:var(--accent); margin-right: 6px;"></i> Nhiệm vụ mới</span><i class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer; font-size: 14px; padding: 5px;" onclick="this.closest('.assign-block-item').remove()" title="Xóa block này"></i></div>
-            <div class="grid-2" style="margin-bottom:15px; gap: 15px;"><div><label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; display: block;">NGƯỜI GIAO</label><select class="form-control assign-giver" style="padding:12px 14px; font-size:13px; background-color: #f8fafc; border-color: #cbd5e1;">${giverOpts}</select></div><div><label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; display: block;">NGƯỜI NHẬN</label><select class="form-control assign-receiver" style="padding:12px 14px; font-size:13px; border-color: #cbd5e1;">${receiverOpts}</select></div></div>
-            <div style="margin-bottom:15px;"><label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; display: block;">THỜI HẠN (DEADLINE)</label><input type="date" class="form-control assign-date" value="${todayStr}" style="padding:12px 14px; font-size:13px; border-color: #cbd5e1;"></div>
-            <div><label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 6px; display: block;">NỘI DUNG CÔNG VIỆC</label><textarea class="form-control assign-content" rows="3" placeholder="Mô tả chi tiết nhiệm vụ cần thực hiện..." style="padding:12px 14px; font-size:13px; border-color: #cbd5e1; resize: vertical;"></textarea></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #cbd5e1;">
+                <span style="font-size:11px; font-weight:800; color:var(--primary); text-transform: uppercase;">
+                    <i class="fa-solid fa-thumbtack" style="color:var(--accent); margin-right: 6px;"></i> Nhiệm vụ mới
+                </span>
+                <i class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer; font-size: 14px; padding: 5px;" onclick="this.closest('.assign-block-item').remove()" title="Xóa block này"></i>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                <div>
+                    <label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NGƯỜI GIAO</label>
+                    <select class="form-control assign-giver" style="padding:10px; font-size:12px; background-color: #f8fafc; border-color: #cbd5e1;">
+                        ${giverOpts}
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NGƯỜI NHẬN</label>
+                    <select class="form-control assign-receiver" style="padding:10px; font-size:12px; border-color: #cbd5e1;">
+                        ${receiverOpts}
+                    </select>
+                </div>
+                <div>
+                    <label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">THỜI HẠN (DEADLINE)</label>
+                    <input type="date" class="form-control assign-date" value="${todayStr}" style="padding:10px; font-size:12px; border-color: #cbd5e1;">
+                </div>
+            </div>
+            
+            <div>
+                <label style="font-size: 10px; font-weight: 700; color: var(--text-light); margin-bottom: 4px; display: block;">NỘI DUNG CÔNG VIỆC</label>
+                <textarea class="form-control assign-content" rows="2" placeholder="Mô tả chi tiết nhiệm vụ cần thực hiện..." style="padding:10px; font-size:12px; border-color: #cbd5e1; resize: vertical;"></textarea>
+            </div>
           `;
           area.appendChild(div);
         }
