@@ -2,7 +2,6 @@ const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// CẤU HÌNH TELEGRAM BOT Ở ĐÂY
 const TELEGRAM_BOT_TOKEN = 8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c; 
 const TELEGRAM_CHAT_ID = -1003689002066; 
 
@@ -34,11 +33,8 @@ window.App = {
     typeList: ["Phần mềm", "Phần cứng", "Combo", "Gia hạn"],
     chartInstances: {}, 
 
-    // HÀM BẮN THÔNG BÁO TELEGRAM
     sendTelegram(message) {
         if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID || TELEGRAM_BOT_TOKEN.includes('ĐIỀN_TOKEN')) return;
-        
-        // Nếu bạn dùng Webhook trung gian bằng Google Apps Script thì đổi URL ở đây
         const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         fetch(url, {
             method: 'POST',
