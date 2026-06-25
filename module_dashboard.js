@@ -1,11 +1,9 @@
-// MODULE 3: MASTER DASHBOARD (LIVE DATA)
 Object.assign(window.App, {
     async loadDashboards() { 
         if (typeof Chart === 'undefined') return;
         this.showL();
         
         try {
-            // Kéo song song dữ liệu từ 3 bảng
             const [revRes, leadRes, taskRes] = await Promise.all([
                 supabaseClient.from('data_revenue').select('*'),
                 supabaseClient.from('data_leads').select('*'),
@@ -26,7 +24,6 @@ Object.assign(window.App, {
 
             let tempTrends = {};
 
-            // Xử lý Doanh Thu
             (revRes.data || []).forEach(r => {
                 dash.rev.sw += Number(r.rev_software) || 0;
                 dash.rev.hw += Number(r.rev_hardware) || 0;
@@ -50,7 +47,6 @@ Object.assign(window.App, {
                 tempTrends[dKey].d += (vDebt / 1000000);
             });
 
-            // Xử lý Lead
             (leadRes.data || []).forEach(l => {
                 let vNhan = Number(l.lead_nhan) || 0; 
                 let vTu = Number(l.lead_tu) || 0;   
@@ -66,7 +62,6 @@ Object.assign(window.App, {
                 tempTrends[dKey].l = (tempTrends[dKey].l || 0) + (Number(l.total_lead) || 0);
             });
 
-            // Sắp xếp Trend 7 ngày
             let sortedDates = Object.keys(tempTrends).sort().slice(-7);
             sortedDates.forEach(k => {
                 dash.trendDays.push(k);
@@ -75,18 +70,16 @@ Object.assign(window.App, {
                 dash.leadTrend.push(tempTrends[k].l || 0); 
             });
 
-            // Xử lý Task
             (taskRes.data || []).forEach(t => {
                 if (String(t.status).toLowerCase() === "hoàn thành") dash.task.done++;
                 else dash.task.pending++;
             });
 
-            // Gắn lên UI
-            document.getElementById('kpiActualNum').innerText = this.fmt(dash.kpi.actual); 
-            document.getElementById('kpiTargetNum').innerText = "Target: " + this.fmt(dash.kpi.target); 
+            if(document.getElementById('kpiActualNum')) document.getElementById('kpiActualNum').innerText = this.fmt(dash.kpi.actual); 
+            if(document.getElementById('kpiTargetNum')) document.getElementById('kpiTargetNum').innerText = "Target: " + this.fmt(dash.kpi.target); 
             let pct = dash.kpi.target > 0 ? Math.round((dash.kpi.actual / dash.kpi.target) * 100) : 0; 
-            document.getElementById('kpiPercentNum').innerText = pct + "%"; 
-            setTimeout(() => { document.getElementById('kpiProgressBar').style.width = Math.min(pct, 100) + "%"; }, 200); 
+            if(document.getElementById('kpiPercentNum')) document.getElementById('kpiPercentNum').innerText = pct + "%"; 
+            if(document.getElementById('kpiProgressBar')) setTimeout(() => { document.getElementById('kpiProgressBar').style.width = Math.min(pct, 100) + "%"; }, 200); 
             
             Object.values(this.chartInstances).forEach(chart => { if(chart) chart.destroy(); }); 
             this.chartInstances = {}; 
@@ -99,13 +92,7 @@ Object.assign(window.App, {
                 gradRev.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
                 this.chartInstances.c1 = new Chart(ctxRev, { 
                   type: 'line', 
-                  data: { 
-                    labels: dash.trendDays.length ? dash.trendDays : ['Chưa có data'], 
-                    datasets: [ 
-                      { label: 'Doanh thu (Tr)', data: dash.revTrend, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: gradRev, pointBackgroundColor: '#fff', pointRadius: 4, order: 1 }, 
-                      { type: 'bar', label: 'Công nợ (Tr)', data: dash.debtTrend, backgroundColor: '#ef4444', borderRadius: 4, order: 2 } 
-                    ] 
-                  }, 
+                  data: { labels: dash.trendDays.length ? dash.trendDays : ['Chưa có data'], datasets: [ { label: 'Doanh thu (Tr)', data: dash.revTrend, borderColor: '#3b82f6', tension: 0.4, fill: true, backgroundColor: gradRev, pointBackgroundColor: '#fff', pointRadius: 4, order: 1 }, { type: 'bar', label: 'Công nợ (Tr)', data: dash.debtTrend, backgroundColor: '#ef4444', borderRadius: 4, order: 2 } ] }, 
                   options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { position: 'top' } } } 
                 });
             }
@@ -124,7 +111,6 @@ Object.assign(window.App, {
             if(document.getElementById('chartStaffRank')) this.chartInstances.c8 = new Chart(document.getElementById('chartStaffRank'), { type: 'bar', data: { labels: rankLabels.length ? rankLabels : ['Trống'], datasets: [{ label: 'Doanh số (Tr)', data: rankLabels.length ? Object.values(dash.staffRank) : [0], backgroundColor: '#3b82f6', borderRadius: 4 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { grid: { display: false } }, x: { beginAtZero: true, grid: { display: false } } } } });
 
         } catch (error) {
-            console.error(error);
             this.showPopup("Lỗi lấy dữ liệu Tổng quan: " + error.message, false);
         } finally {
             this.hideL();
