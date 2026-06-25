@@ -106,7 +106,43 @@
 
   <section id="page-daily-confirm" class="page"><div class="container" style="max-width: 600px;"><div class="title-main">XÁC NHẬN BÁO CÁO</div><div class="card"><div id="dailyConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: var(--bg); padding: 12px; border-radius: 8px;"></div><div id="dailyConfirmTasksList" style="margin-bottom: 20px;"></div><div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-daily')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitDaily()">Gửi báo cáo</button></div></div></div></section>
   
-  <section id="page-revenue" class="page"><div class="container" style="max-width: 600px;"><div class="title-main">DÒNG TIỀN & CÔNG NỢ</div><div class="card"><div class="grid-2"><div class="form-group"><label class="form-label">Ngày giao dịch</label><input type="date" id="r_date" class="form-control rev-input default-today"></div><div class="form-group"><label class="form-label">Nguồn khách</label><select class="form-control rev-input" id="r_src"><option value="">Chọn nguồn...</option></select></div></div><div class="grid-2"><div class="form-group"><label class="form-label">Loại Hợp đồng</label><select class="form-control rev-input" id="r_type"><option value="">Chọn loại...</option></select></div><div class="form-group"><label class="form-label">Tên đối tác / Khách hàng</label><input type="text" id="r_name" class="form-control rev-input" placeholder="VD: Nhà hàng abc..."></div></div><div style="border-top: 1px dashed var(--border); margin: 15px 0;"></div><div class="form-label" style="color:var(--accent);">CƠ CẤU DOANH THU</div><div class="grid-3"><div class="form-group"><label class="form-label">Phần mềm</label><input type="number" id="r_pm" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div><div class="form-group"><label class="form-label">Phần cứng</label><input type="number" id="r_pc" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div><div class="form-group"><label class="form-label">Khác</label><input type="number" id="r_ot" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div></div><div style="background: rgba(59, 130, 246, 0.05); padding: 12px 15px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(59, 130, 246, 0.2);"><span style="font-weight: 800; font-size: 11px; color: var(--primary);">TỔNG HỢP ĐỒNG:</span><span id="displayTotal" style="font-weight: 900; font-size: 16px; color: var(--accent);">0đ</span></div><div style="border-top: 1px dashed var(--border); margin: 15px 0;"></div><div class="form-group"><label class="form-label" style="color: var(--success);">ĐÃ THANH TOÁN (VNĐ)</label><input type="number" id="r_paid" class="form-control rev-input" style="font-size:15px; color: var(--success); font-weight: 800;" placeholder="Nhập số tiền..." oninput="App.calcRev()"></div><div id="debtSection" style="display:none; background: #fef2f2; padding: 12px 15px; border-radius: 8px; border: 1px solid #fecaca; margin-bottom: 15px;"><div style="display: flex; justify-content: space-between; align-items: center;"><span style="font-weight: 800; font-size: 11px; color: var(--danger);">CÔNG NỢ CÒN LẠI:</span><span id="displayDebt" style="font-weight: 900; font-size: 16px; color: var(--danger);">0đ</span></div></div><button class="btn btn-primary" style="margin-top:10px;" onclick="App.nav('page-revenue-confirm')">XÁC NHẬN CHỐT SỔ</button></div></div></section>
+  <section id="page-revenue" class="page">
+    <div class="container" style="max-width: 600px;">
+      <div class="title-main">DÒNG TIỀN & CÔNG NỢ</div>
+      <div class="card">
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Ngày giao dịch</label><input type="date" id="r_date" class="form-control rev-input default-today"></div>
+          <div class="form-group"><label class="form-label">Nguồn khách</label><select class="form-control rev-input" id="r_src"><option value="">Chọn nguồn...</option></select></div>
+        </div>
+        <div class="grid-2">
+          <div class="form-group"><label class="form-label">Loại Hợp đồng</label><select class="form-control rev-input" id="r_type"><option value="">Chọn loại...</option></select></div>
+          <div class="form-group"><label class="form-label">Tên đối tác / Khách hàng</label><input type="text" id="r_name" class="form-control rev-input" placeholder="VD: Nhà hàng abc..."></div>
+        </div>
+        <div style="border-top: 1px dashed var(--border); margin: 15px 0;"></div>
+        
+        <div class="form-label" style="color:var(--accent);">CƠ CẤU DOANH THU & THANH TOÁN</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 15px; margin-bottom: 15px;">
+          <div class="form-group"><label class="form-label">Phần mềm</label><input type="number" id="r_pm" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div>
+          <div class="form-group"><label class="form-label">Phần cứng</label><input type="number" id="r_pc" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div>
+          <div class="form-group"><label class="form-label">Khác</label><input type="number" id="r_ot" class="form-control rev-input" placeholder="0" oninput="App.calcRev()"></div>
+          <div class="form-group"><label class="form-label" style="color: var(--success);">Đã thanh toán</label><input type="number" id="r_paid" class="form-control rev-input" placeholder="0" oninput="App.calcRev()" style="color: var(--success); font-weight: 800; border-color: #a7f3d0; background: #ecfdf5;"></div>
+        </div>
+        
+        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #cbd5e1; padding-bottom: 10px; margin-bottom: 10px;">
+            <span style="font-weight: 800; font-size: 11px; color: var(--primary);">TỔNG HỢP ĐỒNG:</span>
+            <span id="displayTotal" style="font-weight: 900; font-size: 16px; color: var(--accent);">0đ</span>
+          </div>
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-weight: 800; font-size: 11px; color: var(--text-light);">CÔNG NỢ (ÂM/DƯƠNG):</span>
+            <span id="displayDebt" style="font-weight: 900; font-size: 16px; color: var(--success);">0đ</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="margin-top:10px;" onclick="App.nav('page-revenue-confirm')">XÁC NHẬN CHỐT SỔ</button>
+      </div>
+    </div>
+  </section>
   
   <section id="page-revenue-confirm" class="page"><div class="container" style="max-width: 500px;"><div class="title-main">CHỐT SỔ KẾ TOÁN</div><div class="card"><div id="revConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: rgba(241, 245, 249, 0.8); padding: 15px; border-radius: 8px;"></div><div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-revenue')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitRevenue()">Khóa sổ & Gửi</button></div></div></div></section>
   
