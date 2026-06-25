@@ -75,7 +75,18 @@ select.form-control { appearance: none; background-image: url("data:image/svg+xm
 body.is-login .sidebar-overlay { display: none !important; }
 body.is-login .header { display: none !important; }
 body.is-login .page { padding-top: 40px; }
-
+/* =========================================
+   CSS CHO MODULE LỊCH LÀM VIỆC
+   ========================================= */
+.sched-table { width: 100%; border-collapse: collapse; text-align: center; table-layout: fixed; }
+.sched-table th, .sched-table td { border: 1px solid var(--border); padding: 10px 4px; font-size: 11px; font-weight: 800; }
+.sched-table th { background: #f8fafc; color: var(--text-light); }
+.sched-row-label { background: #f8fafc; color: var(--text-light); text-transform: capitalize; width: 45px; }
+.sched-cell { cursor: pointer; transition: filter 0.2s; user-select: none; }
+.sched-cell:hover { filter: brightness(0.85); }
+.sched-roi { background-color: var(--success); color: white; }
+.sched-ban { background-color: var(--danger); color: white; }
+.sched-demo { background-color: var(--warning); color: white; }
 /* RESPONSIVE PC */
 @media (min-width: 1024px) {
   .header { padding: 0 20px; }
