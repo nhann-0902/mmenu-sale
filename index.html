@@ -146,7 +146,46 @@
   
   <section id="page-revenue-confirm" class="page"><div class="container" style="max-width: 500px;"><div class="title-main">CHỐT SỔ KẾ TOÁN</div><div class="card"><div id="revConfirmStats" style="font-size:13px; line-height:2; font-weight: 600; margin-bottom: 20px; background: rgba(241, 245, 249, 0.8); padding: 15px; border-radius: 8px;"></div><div class="grid-2"><button class="btn btn-outline" style="justify-content: center;" onclick="App.nav('page-revenue')">Sửa lại</button><button class="btn btn-primary" onclick="App.submitRevenue()">Khóa sổ & Gửi</button></div></div></div></section>
   
-  <section id="page-task-list" class="page"><div class="container"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;"><div class="title-main" style="margin-bottom: 0;">KHO NHIỆM VỤ</div><button class="btn btn-primary" style="width: auto; padding: 10px 15px;" onclick="App.nav('page-task-assign')"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Giao Việc</button></div><div class="card grid-2" style="padding: 15px; margin-bottom: 15px;"><div><label class="form-label">Bộ Lọc Nhân Viên</label><select id="filterTaskStaff" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả nhân viên</option></select></div><div><label class="form-label">Trạng Thái</label><select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả</option><option value="Chưa hoàn thành">Đang xử lý</option><option value="Hoàn thành">Đã Xong</option></select></div></div><div id="allTasksContainer"></div></div></section>
+ <div id="taskDetailPopup" class="custom-popup-overlay" onclick="App.closeTaskDetail(event)">
+    <div class="custom-popup-card" style="max-width: 500px; text-align: left; padding: 25px;" onclick="event.stopPropagation()">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
+        <div style="font-weight: 900; font-size: 15px; color: var(--primary); text-transform: uppercase;"><i class="fa-solid fa-list-check" style="color:var(--accent); margin-right:8px;"></i>CHI TIẾT NHIỆM VỤ</div>
+        <i class="fa-solid fa-xmark" style="cursor: pointer; font-size: 20px; color: var(--danger);" onclick="App.closeTaskDetail()"></i>
+      </div>
+      <div id="taskDetailContent" style="font-size: 13px; color: var(--text); line-height: 1.6; white-space: pre-wrap; margin-bottom: 20px; max-height: 60vh; overflow-y: auto;">
+        </div>
+      <div style="text-align: right;">
+        <button class="btn btn-outline" style="width: auto; padding: 10px 25px; display: inline-block; font-size: 12px;" onclick="App.closeTaskDetail()">ĐÓNG</button>
+      </div>
+    </div>
+  </div>
+
+  <section id="page-task-list" class="page">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
+        <div class="title-main" style="margin-bottom: 0;">KHO NHIỆM VỤ</div>
+        <button class="btn btn-primary" style="width: auto; padding: 10px 15px;" onclick="App.nav('page-task-assign')"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Giao Việc</button>
+      </div>
+      <div class="card grid-3" style="padding: 15px; margin-bottom: 15px;">
+        <div>
+          <label class="form-label">Bộ Lọc Nhân Viên</label>
+          <select id="filterTaskStaff" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả nhân viên</option></select>
+        </div>
+        <div>
+          <label class="form-label">Trạng Thái</label>
+          <select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả</option><option value="Chưa hoàn thành">Đang xử lý</option><option value="Hoàn thành">Đã Xong</option></select>
+        </div>
+        <div>
+          <label class="form-label">Thời gian</label>
+          <select id="filterTaskSort" class="form-control" onchange="App.renderAllTasks()">
+            <option value="DESC">Mới nhất</option>
+            <option value="ASC">Cũ nhất</option>
+          </select>
+        </div>
+      </div>
+      <div id="allTasksContainer"></div>
+    </div>
+  </section>
   
   <section id="page-task-assign" class="page"><div class="container"><div class="title-main">PHÁT HÀNH NHIỆM VỤ TẬP THỂ</div><div id="assignFormContainer" class="grid-2"></div><div style="text-align: center; margin-top: 10px;"><button class="btn btn-outline" style="width: auto; padding: 10px 20px; display: inline-block; font-size: 11px;" onclick="App.addAssignBlock(1)">+ THÊM 1 BLOCK</button></div><div style="margin-top: 20px; max-width: 300px; margin-left: auto; margin-right: auto;"><button class="btn btn-primary" onclick="App.submitAssignTasks()">PHÁT HÀNH TOÀN BỘ</button></div></div></section>
 
