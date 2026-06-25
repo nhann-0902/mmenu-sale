@@ -10,30 +10,28 @@ function formatDateStr(dateStr) {
 
 window.App = {
     user: "Nhân", 
-    isAdmin: true, 
-    staffList: ["Sofia", "Jack", "Peter", "Nhân", "Linh"],
+    staffList: ["Anh Cường", "Văn Nhân", "Huyền Trang", "Minh Hoàng", "Thanh Dung", "CSKH"],
     sourceList: ["Tự tìm", "Marketing", "Giới thiệu"],
     typeList: ["Phần mềm", "Phần cứng", "Combo", "Gia hạn"],
+    chartInstances: {}, 
     
-    // UI Loading & Popups
     showL() { const el = document.getElementById('globalLoading'); if(el) el.classList.add('active'); },
     hideL() { const el = document.getElementById('globalLoading'); if(el) el.classList.remove('active'); },
     
     showPopup(msg, isSuccess = false) {
-      if(!document.getElementById('popupMessage')) return;
-      document.getElementById('popupMessage').innerText = msg;
-      document.getElementById('popupIcon').innerHTML = isSuccess ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-code"></i>';
-      document.getElementById('popupIcon').style.color = isSuccess ? 'var(--success)' : 'var(--info)';
-      document.getElementById('popupTitle').innerText = isSuccess ? 'THÀNH CÔNG' : 'THÔNG BÁO';
-      document.getElementById('customPopup').classList.add('active');
+      const msgEl = document.getElementById('popupMessage');
+      if(!msgEl) return;
+      msgEl.innerText = msg;
+      const popEl = document.getElementById('customPopup');
+      if(popEl) popEl.classList.add('active');
     },
     closePopup() { const el = document.getElementById('customPopup'); if(el) el.classList.remove('active'); },
 
-    // Sidebar & Navigation
-    openSidebar() { document.getElementById('globalSidebar').classList.add('active'); },
+    openSidebar() { const el = document.getElementById('globalSidebar'); if(el) el.classList.add('active'); },
     closeSidebar(e) { 
-      if (e === true || e.target.id === 'globalSidebar') {
-        document.getElementById('globalSidebar').classList.remove('active');
+      if (e === true || (e.target && e.target.id === 'globalSidebar')) {
+        const el = document.getElementById('globalSidebar');
+        if(el) el.classList.remove('active');
       }
     },
 
@@ -43,23 +41,18 @@ window.App = {
       if(target) { 
         target.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' }); 
-        
-        // Cập nhật class 'is-login' cho body nếu đang ở trang Login
         if(id === 'page-login') document.body.classList.add('is-login');
         else document.body.classList.remove('is-login');
       }
-      
       if(window.innerWidth < 1024) this.closeSidebar(true);
       document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
       let activeMenu = document.querySelector(`.menu-item[onclick*="${id}"]`);
       if(activeMenu) activeMenu.classList.add('active');
-
-      if (id === 'page-dashboard' && typeof this.loadDashboards === 'function') this.loadDashboards();
-      if (id === 'page-daily' && typeof this.loadDailyTasks === 'function') this.loadDailyTasks();
-      if (id === 'page-daily-confirm' && typeof this.renderDailyConfirm === 'function') this.renderDailyConfirm();
-      if (id === 'page-revenue-confirm' && typeof this.renderRevConfirm === 'function') this.renderRevConfirm();
-      if (id === 'page-task-list' && typeof this.loadAllTasks === 'function') this.loadAllTasks();
-      if (id === 'page-task-assign' && typeof this.addAssignBlock === 'function') { 
+      
+      if (typeof this.loadDashboards === 'function' && id === 'page-dashboard') this.loadDashboards();
+      if (typeof this.loadDailyTasks === 'function' && id === 'page-daily') this.loadDailyTasks();
+      if (typeof this.loadAllTasks === 'function' && id === 'page-task-list') this.loadAllTasks();
+      if (typeof this.addAssignBlock === 'function' && id === 'page-task-assign') { 
         const container = document.getElementById('assignFormContainer');
         if(container) container.innerHTML = ''; 
         this.addAssignBlock(2);
@@ -72,17 +65,7 @@ window.App = {
     initData() { 
       const today = new Date().toISOString().split('T')[0];
       document.querySelectorAll('.default-today').forEach(el => { if(!el.value) el.value = today; }); 
-      
-      const elSrc = document.getElementById('r_src');
-      if(elSrc) elSrc.innerHTML = `<option value="">Chọn nguồn...</option>` + this.sourceList.map(x => `<option value="${x}">${x}</option>`).join('');
-      
-      const elType = document.getElementById('r_type');
-      if(elType) elType.innerHTML = `<option value="">Chọn loại...</option>` + this.typeList.map(x => `<option value="${x}">${x}</option>`).join('');
-
-      if (typeof this.checkSession === 'function') {
-          this.checkSession();
-      }
+      if (typeof this.checkSession === 'function') this.checkSession();
     }
 };
-
 window.onload = function() { window.App.initData(); };
