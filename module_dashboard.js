@@ -3,12 +3,65 @@ Object.assign(window.App, {
         if (typeof Chart === 'undefined') return;
         this.showL();
         
+        // 1. Gắn danh sách nhân sự vào ô Filter
+        const filterStaffEl = document.getElementById('dashFilterStaff');
+        if (filterStaffEl && filterStaffEl.options.length <= 1) {
+            let staffList = await (this.getDbStaffList ? this.getDbStaffList() : Promise.resolve(this.staffList));
+            let currentVal = filterStaffEl.value;
+            safeSet('dashFilterStaff', `<option value="ALL">Tất cả nhân sự</option>` + staffList.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
+            filterStaffEl.value = currentVal;
+        }
+
+        // 2. Lấy giá trị lọc
+        let filterTime = document.getElementById('dashFilterTime') ? document.getElementById('dashFilterTime').value : 'ALL';
+        let filterStaff = filterStaffEl ? filterStaffEl.value : 'ALL';
+
+        // 3. Tính toán ngày bắt đầu / kết thúc
+        let startDate = null;
+        let endDate = null;
+        let tempD = new Date();
+        tempD.setHours(0,0,0,0);
+
+        if (filterTime === 'TODAY') {
+            startDate = new Date(tempD); endDate = new Date(tempD);
+        } else if (filterTime === 'YESTERDAY') {
+            startDate = new Date(tempD); startDate.setDate(startDate.getDate() - 1);
+            endDate = new Date(startDate);
+        } else if (filterTime === 'THIS_WEEK') {
+            let day = tempD.getDay();
+            let diff = tempD.getDate() - day + (day === 0 ? -6 : 1);
+            startDate = new Date(tempD.setDate(diff));
+            endDate = new Date();
+        } else if (filterTime === 'THIS_MONTH') {
+            startDate = new Date(tempD.getFullYear(), tempD.getMonth(), 1);
+            endDate = new Date(tempD.getFullYear(), tempD.getMonth() + 1, 0);
+        }
+
+        let formatISO = (d) => { let z = d.getTimezoneOffset() * 60000; return new Date(d - z).toISOString().split('T')[0]; };
+
         try {
-            const [revRes, leadRes, taskRes] = await Promise.all([
-                supabaseClient.from('data_revenue').select('*'),
-                supabaseClient.from('data_leads').select('*'),
-                supabaseClient.from('data_tasks').select('*')
-            ]);
+            // 4. Xây dựng Query cho Supabase
+            let qRev = supabaseClient.from('data_revenue').select('*');
+            let qLead = supabaseClient.from('data_leads').select('*');
+            let qTask = supabaseClient.from('data_tasks').select('*');
+
+            if (startDate && endDate) {
+                let sStr = formatISO(startDate);
+                let eStr = formatISO(endDate);
+                qRev = qRev.gte('transaction_date', sStr).lte('transaction_date', eStr);
+                qLead = qLead.gte('date', sStr).lte('date', eStr);
+                // Với Task, lọc theo ngày tạo (created_at)
+                qTask = qTask.gte('created_at', sStr + 'T00:00:00').lte('created_at', eStr + 'T23:59:59');
+            }
+
+            if (filterStaff !== 'ALL') {
+                qRev = qRev.eq('staff_name', filterStaff);
+                qLead = qLead.eq('staff_name', filterStaff);
+                qTask = qTask.eq('receiver', filterStaff);
+            }
+
+            // Gọi API song song
+            const [revRes, leadRes, taskRes] = await Promise.all([qRev, qLead, qTask]);
             
             let dash = {
               kpi: { actual: 0, target: 1000000000 }, 
@@ -71,6 +124,7 @@ Object.assign(window.App, {
                 else dash.task.pending++;
             });
 
+            // Gán dữ liệu lên KPI
             safeSet('kpiActualNum', this.fmt(dash.kpi.actual)); 
             safeSet('kpiTargetNum', "Target: " + this.fmt(dash.kpi.target)); 
             let pct = dash.kpi.target > 0 ? Math.round((dash.kpi.actual / dash.kpi.target) * 100) : 0; 
@@ -81,6 +135,7 @@ Object.assign(window.App, {
             Object.values(this.chartInstances).forEach(chart => { if(chart) chart.destroy(); }); 
             this.chartInstances = {}; 
              
+            // Vẽ biểu đồ
             let canvasTrendRev = document.getElementById('chartTrendRev');
             if (canvasTrendRev) {
                 let ctxRev = canvasTrendRev.getContext('2d');
