@@ -2,7 +2,7 @@ const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ĐÃ ĐIỀN THÔNG TIN CẤU HÌNH TELEGRAM CỦA BẠN VÀO ĐÂY
+// CẤU HÌNH TELEGRAM BOT
 const TELEGRAM_BOT_TOKEN = '8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c'; 
 const TELEGRAM_CHAT_ID = '-1004487632704'; 
 
@@ -12,7 +12,6 @@ function formatDateStr(dateStr) {
     return d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
 }
 
-// Hàm bảo hiểm: Tránh lỗi null khi load HTML chậm
 window.safeSet = (id, value, type = 'text') => {
     const el = document.getElementById(id);
     if (el) {
@@ -31,8 +30,8 @@ window.App = {
     user: "Nhân", 
     isAdmin: true, 
     staffList: ["Anh Cường", "Văn Nhân", "Huyền Trang", "Minh Hoàng", "Thanh Dung", "CSKH"],
-    sourceList: ["Tự tìm kiếm", "Marketing","BOD", "KH Giới thiệu"],
-    typeList: ["Mới", "Upsell tính năng", "Mua thiết bị", "Gia hạn"],
+    sourceList: ["Tự tìm", "Marketing", "Giới thiệu"],
+    typeList: ["Phần mềm", "Phần cứng", "Combo", "Gia hạn"],
     chartInstances: {}, 
 
     sendTelegram(message) {
