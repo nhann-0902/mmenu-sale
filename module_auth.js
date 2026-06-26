@@ -2,9 +2,10 @@ Object.assign(window.App, {
     async login() {
         const unEl = document.getElementById('login-username');
         const pwEl = document.getElementById('login-password');
-
-        if (!unEl || !unEl.value.trim()) {
-            this.showPopup("Vui lòng nhập tên tài khoản (gì cũng được) để vào!", false);
+        const un = unEl ? unEl.value.trim() : "";
+        
+        if (!un) {
+            this.showPopup("Vui lòng nhập Tên tài khoản để đăng nhập!", false);
             return;
         }
 
@@ -17,8 +18,8 @@ Object.assign(window.App, {
         }
 
         try {
-            // TẠM THỜI BỎ QUA CHECK DATABASE ĐỂ VÀO THẲNG TEST HỆ THỐNG
-            this.user = unEl.value.trim(); 
+            // BYPASS: Đăng nhập test thẳng vào hệ thống
+            this.user = un; 
             this.isAdmin = true;
             
             localStorage.setItem('mmenu_session', JSON.stringify({ 
@@ -33,7 +34,7 @@ Object.assign(window.App, {
             if(pwEl) pwEl.value = '';
 
         } catch (err) {
-            this.showPopup("Lỗi hệ thống: " + err.message, false);
+            this.showPopup("Lỗi đăng nhập: " + err.message, false);
         } finally {
             if (btn) {
                 btn.innerHTML = orgText;
@@ -55,12 +56,21 @@ Object.assign(window.App, {
     checkSession() {
         const session = localStorage.getItem('mmenu_session');
         if (session) {
-            const data = JSON.parse(session);
-            this.user = data.name;
-            
-            this.updateHeaderUI(data.name);
-            safeStyle('mainHeader', 'display', 'flex');
-            this.nav('page-launchpad');
+            try {
+                // Đọc JSON, nếu bị lỗi cấu trúc cũ, sẽ nhảy thẳng xuống catch
+                const data = JSON.parse(session);
+                this.user = data.name || "Nhân";
+                
+                this.updateHeaderUI(this.user);
+                safeStyle('mainHeader', 'display', 'flex');
+                this.nav('page-launchpad');
+            } catch(e) {
+                // TỰ ĐỘNG DỌN RÁC NẾU LỖI KẸT CACHE CŨ
+                console.warn("Xóa phiên làm việc cũ bị lỗi...");
+                localStorage.removeItem('mmenu_session');
+                safeStyle('mainHeader', 'display', 'none');
+                this.nav('page-login');
+            }
         } else {
             safeStyle('mainHeader', 'display', 'none');
             this.nav('page-login');
@@ -68,9 +78,10 @@ Object.assign(window.App, {
     },
 
     updateHeaderUI(fullName) {
+        if (!fullName) fullName = "Admin";
         safeSet('userGreet', fullName.toUpperCase());
         let nameParts = fullName.trim().split(' ');
         let lastName = nameParts[nameParts.length - 1];
-        safeSet('userAvatarLetter', lastName.charAt(0).toUpperCase());
+        if (lastName) safeSet('userAvatarLetter', lastName.charAt(0).toUpperCase());
     }
 });
