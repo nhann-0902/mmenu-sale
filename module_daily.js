@@ -76,6 +76,9 @@ Object.assign(window.App, {
         let d_bg = document.getElementById('d_bg');
         let d_tc = document.getElementById('d_tc');
         
+        // Hàm phụ để chặn lỗi ký tự đặc biệt gây crash Telegram
+        const escapeHtml = (str) => String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
         let p = {
           date: d_date ? d_date.value : '',
           userFullName: this.user,
@@ -115,31 +118,30 @@ Object.assign(window.App, {
                 if(err2) throw err2;
             }
 
-            // Đổi định dạng ngày YYYY-MM-DD sang DD-MM-YYYY
             let dateParts = p.date.split('-'); 
             let displayDate = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}` : p.date;
 
-            // KHỐI TIN NHẮN CHUẨN FORM TELEGRAM (Có icon 🚨 nhấp nháy trước Báo Cáo Ngày)
-            let msg = `<b>🚨 BÁO CÁO ${displayDate}</b>\n`;
+            // Xây dựng tin nhắn theo đúng định dạng
+            let msg = `<b>🚨 BÁO CÁO NGÀY ${displayDate}</b>\n`;
             msg += `*****************************\n`;
             msg += `Tên: ${p.userFullName}\n`;
             msg += `*****************************\n`;
             msg += `<b><i>-Report lead</i></b>\n`;
-            msg += `<i>Total lead: ${p.tong}</i>\n`;
-            msg += `<i>Lead nhận: ${p.nhan}</i>\n`;
-            msg += `<i>Tự tìm: ${p.tu}</i>\n`;
-            msg += `<i>Tiềm năng: ${p.tn}</i>\n`;
-            msg += `<i>Demo/gặp: ${p.dm}</i>\n`;
-            msg += `<i>Báo giá: ${p.bg}</i>\n`;
-            msg += `<i>Từ chối: ${p.tc}</i>\n`;
+            msg += `<b>Total lead:</b> ${p.tong}\n`;
+            msg += `<b>Lead nhận:</b> ${p.nhan}\n`;
+            msg += `<b>Tự tìm:</b> ${p.tu}\n`;
+            msg += `<b>Tiềm năng:</b> ${p.tn}\n`;
+            msg += `<b>Demo/gặp:</b> ${p.dm}\n`;
+            msg += `<b>Báo giá:</b> ${p.bg}\n`;
+            msg += `<b>Từ chối:</b> ${p.tc}\n`;
             msg += `*****************************\n`;
             msg += `<b><i>-Task done</i></b>\n`;
 
             if (p.completedTaskDetails.length > 0) {
                 p.completedTaskDetails.forEach((txt, idx) => {
                     let taskNum = (idx + 1).toString().padStart(2, '0');
-                    // In nghiêng nguyên khối Task
-                    msg += `<i>Task ${taskNum}: ${txt}\n             ${p.date}</i>\n`;
+                    // In nghiêng nội dung task và ngày, chống lỗi parse entities
+                    msg += `<i>Task ${taskNum}: ${escapeHtml(txt)}\n         ${p.date}</i>\n`;
                 });
             } else {
                 msg += `<i>(Không có nhiệm vụ hoàn thành)</i>`;
