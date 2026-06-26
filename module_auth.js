@@ -3,9 +3,10 @@ Object.assign(window.App, {
         const unEl = document.getElementById('login-username');
         const pwEl = document.getElementById('login-password');
         const un = unEl ? unEl.value.trim() : "";
-        
-        if (!un) {
-            this.showPopup("Vui lòng nhập Tên tài khoản để đăng nhập!", false);
+        const pw = pwEl ? pwEl.value.trim() : "";
+
+        if(!un || !pw) {
+            this.showPopup("Vui lòng nhập đủ tài khoản và mật khẩu!", false);
             return;
         }
 
@@ -18,13 +19,28 @@ Object.assign(window.App, {
         }
 
         try {
-            // BYPASS: Đăng nhập test thẳng vào hệ thống
-            this.user = un; 
-            this.isAdmin = true;
+            // CHUẨN XÁC: Kết nối và kiểm tra thực tế trên Supabase
+            const { data, error } = await supabaseClient
+                .from('sys_users') 
+                .select('*')
+                .eq('username', un)
+                .eq('password', pw)
+                .single(); 
+
+            // Nếu không tìm thấy data (sai pass/user) hoặc có lỗi
+            if (error || !data) {
+                throw new Error("Tài khoản hoặc mật khẩu không chính xác!");
+            }
+
+            // Đăng nhập thành công -> Lấy TÊN THẬT (full_name) từ DB để hiển thị
+            this.user = data.full_name || un;
+            this.isAdmin = (data.role === 'Admin');
             
+            // Lưu phiên đăng nhập
             localStorage.setItem('mmenu_session', JSON.stringify({ 
-                name: this.user,
-                role: 'Admin'
+                name: this.user, 
+                username: data.username, 
+                role: data.role 
             }));
 
             this.updateHeaderUI(this.user);
@@ -34,7 +50,7 @@ Object.assign(window.App, {
             if(pwEl) pwEl.value = '';
 
         } catch (err) {
-            this.showPopup("Lỗi đăng nhập: " + err.message, false);
+            this.showPopup(err.message, false);
         } finally {
             if (btn) {
                 btn.innerHTML = orgText;
@@ -57,15 +73,13 @@ Object.assign(window.App, {
         const session = localStorage.getItem('mmenu_session');
         if (session) {
             try {
-                // Đọc JSON, nếu bị lỗi cấu trúc cũ, sẽ nhảy thẳng xuống catch
                 const data = JSON.parse(session);
-                this.user = data.name || "Nhân";
+                this.user = data.name;
                 
                 this.updateHeaderUI(this.user);
                 safeStyle('mainHeader', 'display', 'flex');
                 this.nav('page-launchpad');
             } catch(e) {
-                // TỰ ĐỘNG DỌN RÁC NẾU LỖI KẸT CACHE CŨ
                 console.warn("Xóa phiên làm việc cũ bị lỗi...");
                 localStorage.removeItem('mmenu_session');
                 safeStyle('mainHeader', 'display', 'none');
