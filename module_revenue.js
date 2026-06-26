@@ -82,14 +82,12 @@ Object.assign(window.App, {
             }]);
             if(error) throw error;
 
-            let msg = `💰💰💰<b>DOANH THU MỚI</b>\n`;
-            msg += `👤 <b>Nhân sự: ${p.userFullName}</b>\n`;
-            msg += `🤝 <b>Khách hàng: ${p.name}</b>\n`;
-            msg += `Loại: ${p.type} | Nguồn: ${p.source}\n`;
-            
+            let msg = `💰 <b>DOANH THU MỚI</b>\n`;
+            msg += `👤 Nhân sự: <b>${p.userFullName}</b>\n`;
+            msg += `🤝 Khách hàng: <b>${p.name}</b>\n`;
+            msg += `🏷️ Phân loại: ${p.type} | Nguồn: ${p.source}\n`;
             msg += `💵 Tổng hợp đồng: <b>${this.fmtFull(p.total)}</b>\n`;
             msg += `✅ Đã thanh toán: ${this.fmtFull(p.paid)}\n`;
-            
             msg += `⚠️ Công nợ: ${this.fmtFull(p.debt)}`;
             
             if (typeof this.sendTelegram === 'function') {
