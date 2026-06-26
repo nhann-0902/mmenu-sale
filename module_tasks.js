@@ -135,7 +135,7 @@ Object.assign(window.App, {
                   
                   let msg = `✅ <b>NGHIỆM THU NHIỆM VỤ</b>\n`;
                   msg += `👤 Nhân sự: <b>${this.user}</b>\n`;
-                  msg += `🎉 Vừa đánh dấu HOÀN THÀNH ${idsToComplete.length} nhiệm vụ!.`;
+                  msg += `🎉 Vừa đánh dấu HOÀN THÀNH ${idsToComplete.length} nhiệm vụ từ Kho.`;
                   
                   if (typeof this.sendTelegram === 'function') {
                       this.sendTelegram(msg);
@@ -242,7 +242,7 @@ Object.assign(window.App, {
             const { error } = await supabaseClient.from('data_tasks').insert(tasksToAssign);
             if(error) throw error;
 
-            let msg = `📌 <b>NHIỆM VỤ MỚI</b>\n`;
+            let msg = `📌 <b>PHÁT HÀNH NHIỆM VỤ MỚI</b>\n`;
             msg += `👤 Người giao: <b>${this.user}</b>\n`;
             msg += `📋 Số lượng: ${tasksToAssign.length} nhiệm vụ\n`;
             tasksToAssign.forEach((t, i) => {
