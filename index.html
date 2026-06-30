@@ -56,6 +56,9 @@
       <div class="menu-item" onclick="App.nav('page-daily')"><i class="fa-solid fa-pen-to-square"></i> Báo cáo ngày</div>
       <div class="menu-item" onclick="App.nav('page-revenue')"><i class="fa-solid fa-money-bill-trend-up"></i> Báo cáo doanh thu</div>
       <div class="menu-item" onclick="App.nav('page-task-list')"><i class="fa-solid fa-list-check"></i> Kho nhiệm vụ</div>
+      <div class="menu-item" onclick="App.nav('page-task-list')"><i class="fa-solid fa-list-check"></i> Kho nhiệm vụ</div>
+      <div class="menu-item" onclick="App.nav('page-features')"><i class="fa-solid fa-layer-group"></i> Tra cứu tính năng</div>
+      <div class="menu-item" onclick="App.nav('page-schedule')"><i class="fa-solid fa-calendar-days"></i> Lịch làm việc</div>
       <div class="menu-item" onclick="App.nav('page-schedule')"><i class="fa-solid fa-calendar-days"></i> Lịch làm việc</div>
       <div style="border-top: 1px solid var(--border); margin: 15px 10px;"></div>
       <div class="menu-item" style="color: var(--danger);" onclick="App.logout()"><i class="fa-solid fa-power-off"></i> Đăng xuất</div>
@@ -260,6 +263,43 @@
         </button>
       </div>
       <div id="scheduleContainer"></div>
+    </div>
+  </section>
+  <section id="page-features" class="page">
+    <div class="container">
+      <div class="title-main">TRA CỨU TÍNH NĂNG & KIẾN THỨC</div>
+      <div class="card">
+        <div style="display: flex; gap: 10px; margin-bottom: 5px; flex-wrap: wrap;">
+          <input type="text" id="featureSearchInput" class="form-control" placeholder="Ví dụ: Tính năng quản lý kho là gì?..." style="flex: 1; min-width: 200px; padding: 12px; font-size: 14px;">
+          <button class="btn btn-primary" style="width: auto; padding: 0 25px;" onclick="App.searchFeature()"><i class="fa-solid fa-magnifying-glass" style="margin-right: 8px;"></i> Phân tích</button>
+        </div>
+      </div>
+
+      <div id="featureResultArea" style="display: none; margin-top: 15px;">
+        <div class="card" style="background: rgba(59, 130, 246, 0.05); border-left: 4px solid var(--accent); margin-bottom: 15px;">
+          <div style="font-weight: 900; font-size: 11px; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;"><i class="fa-solid fa-robot"></i> AI TÓM TẮT</div>
+          <div id="featureSummaryText" style="font-size: 13px; line-height: 1.6; color: var(--primary); font-weight: 600;"></div>
+        </div>
+
+        <div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border);">
+          <div style="padding: 12px 15px; background: #f8fafc; font-weight: 900; font-size: 11px; color: var(--text-light); text-transform: uppercase; border-bottom: 1px solid var(--border);">
+             BẢNG PHÂN TÍCH CHI TIẾT
+          </div>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+              <thead>
+                <tr style="background: #f1f5f9; color: var(--text-light); font-size: 10px; text-transform: uppercase;">
+                  <th style="padding: 12px; border-bottom: 1px solid var(--border); width: 40px; text-align: center;">STT</th>
+                  <th style="padding: 12px; border-bottom: 1px solid var(--border); width: 160px;">Module</th>
+                  <th style="padding: 12px; border-bottom: 1px solid var(--border);">Mô tả chi tiết</th>
+                </tr>
+              </thead>
+              <tbody id="featureTableBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
