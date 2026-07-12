@@ -157,14 +157,20 @@ Object.assign(window.App, {
         if (task) {
             safeSet('taskDetailContent', task.noiDung);
             const modal = document.getElementById('taskDetailPopup');
-            if(modal) modal.classList.add('active');
+            if (modal) {
+                modal.style.setProperty('display', 'flex', 'important');
+                setTimeout(() => modal.classList.add('active'), 10);
+            }
         }
     },
     
     closeTaskDetail(e) {
         if (e && e.target && e.target.id !== 'taskDetailPopup') return; 
         const modal = document.getElementById('taskDetailPopup');
-        if(modal) modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.setProperty('display', 'none', 'important'), 300);
+        }
     },
 
     async addAssignBlock(count) {
