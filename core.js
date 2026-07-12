@@ -7,10 +7,9 @@ window.SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 window.SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 
 window.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-window.supabaseClient = window.supabase; 
 
 // =========================================================================
-// KHỐI 2: CÁC HÀM TIỆN ÍCH DOM & FORMATTER
+// KHỐI 2: CÁC HÀM TIỆN ÍCH DOM
 // =========================================================================
 window.safeSet = function(id, val, type = 'text') {
   const el = document.getElementById(id);
@@ -24,12 +23,6 @@ window.safeStyle = function(id, prop, val) {
   const el = document.getElementById(id);
   if (!el) return;
   el.style[prop] = val;
-};
-
-window.formatDateStr = function(dateStr) {
-  if (!dateStr) return '-';
-  const d = new Date(dateStr);
-  return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
 };
 
 // =========================================================================
@@ -63,29 +56,12 @@ Object.assign(window.App, {
     safeStyle('taskDetailPopup', 'display', 'none');
   },
 
-  fmt: function(num) {
-      if (!num) return '0đ';
-      if (num >= 1000000000) return (num / 1000000000).toFixed(1) + ' Tỷ';
-      if (num >= 1000000) return (num / 1000000).toFixed(1) + ' Tr';
-      return num.toLocaleString('vi-VN') + 'đ';
-  },
-
-  fmtFull: function(num) {
-      if (!num) return '0đ';
-      return num.toLocaleString('vi-VN') + 'đ';
-  },
-
   nav: function(pageId) {
     this.closeSidebar();
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById(pageId);
     if (target) target.classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    if (pageId === 'page-dashboard' && typeof this.loadDashboards === 'function') this.loadDashboards();
-    if (pageId === 'page-daily' && typeof this.loadDailyTasks === 'function') this.loadDailyTasks();
-    if (pageId === 'page-task-list' && typeof this.loadAllTasks === 'function') this.loadAllTasks();
-    if (pageId === 'page-schedule' && typeof this.loadSchedule === 'function') this.loadSchedule();
+    window.scrollTo(0, 0);
   }
 });
 
