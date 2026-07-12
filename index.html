@@ -80,7 +80,6 @@
   <section id="page-dashboard" class="page">
     <div class="container">
 
-      <!-- BẢNG LỌC TỔNG QUAN DẠNG ICON XỔ RA -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <div class="title-main" style="margin-bottom: 0;">TỔNG QUAN CHIẾN DỊCH</div>
         <button class="btn btn-outline" style="width: auto; padding: 10px 16px; font-size: 12px;" onclick="App.toggleFilter('dashFilterPanel')">
@@ -138,7 +137,6 @@
           </div>
         </div>
       </div>
-      <!-- KẾT THÚC BẢNG LỌC TỔNG QUAN -->
 
       <div class="card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border:none; margin-bottom: 20px; padding: 25px;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -183,7 +181,17 @@
       <div class="title-main">BÁO CÁO NGÀY</div>
       <div class="grid-2">
         <div class="card">
-          <div class="form-group" style="margin-bottom: 20px;"><label class="form-label">NGÀY BÁO CÁO</label><input type="date" id="d_date" class="form-control default-today"></div>
+          <!-- ĐÃ THÊM: Nút Đồng bộ Getfly nằm cạnh Input Chọn ngày -->
+          <div class="form-group" style="margin-bottom: 20px;">
+            <label class="form-label">NGÀY BÁO CÁO</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="date" id="d_date" class="form-control default-today" style="flex: 1;">
+              <button class="btn btn-outline" style="width: auto; padding: 0 15px; font-size: 12px; color: var(--accent); border-color: var(--accent);" onclick="App.syncGetflyData()">
+                <i class="fa-solid fa-rotate" style="margin-right: 6px;"></i> GETFLY
+              </button>
+            </div>
+          </div>
+
           <div class="form-label" style="font-size:12px; margin-bottom: 15px; color: var(--primary); text-align: center;">CHỈ SỐ LEAD TRONG NGÀY</div>
           <div style="border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 20px;">
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px 20px;">
@@ -282,7 +290,6 @@
   <section id="page-task-list" class="page">
     <div class="container">
 
-      <!-- BẢNG LỌC NHIỆM VỤ DẠNG ICON XỔ RA -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
         <div class="title-main" style="margin-bottom: 0;">KHO NHIỆM VỤ</div>
         <div style="display: flex; gap: 10px;">
@@ -323,7 +330,6 @@
           </div>
         </div>
       </div>
-      <!-- KẾT THÚC BẢNG LỌC NHIỆM VỤ -->
 
       <div id="bulkActionContainer" style="margin-bottom: 20px; display: none;">
           <button class="btn" style="background: var(--success); color: #fff; box-shadow: 0 4px 15px rgba(16,185,129,0.3);" onclick="App.confirmCompleteMultipleTasks()">
