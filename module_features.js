@@ -10,6 +10,7 @@ Object.assign(window.App, {
         safeStyle('featureResultArea', 'display', 'none'); 
 
         try {
+            // LƯU Ý: Nếu URL script này thay đổi, bạn cần cập nhật lại link Deploy mới nhất ở đây
             const GAS_URL = 'https://script.google.com/macros/s/AKfycbybRt13WJ8cHfTYCfDPFADMXEvAuvLH_wqh9fOJmlfFuOG8JUUtd3-kdNt_Rc015aDT/exec';
 
             const res = await fetch(GAS_URL, {
@@ -36,7 +37,6 @@ Object.assign(window.App, {
                     html = `<tr><td colspan="3" style="text-align:center; padding:15px; font-style:italic; color:var(--text-light);">Không có dữ liệu chi tiết</td></tr>`;
                 }
                 safeSet('featureTableBody', html, 'html');
-                
                 safeStyle('featureResultArea', 'display', 'block');
             } else {
                  this.showPopup("Lỗi xử lý từ máy chủ: " + data.message, false);
