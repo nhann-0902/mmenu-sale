@@ -1,128 +1,129 @@
-// 1. KHỞI TẠO APP TRƯỚC TIÊN ĐỂ CHỐNG CRASH HỆ THỐNG
-window.App = {
-    user: "Nhân", 
-    isAdmin: true, 
-    staffList: ["Anh Cường", "Văn Nhân", "Huyền Trang", "Minh Hoàng", "Thanh Dung", "CSKH"],
-    sourceList: ["Tự tìm", "Marketing", "Giới thiệu"],
-    typeList: ["Phần mềm", "Phần cứng", "Combo", "Gia hạn"],
-    chartInstances: {}, 
+// Khởi tạo không gian làm việc chung (Global Object) để các module khác gọi đến
+window.App = window.App || {};
 
-    sendTelegram(message) {
-        if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID || TELEGRAM_BOT_TOKEN.includes('ĐIỀN_TOKEN')) return;
-        const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' })
-        }).catch(err => console.error('Lỗi gửi Telegram:', err));
-    },
-    
-    showL() { const el = document.getElementById('globalLoading'); if(el) el.classList.add('active'); },
-    hideL() { const el = document.getElementById('globalLoading'); if(el) el.classList.remove('active'); },
-    
-    showPopup(msg, isSuccess = false) {
-      const msgEl = document.getElementById('popupMessage');
-      if(!msgEl) return;
-      msgEl.innerText = msg;
-      
-      const iconEl = document.getElementById('popupIcon');
-      if(iconEl) {
-          iconEl.innerHTML = isSuccess ? '<i class="fa-solid fa-circle-check"></i>' : '<i class="fa-solid fa-code"></i>';
-          iconEl.style.color = isSuccess ? 'var(--success)' : 'var(--info)';
-      }
-      
-      safeSet('popupTitle', isSuccess ? 'THÀNH CÔNG' : 'THÔNG BÁO');
-      const popEl = document.getElementById('customPopup');
-      if(popEl) popEl.classList.add('active');
-    },
-    
-    closePopup() { const el = document.getElementById('customPopup'); if(el) el.classList.remove('active'); },
-
-    openSidebar() { const el = document.getElementById('globalSidebar'); if(el) el.classList.add('active'); },
-    closeSidebar(e) { 
-      if (e === true || (e.target && e.target.id === 'globalSidebar')) {
-        const el = document.getElementById('globalSidebar');
-        if(el) el.classList.remove('active');
-      }
-    },
-
-    nav(id) {
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      let target = document.getElementById(id);
-      if(target) { 
-        target.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' }); 
-      }
-      
-      if(id === 'page-login') document.body.classList.add('is-login');
-      else document.body.classList.remove('is-login');
-      
-      if(window.innerWidth < 1024) this.closeSidebar(true);
-      document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-      let activeMenu = document.querySelector(`.menu-item[onclick*="${id}"]`);
-      if(activeMenu) activeMenu.classList.add('active');
-
-      if (id === 'page-dashboard' && typeof this.loadDashboards === 'function') this.loadDashboards();
-      if (id === 'page-daily' && typeof this.loadDailyTasks === 'function') this.loadDailyTasks();
-      if (id === 'page-daily-confirm' && typeof this.renderDailyConfirm === 'function') this.renderDailyConfirm();
-      if (id === 'page-revenue-confirm' && typeof this.renderRevConfirm === 'function') this.renderRevConfirm();
-      if (id === 'page-task-list' && typeof this.loadAllTasks === 'function') this.loadAllTasks();
-      if (id === 'page-task-assign' && typeof this.addAssignBlock === 'function') { 
-        safeSet('assignFormContainer', '', 'html');
-        this.addAssignBlock(2);
-      }
-      if (id === 'page-schedule' && typeof this.loadSchedule === 'function') this.loadSchedule();
-    },
-
-    fmt(n) { return (n || 0).toLocaleString('vi-VN') + 'đ'; },
-    fmtFull(n) { return (n || 0).toLocaleString('vi-VN') + 'đ'; },
-    
-    initData() { 
-      const today = new Date().toISOString().split('T')[0];
-      document.querySelectorAll('.default-today').forEach(el => { if(!el.value) el.value = today; }); 
-      
-      safeSet('r_src', `<option value="">Chọn nguồn...</option>` + this.sourceList.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
-      safeSet('r_type', `<option value="">Chọn loại...</option>` + this.typeList.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
-
-      if (typeof this.checkSession === 'function') this.checkSession();
-    }
-};
-
-// 2. CÁC HÀM PHỤ TRỢ & CẤU HÌNH API
-const SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
-
-const TELEGRAM_BOT_TOKEN = '8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c'; 
-const TELEGRAM_CHAT_ID = '-1004487632704'; 
-
-function formatDateStr(dateStr) {
-    if(!dateStr) return '-';
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
+// =========================================================================
+// KHỐI 1: KHỞI TẠO KẾT NỐI SUPABASE
+// =========================================================================
+window.SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
+window.SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
+if (typeof supabase !== 'undefined') {
+  window.supabase = window.supabase || supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
 }
 
-window.safeSet = (id, value, type = 'text') => {
-    const el = document.getElementById(id);
-    if (el) {
-        if (type === 'text') el.innerText = value;
-        else if (type === 'html') el.innerHTML = value;
-        else if (type === 'value') el.value = value;
-    }
+// =========================================================================
+// KHỐI 2: CÁC HÀM TIỆN ÍCH DOM AN TOÀN (BẢO TOÀN TỪ CODE GỐC)
+// =========================================================================
+window.safeSet = function(id, val, type = 'text') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (type === 'text') el.innerText = val;
+  else if (type === 'html') el.innerHTML = val;
+  else if (type === 'val') el.value = val;
 };
 
-window.safeStyle = (id, prop, value) => {
-    const el = document.getElementById(id);
-    if (el) el.style[prop] = value;
+window.safeStyle = function(id, prop, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style[prop] = val;
 };
 
-// 3. KHỞI TẠO SUPABASE AN TOÀN TẠI ĐÂY
-window.supabaseClient = null;
-try {
-    if (window.supabase) {
-        window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// =========================================================================
+// KHỐI 3: GIAO DIỆN (UI) CỐT LÕI
+// =========================================================================
+Object.assign(window.App, {
+  showL: function() { safeStyle('globalLoading', 'display', 'flex'); },
+  hideL: function() { safeStyle('globalLoading', 'display', 'none'); },
+  
+  showPopup: function(msg, isSuccess = true) {
+    safeSet('popupMessage', msg);
+    safeSet('popupTitle', isSuccess ? 'THÀNH CÔNG' : 'THÔNG BÁO');
+    const icon = document.getElementById('popupIcon');
+    if (icon) {
+        icon.innerHTML = isSuccess ? '<i class="fa-solid fa-circle-check" style="color: var(--success);"></i>' : '<i class="fa-solid fa-circle-exclamation" style="color: var(--danger);"></i>';
     }
-} catch (e) {
-    console.warn("Lỗi load Database:", e);
+    safeStyle('customPopup', 'display', 'flex');
+  },
+  
+  closePopup: function() { safeStyle('customPopup', 'display', 'none'); },
+  
+  openSidebar: function() { safeStyle('globalSidebar', 'display', 'flex'); },
+  
+  closeSidebar: function(e) { 
+    // Ngăn chặn đóng nếu click dính vào khu vực menu bên trong
+    if(e && e.target !== document.getElementById('globalSidebar')) return;
+    safeStyle('globalSidebar', 'display', 'none'); 
+  },
+  
+  closeTaskDetail: function(e) {
+    if(e && e.target !== document.getElementById('taskDetailPopup')) return;
+    safeStyle('taskDetailPopup', 'display', 'none');
+  },
+
+  nav: function(pageId) {
+    this.closeSidebar();
+    
+    // Tắt tất cả trang đang mở
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    
+    // Mở trang được gọi
+    const target = document.getElementById(pageId);
+    if (target) target.classList.add('active');
+    
+    // Tự động cuộn mượt lên đầu trang
+    window.scrollTo(0, 0);
+  }
+});
+
+// =========================================================================
+// KHỐI 4: PWA - CÀI ĐẶT APP RA MÀN HÌNH CHÍNH
+// =========================================================================
+let deferredPrompt;
+
+// 1. Đăng ký Service Worker khi load trang
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('✅ Service Worker đăng ký thành công!'))
+      .catch(err => console.log('❌ Lỗi đăng ký SW:', err));
+  });
 }
 
-window.onload = function() { window.App.initData(); };
+// 2. Bắt sự kiện trình duyệt sẵn sàng cho cài đặt
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Ngăn trình duyệt tự động hiện popup bừa bãi
+  e.preventDefault();
+  // Lưu lại sự kiện để kích hoạt khi user bấm nút
+  deferredPrompt = e;
+  
+  // Hiển thị nút Cài đặt trong menu
+  const installBtn = document.getElementById('btnInstallApp');
+  if(installBtn) installBtn.style.display = 'block';
+});
+
+// 3. Hàm kích hoạt khi người dùng bấm nút "Cài đặt App"
+Object.assign(window.App, {
+  installPWA: async function() {
+    if (deferredPrompt) {
+      // Hiển thị bảng hỏi cài đặt của hệ thống
+      deferredPrompt.prompt();
+      
+      // Chờ người dùng phản hồi
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        console.log('User đã đồng ý cài đặt');
+      } else {
+        console.log('User từ chối cài đặt');
+      }
+      
+      // Reset biến và ẩn nút
+      deferredPrompt = null;
+      const installBtn = document.getElementById('btnInstallApp');
+      if (installBtn) installBtn.style.display = 'none';
+      
+      this.closeSidebar(); // Đóng menu lại cho gọn
+    } else {
+      // Hỗ trợ cho iOS (Vì Safari iOS chặn hàm prompt tự động)
+      this.showPopup("Để cài đặt trên iPhone/iPad: \n\n1. Bấm nút Chia sẻ (Share) ở dưới cùng trình duyệt.\n2. Chọn 'Thêm vào MH chính' (Add to Home Screen).", false);
+    }
+  }
+});
