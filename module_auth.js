@@ -65,6 +65,7 @@ Object.assign(window.App, {
     safeSet('userGreet', displayName);
     safeSet('userAvatarLetter', displayName.charAt(0).toUpperCase());
     window.CURRENT_USER = userData;
+    this.user = displayName; 
   }
 });
 
