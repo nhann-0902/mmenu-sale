@@ -41,6 +41,65 @@ Object.assign(window.App, {
         }
     },
 
+    // ĐÃ THÊM: Hàm Quét và Đồng bộ Getfly
+    async syncGetflyData() {
+        let d_date = document.getElementById('d_date');
+        let dateVal = d_date ? d_date.value : '';
+        if (!dateVal) {
+            this.showPopup("Vui lòng chọn Ngày báo cáo trước khi đồng bộ!", false);
+            return;
+        }
+
+        this.showL();
+        try {
+            // Quét dữ liệu từ bảng getfly_customers trên Supabase
+            const { data, error } = await supabaseClient
+                .from('getfly_customers')
+                .select('*')
+                .eq('staff_name', this.user)
+                .like('created_at', `${dateVal}%`);
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                this.showPopup(`Không có dữ liệu khách hàng mới nào trên Getfly cho [${this.user}] trong ngày ${dateVal}.`, false);
+                this.hideL();
+                return;
+            }
+
+            let counts = { tong: data.length, nhan: 0, tu: 0, tn: 0, dm: 0, bg: 0, tc: 0 };
+
+            // Phân tách trạng thái dựa trên dữ liệu thu về
+            data.forEach(lead => {
+                let st = (lead.status || '').toLowerCase();
+                let src = (lead.source || '').toLowerCase();
+
+                if (src.includes('tự tìm')) counts.tu++;
+                else counts.nhan++;
+
+                if (st.includes('tiềm năng')) counts.tn++;
+                else if (st.includes('demo') || st.includes('gặp')) counts.dm++;
+                else if (st.includes('báo giá')) counts.bg++;
+                else if (st.includes('từ chối') || st.includes('fail') || st.includes('hủy')) counts.tc++;
+            });
+
+            // Fill số liệu ra Form cho nhân viên kiểm tra
+            if(document.getElementById('d_tong')) document.getElementById('d_tong').value = counts.tong;
+            if(document.getElementById('d_nhan')) document.getElementById('d_nhan').value = counts.nhan;
+            if(document.getElementById('d_tu')) document.getElementById('d_tu').value = counts.tu;
+            if(document.getElementById('d_tn')) document.getElementById('d_tn').value = counts.tn;
+            if(document.getElementById('d_dm')) document.getElementById('d_dm').value = counts.dm;
+            if(document.getElementById('d_bg')) document.getElementById('d_bg').value = counts.bg;
+            if(document.getElementById('d_tc')) document.getElementById('d_tc').value = counts.tc;
+
+            this.showPopup(`Đã đồng bộ thành công ${counts.tong} khách hàng từ Getfly! Vui lòng kiểm tra và điều chỉnh lại số liệu (nếu cần) trước khi xác nhận.`, true);
+        } catch (err) {
+            this.showPopup("Lỗi đồng bộ Getfly: " + err.message, false);
+        } finally {
+            this.hideL();
+        }
+    },
+
     renderDailyConfirm() { 
         const ids = ['d_tong','d_nhan','d_tu','d_tn','d_dm','d_bg','d_tc']; 
         const labels = ['Tổng Lead','Lead nhận','Tự tìm','Tiềm năng','Demo/gặp gỡ','Báo giá','Từ chối']; 
@@ -48,7 +107,6 @@ Object.assign(window.App, {
         let htmlStats = ''; 
         ids.forEach((id, idx) => { 
           const el = document.getElementById(id);
-          // Đã sửa: Nếu lấy giá trị rỗng ("") thì tự động trả về 0
           let val = (el && el.value !== '') ? el.value : 0; 
           htmlStats += `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">${labels[idx]}</span> <b style="color:var(--primary)">${val}</b></div>`; 
         }); 
@@ -79,7 +137,6 @@ Object.assign(window.App, {
         
         const escapeHtml = (str) => String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-        // Đã sửa: Ép kiểu về 0 khi lấy dữ liệu trước khi gửi lên Supabase
         let p = {
           date: d_date ? d_date.value : '',
           userFullName: this.user,
@@ -150,7 +207,6 @@ Object.assign(window.App, {
                 this.sendTelegram(msg);
             }
 
-            // Đã sửa: Trả các ô về mặc định = 0 sau khi gửi
             document.querySelectorAll('.daily-input').forEach(el => el.value = '0'); 
             this.showPopup("Báo cáo ngày đã được niêm phong!", true); 
             this.nav('page-launchpad'); 
