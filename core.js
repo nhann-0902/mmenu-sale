@@ -105,11 +105,10 @@ Object.assign(window.App, {
       return num.toLocaleString('vi-VN') + 'đ';
   },
 
-  // ĐÃ FIX: Hàm gửi tin nhắn Telegram
   sendTelegram: function(msg) {
-    // QUAN TRỌNG: Bạn cần điền API Token của Bot và ID Nhóm Chat vào 2 biến dưới đây!
-    const TELEGRAM_BOT_TOKEN = '-1004487632704'; // Ví dụ: '719283749:AAF_kabcxyz1234567890'
-    const TELEGRAM_CHAT_ID = '8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c';   // Ví dụ: '-1002345678901' (Nhóm chat thường có dấu trừ ở đầu)
+    // ĐÃ ĐIỀN THÔNG TIN TOKEN VÀ CHAT ID
+    const TELEGRAM_BOT_TOKEN = '8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c';
+    const TELEGRAM_CHAT_ID = '-1004487632704';
 
     if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
         console.warn('Bạn chưa cấu hình Telegram Bot trong file core.js. Nội dung gửi hụt:', msg);
@@ -123,7 +122,7 @@ Object.assign(window.App, {
         body: JSON.stringify({
             chat_id: TELEGRAM_CHAT_ID,
             text: msg,
-            parse_mode: 'HTML' // Để hiển thị in đậm, in nghiêng chuẩn
+            parse_mode: 'HTML' 
         })
     }).then(res => {
         if (!res.ok) console.error("Lỗi gửi Telegram từ API:", res.statusText);
@@ -148,6 +147,15 @@ Object.assign(window.App, {
     if (pageId === 'page-daily' && typeof this.loadDailyTasks === 'function') this.loadDailyTasks();
     if (pageId === 'page-task-list' && typeof this.loadAllTasks === 'function') this.loadAllTasks();
     if (pageId === 'page-schedule' && typeof this.loadSchedule === 'function') this.loadSchedule();
+    
+    // ĐÃ THÊM LOGIC: Tự động khởi tạo 3 Task Block khi mở trang Phát hành nhiệm vụ
+    if (pageId === 'page-task-assign' && typeof this.addAssignBlock === 'function') {
+        const container = document.getElementById('assignFormContainer');
+        if (container) {
+            container.innerHTML = ''; // Làm sạch các ô cũ
+            this.addAssignBlock(3);   // Mặc định tạo 3 ô mới
+        }
+    }
   }
 });
 
