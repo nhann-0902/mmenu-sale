@@ -33,7 +33,7 @@ window.formatDateStr = function(dateStr) {
 };
 
 // =========================================================================
-// KHỐI 3: GIAO DIỆN (UI) CỐT LÕI
+// KHỐI 3: GIAO DIỆN (UI) CỐT LÕI VÀ KẾT NỐI API
 // =========================================================================
 Object.assign(window.App, {
   showL: function() { 
@@ -105,6 +105,31 @@ Object.assign(window.App, {
       return num.toLocaleString('vi-VN') + 'đ';
   },
 
+  // ĐÃ FIX: Hàm gửi tin nhắn Telegram
+  sendTelegram: function(msg) {
+    // QUAN TRỌNG: Bạn cần điền API Token của Bot và ID Nhóm Chat vào 2 biến dưới đây!
+    const TELEGRAM_BOT_TOKEN = '-1004487632704'; // Ví dụ: '719283749:AAF_kabcxyz1234567890'
+    const TELEGRAM_CHAT_ID = '8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c';   // Ví dụ: '-1002345678901' (Nhóm chat thường có dấu trừ ở đầu)
+
+    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
+        console.warn('Bạn chưa cấu hình Telegram Bot trong file core.js. Nội dung gửi hụt:', msg);
+        return;
+    }
+
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            chat_id: TELEGRAM_CHAT_ID,
+            text: msg,
+            parse_mode: 'HTML' // Để hiển thị in đậm, in nghiêng chuẩn
+        })
+    }).then(res => {
+        if (!res.ok) console.error("Lỗi gửi Telegram từ API:", res.statusText);
+    }).catch(err => console.error("Lỗi mạng khi kết nối Telegram:", err));
+  },
+
   nav: function(pageId) {
     this.closeSidebar();
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -112,7 +137,6 @@ Object.assign(window.App, {
     if (target) target.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // ĐÃ THÊM LOGIC: Tự động set ngày hôm nay cho các ô input ngày tháng
     const todayStr = new Date().toISOString().split('T')[0];
     document.querySelectorAll('.default-today').forEach(el => {
         if (!el.value) {
