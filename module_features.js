@@ -12,21 +12,17 @@ Object.assign(window.App, {
         try {
             const GAS_URL = 'https://script.google.com/macros/s/AKfycbybRt13WJ8cHfTYCfDPFADMXEvAuvLH_wqh9fOJmlfFuOG8JUUtd3-kdNt_Rc015aDT/exec';
 
-            // Gọi API sang Google Apps Script
             const res = await fetch(GAS_URL, {
                 method: 'POST',
                 body: JSON.stringify({ action: "search_feature", query: queryEl.value.trim() }),
-                // text/plain giúp vượt rào bảo mật CORS của trình duyệt khi gọi sang Google
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' } 
             });
 
             const data = await res.json();
 
             if(data.status === 'success') {
-                // Hiển thị phần tóm tắt AI
                 safeSet('featureSummaryText', data.summary);
 
-                // Vẽ nội dung vào bảng
                 let html = '';
                 if(data.details && data.details.length > 0) {
                     data.details.forEach((item, idx) => {
@@ -41,7 +37,6 @@ Object.assign(window.App, {
                 }
                 safeSet('featureTableBody', html, 'html');
                 
-                // Mở khung kết quả lên
                 safeStyle('featureResultArea', 'display', 'block');
             } else {
                  this.showPopup("Lỗi xử lý từ máy chủ: " + data.message, false);
