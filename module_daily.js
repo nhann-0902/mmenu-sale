@@ -48,7 +48,8 @@ Object.assign(window.App, {
         let htmlStats = ''; 
         ids.forEach((id, idx) => { 
           const el = document.getElementById(id);
-          let val = el ? el.value : 0; 
+          // Đã sửa: Nếu lấy giá trị rỗng ("") thì tự động trả về 0
+          let val = (el && el.value !== '') ? el.value : 0; 
           htmlStats += `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">${labels[idx]}</span> <b style="color:var(--primary)">${val}</b></div>`; 
         }); 
         safeSet('dailyConfirmStats', htmlStats, 'html'); 
@@ -78,16 +79,17 @@ Object.assign(window.App, {
         
         const escapeHtml = (str) => String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+        // Đã sửa: Ép kiểu về 0 khi lấy dữ liệu trước khi gửi lên Supabase
         let p = {
           date: d_date ? d_date.value : '',
           userFullName: this.user,
-          tong: d_tong ? d_tong.value : 0, 
-          nhan: d_nhan ? d_nhan.value : 0,
-          tu: d_tu ? d_tu.value : 0, 
-          tn: d_tn ? d_tn.value : 0,
-          dm: d_dm ? d_dm.value : 0, 
-          bg: d_bg ? d_bg.value : 0,
-          tc: d_tc ? d_tc.value : 0, 
+          tong: (d_tong && d_tong.value !== '') ? d_tong.value : 0, 
+          nhan: (d_nhan && d_nhan.value !== '') ? d_nhan.value : 0,
+          tu: (d_tu && d_tu.value !== '') ? d_tu.value : 0, 
+          tn: (d_tn && d_tn.value !== '') ? d_tn.value : 0,
+          dm: (d_dm && d_dm.value !== '') ? d_dm.value : 0, 
+          bg: (d_bg && d_bg.value !== '') ? d_bg.value : 0,
+          tc: (d_tc && d_tc.value !== '') ? d_tc.value : 0, 
           completedTaskIds: [], 
           taskNotes: "",
           completedTaskDetails: [] 
@@ -148,7 +150,8 @@ Object.assign(window.App, {
                 this.sendTelegram(msg);
             }
 
-            document.querySelectorAll('.daily-input').forEach(el => el.value = ''); 
+            // Đã sửa: Trả các ô về mặc định = 0 sau khi gửi
+            document.querySelectorAll('.daily-input').forEach(el => el.value = '0'); 
             this.showPopup("Báo cáo ngày đã được niêm phong!", true); 
             this.nav('page-launchpad'); 
         } catch(error) {
