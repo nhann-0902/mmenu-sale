@@ -7,9 +7,10 @@ window.SUPABASE_URL = 'https://ftdndkfymswcjedcznrx.supabase.co';
 window.SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 
 window.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+window.supabaseClient = window.supabase; 
 
 // =========================================================================
-// KHỐI 2: CÁC HÀM TIỆN ÍCH DOM
+// KHỐI 2: CÁC HÀM TIỆN ÍCH DOM & FORMATTER
 // =========================================================================
 window.safeSet = function(id, val, type = 'text') {
   const el = document.getElementById(id);
@@ -25,12 +26,24 @@ window.safeStyle = function(id, prop, val) {
   el.style[prop] = val;
 };
 
+window.formatDateStr = function(dateStr) {
+  if (!dateStr) return '-';
+  const d = new Date(dateStr);
+  return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'});
+};
+
 // =========================================================================
-// KHỐI 3: GIAO DIỆN (UI) CỐT LÕI
+// KHỐI 3: GIAO DIỆN (UI) CỐT LÕI - TỐI ƯU HÓA HIỆU ỨNG (KHÔNG RÚT GỌN)
 // =========================================================================
 Object.assign(window.App, {
-  showL: function() { safeStyle('globalLoading', 'display', 'flex'); },
-  hideL: function() { safeStyle('globalLoading', 'display', 'none'); },
+  showL: function() { 
+      const el = document.getElementById('globalLoading');
+      if (el) el.style.setProperty('display', 'flex', 'important');
+  },
+  hideL: function() { 
+      const el = document.getElementById('globalLoading');
+      if (el) el.style.setProperty('display', 'none', 'important');
+  },
   
   showPopup: function(msg, isSuccess = true) {
     safeSet('popupMessage', msg);
@@ -39,21 +52,57 @@ Object.assign(window.App, {
     if (icon) {
         icon.innerHTML = isSuccess ? '<i class="fa-solid fa-circle-check" style="color: var(--success);"></i>' : '<i class="fa-solid fa-circle-exclamation" style="color: var(--danger);"></i>';
     }
-    safeStyle('customPopup', 'display', 'flex');
+    const popup = document.getElementById('customPopup');
+    if (popup) {
+        popup.style.setProperty('display', 'flex', 'important');
+        setTimeout(() => popup.classList.add('active'), 10);
+    }
   },
   
-  closePopup: function() { safeStyle('customPopup', 'display', 'none'); },
+  closePopup: function() { 
+    const popup = document.getElementById('customPopup');
+    if (popup) {
+        popup.classList.remove('active');
+        setTimeout(() => popup.style.setProperty('display', 'none', 'important'), 300);
+    }
+  },
   
-  openSidebar: function() { safeStyle('globalSidebar', 'display', 'flex'); },
+  openSidebar: function() { 
+    const sidebar = document.getElementById('globalSidebar');
+    if (sidebar) {
+        sidebar.style.setProperty('display', 'block', 'important');
+        setTimeout(() => sidebar.classList.add('active'), 10);
+    }
+  },
   
   closeSidebar: function(e) { 
-    if(e && e.target !== document.getElementById('globalSidebar')) return;
-    safeStyle('globalSidebar', 'display', 'none'); 
+    const sidebar = document.getElementById('globalSidebar');
+    if (e && e.target !== sidebar) return;
+    if (sidebar) {
+        sidebar.classList.remove('active');
+        setTimeout(() => sidebar.style.setProperty('display', 'none', 'important'), 300);
+    }
   },
   
   closeTaskDetail: function(e) {
-    if(e && e.target !== document.getElementById('taskDetailPopup')) return;
-    safeStyle('taskDetailPopup', 'display', 'none');
+    const popup = document.getElementById('taskDetailPopup');
+    if (e && e.target !== popup) return;
+    if (popup) {
+        popup.classList.remove('active');
+        setTimeout(() => popup.style.setProperty('display', 'none', 'important'), 300);
+    }
+  },
+
+  fmt: function(num) {
+      if (!num) return '0đ';
+      if (num >= 1000000000) return (num / 1000000000).toFixed(1) + ' Tỷ';
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + ' Tr';
+      return num.toLocaleString('vi-VN') + 'đ';
+  },
+
+  fmtFull: function(num) {
+      if (!num) return '0đ';
+      return num.toLocaleString('vi-VN') + 'đ';
   },
 
   nav: function(pageId) {
@@ -61,7 +110,12 @@ Object.assign(window.App, {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById(pageId);
     if (target) target.classList.add('active');
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (pageId === 'page-dashboard' && typeof this.loadDashboards === 'function') this.loadDashboards();
+    if (pageId === 'page-daily' && typeof this.loadDailyTasks === 'function') this.loadDailyTasks();
+    if (pageId === 'page-task-list' && typeof this.loadAllTasks === 'function') this.loadAllTasks();
+    if (pageId === 'page-schedule' && typeof this.loadSchedule === 'function') this.loadSchedule();
   }
 });
 
