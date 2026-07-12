@@ -9,6 +9,5 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
-  // Trả về dữ liệu gốc, không can thiệp cache để tránh lỗi
   e.respondWith(fetch(e.request).catch(() => new Response("Vui lòng kết nối mạng để sử dụng MMENU.")));
 });
