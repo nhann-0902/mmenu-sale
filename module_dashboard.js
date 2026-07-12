@@ -3,7 +3,6 @@ Object.assign(window.App, {
         if (typeof Chart === 'undefined') return;
         this.showL();
         
-        // 1. Gắn danh sách nhân sự vào ô Filter
         const filterStaffEl = document.getElementById('dashFilterStaff');
         if (filterStaffEl && filterStaffEl.options.length <= 1) {
             let staffList = await (this.getDbStaffList ? this.getDbStaffList() : Promise.resolve(this.staffList));
@@ -12,11 +11,9 @@ Object.assign(window.App, {
             filterStaffEl.value = currentVal;
         }
 
-        // 2. Lấy giá trị lọc
         let filterTime = document.getElementById('dashFilterTime') ? document.getElementById('dashFilterTime').value : 'ALL';
         let filterStaff = filterStaffEl ? filterStaffEl.value : 'ALL';
 
-        // 3. Tính toán ngày bắt đầu / kết thúc
         let startDate = null;
         let endDate = null;
         let tempD = new Date();
@@ -40,7 +37,6 @@ Object.assign(window.App, {
         let formatISO = (d) => { let z = d.getTimezoneOffset() * 60000; return new Date(d - z).toISOString().split('T')[0]; };
 
         try {
-            // 4. Xây dựng Query cho Supabase
             let qRev = supabaseClient.from('data_revenue').select('*');
             let qLead = supabaseClient.from('data_leads').select('*');
             let qTask = supabaseClient.from('data_tasks').select('*');
@@ -50,7 +46,6 @@ Object.assign(window.App, {
                 let eStr = formatISO(endDate);
                 qRev = qRev.gte('transaction_date', sStr).lte('transaction_date', eStr);
                 qLead = qLead.gte('date', sStr).lte('date', eStr);
-                // Với Task, lọc theo ngày tạo (created_at)
                 qTask = qTask.gte('created_at', sStr + 'T00:00:00').lte('created_at', eStr + 'T23:59:59');
             }
 
@@ -60,7 +55,6 @@ Object.assign(window.App, {
                 qTask = qTask.eq('receiver', filterStaff);
             }
 
-            // Gọi API song song
             const [revRes, leadRes, taskRes] = await Promise.all([qRev, qLead, qTask]);
             
             let dash = {
@@ -124,7 +118,6 @@ Object.assign(window.App, {
                 else dash.task.pending++;
             });
 
-            // Gán dữ liệu lên KPI
             safeSet('kpiActualNum', this.fmt(dash.kpi.actual)); 
             safeSet('kpiTargetNum', "Target: " + this.fmt(dash.kpi.target)); 
             let pct = dash.kpi.target > 0 ? Math.round((dash.kpi.actual / dash.kpi.target) * 100) : 0; 
@@ -135,7 +128,6 @@ Object.assign(window.App, {
             Object.values(this.chartInstances).forEach(chart => { if(chart) chart.destroy(); }); 
             this.chartInstances = {}; 
              
-            // Vẽ biểu đồ
             let canvasTrendRev = document.getElementById('chartTrendRev');
             if (canvasTrendRev) {
                 let ctxRev = canvasTrendRev.getContext('2d');
