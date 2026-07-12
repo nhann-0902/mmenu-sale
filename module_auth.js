@@ -12,7 +12,7 @@ Object.assign(window.App, {
 
     try {
       const { data, error } = await window.supabase
-        .from('sys_users')
+        .from('mmenu_staff')
         .select('*')
         .eq('username', user)
         .eq('password', pass)
@@ -61,11 +61,10 @@ Object.assign(window.App, {
   },
 
   setupUserUI: function(userData) {
-    const displayName = userData.full_name || userData.username || "Nhân sự";
+    const displayName = userData.fullname || userData.username || "Nhân sự";
     safeSet('userGreet', displayName);
     safeSet('userAvatarLetter', displayName.charAt(0).toUpperCase());
     window.CURRENT_USER = userData;
-    this.user = displayName; 
   }
 });
 
