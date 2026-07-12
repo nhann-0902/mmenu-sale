@@ -11,8 +11,9 @@ Object.assign(window.App, {
     this.showL(); 
 
     try {
+      // ĐÃ SỬA: Gọi chính xác vào bảng 'sys_users' theo Database của bạn
       const { data, error } = await window.supabase
-        .from('mmenu_staff')
+        .from('sys_users')
         .select('*')
         .eq('username', user)
         .eq('password', pass)
@@ -61,9 +62,11 @@ Object.assign(window.App, {
   },
 
   setupUserUI: function(userData) {
-    const displayName = userData.fullname || userData.username || "Nhân sự";
+    // ĐÃ SỬA: Lấy chính xác cột 'full_name' theo cấu trúc bảng sys_users của bạn
+    const displayName = userData.full_name || userData.username || "Nhân sự";
     safeSet('userGreet', displayName);
     safeSet('userAvatarLetter', displayName.charAt(0).toUpperCase());
+    
     window.CURRENT_USER = userData;
   }
 });
