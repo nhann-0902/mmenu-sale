@@ -11,7 +11,6 @@ Object.assign(window.App, {
     this.showL(); 
 
     try {
-      // ĐÃ SỬA TÊN BẢNG: mmenu_staff -> sys_users
       const { data, error } = await window.supabase
         .from('sys_users')
         .select('*')
@@ -62,11 +61,11 @@ Object.assign(window.App, {
   },
 
   setupUserUI: function(userData) {
-    // ĐÃ SỬA TÊN CỘT: fullname -> full_name (khớp với DB của bạn)
     const displayName = userData.full_name || userData.username || "Nhân sự";
     safeSet('userGreet', displayName);
     safeSet('userAvatarLetter', displayName.charAt(0).toUpperCase());
     window.CURRENT_USER = userData;
+    this.user = displayName; 
   }
 });
 
