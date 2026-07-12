@@ -4,16 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>MMENU - SALE</title>
-  
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#3b82f6">
-
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -64,9 +58,6 @@
       <div class="menu-item" onclick="App.nav('page-task-list')"><i class="fa-solid fa-list-check"></i> Kho nhiệm vụ</div>
       <div class="menu-item" onclick="App.nav('page-features')"><i class="fa-solid fa-layer-group"></i> Tra cứu tính năng</div>
       <div class="menu-item" onclick="App.nav('page-schedule')"><i class="fa-solid fa-calendar-days"></i> Lịch làm việc</div>
-      
-      <div class="menu-item" id="btnInstallApp" style="display: none; color: var(--success); font-weight: 900;" onclick="App.installPWA()"><i class="fa-solid fa-download"></i> Cài đặt App (PWA)</div>
-
       <div style="border-top: 1px solid var(--border); margin: 15px 10px;"></div>
       <div class="menu-item" style="color: var(--danger);" onclick="App.logout()"><i class="fa-solid fa-power-off"></i> Đăng xuất</div>
     </div>
@@ -311,8 +302,8 @@
     </div>
   </section>
 
-  <!-- Các script được nạp sau -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
   <script src="core.js" defer></script>
   <script src="module_auth.js" defer></script>
   <script src="module_tasks.js" defer></script>
