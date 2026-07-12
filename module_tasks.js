@@ -18,10 +18,16 @@ Object.assign(window.App, {
         this.showL();
         let users = await this.getDbStaffList();
         
-        const staffSelect = document.getElementById('filterTaskStaff');
-        let currentStaff = staffSelect ? staffSelect.value : 'ALL';
-        safeSet('filterTaskStaff', `<option value="ALL">Tất cả</option>` + users.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
-        if (staffSelect) staffSelect.value = currentStaff;
+        // ĐÃ SỬA: Tách riêng dropdown Người Giao và Người Nhận
+        const giverSelect = document.getElementById('filterTaskGiver');
+        let currentGiver = giverSelect ? giverSelect.value : 'ALL';
+        safeSet('filterTaskGiver', `<option value="ALL">Tất cả</option>` + users.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
+        if (giverSelect) giverSelect.value = currentGiver;
+
+        const recSelect = document.getElementById('filterTaskReceiver');
+        let currentRec = recSelect ? recSelect.value : 'ALL';
+        safeSet('filterTaskReceiver', `<option value="ALL">Tất cả</option>` + users.map(x => `<option value="${x}">${x}</option>`).join(''), 'html');
+        if (recSelect) recSelect.value = currentRec;
 
         try {
             const { data, error } = await supabaseClient.from('data_tasks').select('*').order('created_at', { ascending: false });
@@ -46,16 +52,19 @@ Object.assign(window.App, {
     },
 
     renderAllTasks() {
-        const elStaff = document.getElementById('filterTaskStaff');
+        const elGiver = document.getElementById('filterTaskGiver');
+        const elRec = document.getElementById('filterTaskReceiver');
         const elStatus = document.getElementById('filterTaskStatus');
         const elSort = document.getElementById('filterTaskSort');
         
-        let fStaff = elStaff ? elStaff.value : 'ALL';
+        let fGiver = elGiver ? elGiver.value : 'ALL';
+        let fRec = elRec ? elRec.value : 'ALL';
         let fStatus = elStatus ? elStatus.value : 'ALL';
         let fSort = elSort ? elSort.value : 'DESC';
         
         let filteredList = this.allTasksList.filter(t => { 
-          return ((fStaff === 'ALL') || (t.nguoiNhan === fStaff || t.nguoiGiao === fStaff)) && 
+          return ((fGiver === 'ALL') || (t.nguoiGiao === fGiver)) && 
+                 ((fRec === 'ALL') || (t.nguoiNhan === fRec)) && 
                  ((fStatus === 'ALL') || (t.trangThai === fStatus)); 
         });
 
@@ -233,13 +242,13 @@ Object.assign(window.App, {
           const date = block.querySelector('.assign-date').value; 
           const con = block.querySelector('.assign-content').value.trim();
           
-          // ĐÃ THÊM LOGIC: Nếu không chọn người nhận và không điền nội dung -> Bỏ qua Block này hoàn toàn
+          // ĐÃ THÊM LOGIC TÀNG HÌNH: Trống cả người nhận và nội dung -> Hệ thống tự động lờ đi (không báo lỗi)
           if (!rec && !con) return;
           
+          // Trống 1 trong 2 -> Báo lỗi để tránh gửi lên Supabase bị khuyết dữ liệu
           if(rec && giver && con) { 
               tasksToAssign.push({ giver: giver, receiver: rec, deadline: date || null, content: con, status: 'Chưa hoàn thành' }); 
           } else { 
-              // Nếu điền dở dang (có nội dung mà thiếu người nhận, hoặc có người nhận mà trống nội dung) thì báo lỗi
               hasError = true; 
           }
         });
