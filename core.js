@@ -33,7 +33,7 @@ window.formatDateStr = function(dateStr) {
 };
 
 // =========================================================================
-// KHỐI 3: GIAO DIỆN (UI) CỐT LÕI - TỐI ƯU HÓA HIỆU ỨNG (KHÔNG RÚT GỌN)
+// KHỐI 3: GIAO DIỆN (UI) CỐT LÕI
 // =========================================================================
 Object.assign(window.App, {
   showL: function() { 
@@ -111,6 +111,14 @@ Object.assign(window.App, {
     const target = document.getElementById(pageId);
     if (target) target.classList.add('active');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // ĐÃ THÊM LOGIC: Tự động set ngày hôm nay cho các ô input ngày tháng
+    const todayStr = new Date().toISOString().split('T')[0];
+    document.querySelectorAll('.default-today').forEach(el => {
+        if (!el.value) {
+            el.value = todayStr;
+        }
+    });
 
     if (pageId === 'page-dashboard' && typeof this.loadDashboards === 'function') this.loadDashboards();
     if (pageId === 'page-daily' && typeof this.loadDailyTasks === 'function') this.loadDailyTasks();
