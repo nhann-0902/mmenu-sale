@@ -231,17 +231,21 @@ Object.assign(window.App, {
           const giver = block.querySelector('.assign-giver').value; 
           const rec = block.querySelector('.assign-receiver').value; 
           const date = block.querySelector('.assign-date').value; 
-          const con = block.querySelector('.assign-content').value;
+          const con = block.querySelector('.assign-content').value.trim();
           
-          if(rec && giver && con.trim()) { 
+          // ĐÃ THÊM LOGIC: Nếu không chọn người nhận và không điền nội dung -> Bỏ qua Block này hoàn toàn
+          if (!rec && !con) return;
+          
+          if(rec && giver && con) { 
               tasksToAssign.push({ giver: giver, receiver: rec, deadline: date || null, content: con, status: 'Chưa hoàn thành' }); 
-          } else if(con.trim() && (!rec || !giver)) { 
+          } else { 
+              // Nếu điền dở dang (có nội dung mà thiếu người nhận, hoặc có người nhận mà trống nội dung) thì báo lỗi
               hasError = true; 
           }
         });
         
-        if(hasError) { alert("Lỗi: Có nhiệm vụ đã nhập nội dung nhưng chưa chọn đủ Người giao và Người nhận!"); return; }
-        if(tasksToAssign.length === 0) { alert("Vui lòng điền nội dung và chọn người thực hiện!"); return; }
+        if(hasError) { alert("Lỗi: Có nhiệm vụ bị điền thiếu thông tin (chưa nhập nội dung hoặc chưa chọn người nhận)!"); return; }
+        if(tasksToAssign.length === 0) { alert("Vui lòng điền đầy đủ nội dung và người thực hiện cho ít nhất 1 nhiệm vụ!"); return; }
         
         this.showL();
         try {
