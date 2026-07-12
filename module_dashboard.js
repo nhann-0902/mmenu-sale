@@ -19,6 +19,7 @@ Object.assign(window.App, {
         let tempD = new Date();
         tempD.setHours(0,0,0,0);
 
+        // LOGIC LỌC THỜI GIAN
         if (filterTime === 'TODAY') {
             startDate = new Date(tempD); endDate = new Date(tempD);
         } else if (filterTime === 'YESTERDAY') {
@@ -29,9 +30,27 @@ Object.assign(window.App, {
             let diff = tempD.getDate() - day + (day === 0 ? -6 : 1);
             startDate = new Date(tempD.setDate(diff));
             endDate = new Date();
+        } else if (filterTime === 'LAST_WEEK') {
+            let day = tempD.getDay();
+            let diff = tempD.getDate() - day + (day === 0 ? -6 : 1) - 7;
+            startDate = new Date(tempD.setDate(diff));
+            endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 6);
         } else if (filterTime === 'THIS_MONTH') {
             startDate = new Date(tempD.getFullYear(), tempD.getMonth(), 1);
             endDate = new Date(tempD.getFullYear(), tempD.getMonth() + 1, 0);
+        } else if (filterTime === 'LAST_MONTH') {
+            startDate = new Date(tempD.getFullYear(), tempD.getMonth() - 1, 1);
+            endDate = new Date(tempD.getFullYear(), tempD.getMonth(), 0);
+        } else if (filterTime === 'LAST_7_DAYS') {
+            startDate = new Date(tempD); startDate.setDate(startDate.getDate() - 6);
+            endDate = new Date();
+        } else if (filterTime === 'LAST_30_DAYS') {
+            startDate = new Date(tempD); startDate.setDate(startDate.getDate() - 29);
+            endDate = new Date();
+        } else if (filterTime === 'THIS_YEAR') {
+            startDate = new Date(tempD.getFullYear(), 0, 1);
+            endDate = new Date(tempD.getFullYear(), 11, 31);
         }
 
         let formatISO = (d) => { let z = d.getTimezoneOffset() * 60000; return new Date(d - z).toISOString().split('T')[0]; };
