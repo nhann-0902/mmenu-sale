@@ -8,6 +8,8 @@ window.SUPABASE_ANON_KEY = 'sb_publishable_AysJrUeptA0xLEQGDrkRlg_CH-Lmf2i';
 
 // Gắn cứng kết nối ngay từ lúc này
 window.supabase = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+// FIX LỖI CRITICAL: Gán supabaseClient để các file module khác không bị lỗi undefined
+window.supabaseClient = window.supabase; 
 
 // =========================================================================
 // KHỐI 2: CÁC HÀM TIỆN ÍCH DOM
@@ -62,7 +64,7 @@ Object.assign(window.App, {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const target = document.getElementById(pageId);
     if (target) target.classList.add('active');
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
 
