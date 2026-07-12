@@ -30,7 +30,7 @@ Object.assign(window.App, {
                     <div style="padding:10px 15px; background:var(--primary); color:white; font-weight:800; font-size:13px; text-transform: uppercase;">
                         <i class="fa-solid fa-user-tie" style="color:var(--accent); margin-right:8px;"></i>${name}
                     </div>
-                    <div style="overflow-x:auto;">
+                    <div style="overflow-x:auto; padding: 15px;">
                         <table class="sched-table">
                             <thead><tr><th class="sched-row-label">Ca</th>`;
                 
