@@ -152,7 +152,6 @@
           <div class="form-group" style="margin-bottom: 20px;"><label class="form-label">NGÀY BÁO CÁO</label><input type="date" id="d_date" class="form-control default-today"></div>
           <div class="form-label" style="font-size:12px; margin-bottom: 15px; color: var(--primary); text-align: center;">CHỈ SỐ LEAD TRONG NGÀY</div>
           <div style="border: 2px solid var(--border); border-radius: 12px; background: #fff; padding: 20px;">
-            <!-- ĐÃ SỬA CHỖ NÀY: Thay thuộc tính placeholder="0" bằng value="0" -->
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px 20px;">
               <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0;">Tổng Lead</label><input type="number" id="d_tong" class="daily-input" value="0" style="width: 60px; padding: 8px; text-align: center; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 14px;"></div>
               <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 8px;"><label class="form-label" style="margin:0;">Tiềm năng</label><input type="number" id="d_tn" class="daily-input" value="0" style="width: 60px; padding: 8px; text-align: center; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 700; color: var(--primary); font-size: 14px;"></div>
@@ -169,7 +168,6 @@
             <div class="form-label" style="font-size:12px; margin-bottom: 15px; color:var(--primary);">NHIỆM VỤ CẦN XỬ LÝ (Của bạn)</div>
             <div id="dailyTaskList"></div> 
           </div>
-          <!-- ĐÃ SỬA CHỖ NÀY: Bổ sung gọi hàm App.renderDailyConfirm() trước khi chuyển trang -->
           <button class="btn btn-primary" onclick="App.renderDailyConfirm(); App.nav('page-daily-confirm')">TỔNG HỢP & XÁC NHẬN</button>
         </div>
       </div>
@@ -191,11 +189,29 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px;">
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">Nguồn khách</label>
-            <select class="form-control rev-input" id="r_src"><option value="">Chọn nguồn...</option></select>
+            <!-- ĐÃ THÊM: Các dropdown option mới cho Nguồn -->
+            <select class="form-control rev-input" id="r_src">
+                <option value="">Chọn nguồn...</option>
+                <option value="Markketing">Markketing</option>
+                <option value="Tự tìm kiếm">Tự tìm kiếm</option>
+                <option value="KH Giới thiệu">KH Giới thiệu</option>
+                <option value="BOD">BOD</option>
+                <option value="Gia hạn">Gia hạn</option>
+            </select>
           </div>
           <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label">Loại Hợp đồng</label>
-            <select class="form-control rev-input" id="r_type"><option value="">Chọn loại...</option></select>
+            <!-- ĐÃ THÊM: Các dropdown option mới cho Loại hợp đồng -->
+            <select class="form-control rev-input" id="r_type">
+                <option value="">Chọn loại...</option>
+                <option value="Mới">Mới</option>
+                <option value="Upsell">Upsell</option>
+                <option value="Mua thiết bị">Mua thiết bị</option>
+                <option value="Tính năng mới">Tính năng mới</option>
+                <option value="CDP (CRM)">CDP (CRM)</option>
+                <option value="Chấm công HRM">Chấm công HRM</option>
+                <option value="Quản lý kho">Quản lý kho</option>
+            </select>
           </div>
         </div>
         
@@ -220,11 +236,11 @@
             <span id="displayTotal" style="font-weight: 900; font-size: 18px; color: var(--accent);">0đ</span>
           </div>
           <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-weight: 800; font-size: 12px; color: var(--text-light);">CÔNG NỢ (ÂM/DƯƠNG):</span>
+            <!-- ĐÃ XÓA: Chữ (Âm/Dương) -->
+            <span style="font-weight: 800; font-size: 12px; color: var(--text-light);">CÔNG NỢ:</span>
             <span id="displayDebt" style="font-weight: 900; font-size: 18px; color: var(--success);">0đ</span>
           </div>
         </div>
-        <!-- ĐÃ SỬA CHỖ NÀY: Bổ sung gọi hàm App.renderRevConfirm() trước khi chuyển trang (cho chắc chắn) -->
         <button class="btn btn-primary" style="margin-top:10px;" onclick="App.renderRevConfirm(); App.nav('page-revenue-confirm')">XÁC NHẬN CHỐT SỔ</button>
       </div>
     </div>
