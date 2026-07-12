@@ -93,6 +93,23 @@ Object.assign(window.App, {
     }
   },
 
+  // ĐÃ THÊM LOGIC: Ẩn/Hiện Bảng lọc (Filter Panel)
+  toggleFilter: function(panelId) {
+    const el = document.getElementById(panelId);
+    if (!el) return;
+    if (el.style.display === 'none' || !el.style.display) {
+        el.style.display = 'block';
+        setTimeout(() => {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, 10);
+    } else {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(-10px)';
+        setTimeout(() => el.style.display = 'none', 300);
+    }
+  },
+
   fmt: function(num) {
       if (!num) return '0đ';
       if (num >= 1000000000) return (num / 1000000000).toFixed(1) + ' Tỷ';
@@ -106,7 +123,6 @@ Object.assign(window.App, {
   },
 
   sendTelegram: function(msg) {
-    // ĐÃ ĐIỀN THÔNG TIN TOKEN VÀ CHAT ID
     const TELEGRAM_BOT_TOKEN = '8749358821:AAHWOKekW6qd12xtjLnMkYUe7k2jJwSR89c';
     const TELEGRAM_CHAT_ID = '-1004487632704';
 
@@ -148,12 +164,11 @@ Object.assign(window.App, {
     if (pageId === 'page-task-list' && typeof this.loadAllTasks === 'function') this.loadAllTasks();
     if (pageId === 'page-schedule' && typeof this.loadSchedule === 'function') this.loadSchedule();
     
-    // ĐÃ THÊM LOGIC: Tự động khởi tạo 3 Task Block khi mở trang Phát hành nhiệm vụ
     if (pageId === 'page-task-assign' && typeof this.addAssignBlock === 'function') {
         const container = document.getElementById('assignFormContainer');
         if (container) {
-            container.innerHTML = ''; // Làm sạch các ô cũ
-            this.addAssignBlock(3);   // Mặc định tạo 3 ô mới
+            container.innerHTML = ''; 
+            this.addAssignBlock(3);   
         }
     }
   }
