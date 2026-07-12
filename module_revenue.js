@@ -44,13 +44,14 @@ Object.assign(window.App, {
         
         let debtColor = c.debt > 0 ? 'var(--danger)' : (c.debt < 0 ? 'var(--warning)' : 'var(--success)');
         
+        // ĐÃ XÓA: Chữ (Âm/Dương) ở đoạn htmlStr bên dưới
         let htmlStr = ` 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Ngày GD:</span> <b>${date}</b></div> 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Tên khách/đối tác:</span> <b style="color:var(--primary); text-transform:uppercase;">${name}</b></div> 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Loại Hợp đồng:</span> <b>${type}</b></div> 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0; margin-top: 10px;"><span style="color:var(--text-light);">Tổng HĐ:</span> <b style="color:var(--accent); font-size:14px;">${this.fmtFull(c.total)}</b></div> 
           <div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">Đã thanh toán:</span> <b style="color:var(--success); font-size:14px;">${this.fmtFull(c.paid)}</b></div> 
-          <div style="display:flex; justify-content:space-between; padding:6px 0; margin-top: 10px;"><span style="font-weight:800; color:${debtColor};">Công nợ (Âm/Dương):</span> <b style="color:${debtColor}; font-size:14px;">${this.fmtFull(c.debt)}</b></div> 
+          <div style="display:flex; justify-content:space-between; padding:6px 0; margin-top: 10px;"><span style="font-weight:800; color:${debtColor};">Công nợ:</span> <b style="color:${debtColor}; font-size:14px;">${this.fmtFull(c.debt)}</b></div> 
         `; 
         safeSet('revConfirmStats', htmlStr, 'html');
     },
