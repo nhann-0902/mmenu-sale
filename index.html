@@ -7,8 +7,6 @@
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#3b82f6">
-  
-  <!-- BỔ SUNG DÒNG NÀY ĐỂ BẮT BUỘC IPHONE/IPAD CHO PHÉP CÀI APP -->
   <link rel="apple-touch-icon" href="icon-192.png">
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -17,7 +15,7 @@
   <link rel="stylesheet" href="style.css">
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-</head>>
+</head>
 <body>
 
   <div id="globalLoading" class="loading-screen"><div class="spinner"></div><div style="font-weight: 800; color: var(--primary); letter-spacing: 1px; font-size: 11px;">ĐANG XỬ LÝ...</div></div>
@@ -81,32 +79,66 @@
   
   <section id="page-dashboard" class="page">
     <div class="container">
-      <div class="title-main">TỔNG QUAN CHIẾN DỊCH</div>
 
-      <!-- ĐÃ TỐI ƯU CĂN LỀ: Dồn các filter về bên trái để triệt tiêu khoảng trắng -->
-      <div style="display: flex; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; background: var(--card-bg); padding: 12px 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border);">
-        <div style="display: flex; align-items: center; gap: 10px; border-right: 1px solid var(--border); padding-right: 15px;">
-          <div style="width: 32px; height: 32px; background: rgba(59, 130, 246, 0.1); color: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px;">
-              <i class="fa-solid fa-filter"></i>
-          </div>
-          <span style="font-weight: 800; font-size: 12px; color: var(--text-light); text-transform: uppercase;">BỘ LỌC</span>
-        </div>
-        <select id="dashFilterTime" class="form-control" style="width: auto; min-width: 160px; padding: 10px 14px; font-size: 13px; background-color: #f8fafc; border-color: #e2e8f0; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);" onchange="App.loadDashboards()">
-            <option value="ALL">Toàn thời gian</option>
-            <option value="TODAY">Hôm nay</option>
-            <option value="YESTERDAY">Hôm qua</option>
-            <option value="LAST_7_DAYS">7 ngày qua</option>
-            <option value="THIS_WEEK">Tuần này</option>
-            <option value="LAST_WEEK">Tuần trước</option>
-            <option value="LAST_30_DAYS">30 ngày qua</option>
-            <option value="THIS_MONTH">Tháng này</option>
-            <option value="LAST_MONTH">Tháng trước</option>
-            <option value="THIS_YEAR">Năm nay</option>
-        </select>
-        <select id="dashFilterStaff" class="form-control" style="width: auto; min-width: 160px; padding: 10px 14px; font-size: 13px; background-color: #f8fafc; border-color: #e2e8f0; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02);" onchange="App.loadDashboards()">
-            <option value="ALL">Tất cả nhân sự</option>
-        </select>
+      <!-- BẢNG LỌC TỔNG QUAN DẠNG ICON XỔ RA -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div class="title-main" style="margin-bottom: 0;">TỔNG QUAN CHIẾN DỊCH</div>
+        <button class="btn btn-outline" style="width: auto; padding: 10px 16px; font-size: 12px;" onclick="App.toggleFilter('dashFilterPanel')">
+          <i class="fa-solid fa-filter" style="margin-right: 6px;"></i> BỘ LỌC
+        </button>
       </div>
+
+      <div id="dashFilterPanel" class="card filter-panel" style="display: none; padding: 20px; border-top: 4px solid var(--accent); margin-bottom: 20px;">
+        <div style="font-weight: 800; font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px;">CHI TIẾT BỘ LỌC</div>
+        <div class="grid-2">
+          <div>
+            <label class="form-label">THỜI GIAN</label>
+            <select id="dashFilterTime" class="form-control" onchange="App.loadDashboards()">
+                <option value="ALL">Toàn thời gian</option>
+                <option value="TODAY">Hôm nay</option>
+                <option value="YESTERDAY">Hôm qua</option>
+                <option value="LAST_7_DAYS">7 ngày qua</option>
+                <option value="THIS_WEEK">Tuần này</option>
+                <option value="LAST_WEEK">Tuần trước</option>
+                <option value="LAST_30_DAYS">30 ngày qua</option>
+                <option value="THIS_MONTH">Tháng này</option>
+                <option value="LAST_MONTH">Tháng trước</option>
+                <option value="THIS_YEAR">Năm nay</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">NHÂN SỰ</label>
+            <select id="dashFilterStaff" class="form-control" onchange="App.loadDashboards()">
+                <option value="ALL">Tất cả nhân sự</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">LOẠI HỢP ĐỒNG</label>
+            <select id="dashFilterType" class="form-control" onchange="App.loadDashboards()">
+                <option value="ALL">Tất cả loại</option>
+                <option value="Mới">Mới</option>
+                <option value="Upsell">Upsell</option>
+                <option value="Mua thiết bị">Mua thiết bị</option>
+                <option value="Tính năng mới">Tính năng mới</option>
+                <option value="CDP (CRM)">CDP (CRM)</option>
+                <option value="Chấm công HRM">Chấm công HRM</option>
+                <option value="Quản lý kho">Quản lý kho</option>
+            </select>
+          </div>
+          <div>
+            <label class="form-label">NGUỒN KHÁCH</label>
+            <select id="dashFilterSource" class="form-control" onchange="App.loadDashboards()">
+                <option value="ALL">Tất cả nguồn</option>
+                <option value="Markketing">Markketing</option>
+                <option value="Tự tìm kiếm">Tự tìm kiếm</option>
+                <option value="KH Giới thiệu">KH Giới thiệu</option>
+                <option value="BOD">BOD</option>
+                <option value="Gia hạn">Gia hạn</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- KẾT THÚC BẢNG LỌC TỔNG QUAN -->
 
       <div class="card" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border:none; margin-bottom: 20px; padding: 25px;">
         <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -249,35 +281,49 @@
   
   <section id="page-task-list" class="page">
     <div class="container">
+
+      <!-- BẢNG LỌC NHIỆM VỤ DẠNG ICON XỔ RA -->
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
         <div class="title-main" style="margin-bottom: 0;">KHO NHIỆM VỤ</div>
-        <button class="btn btn-primary" style="width: auto; padding: 12px 20px;" onclick="App.nav('page-task-assign')"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Giao Việc</button>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn btn-outline" style="width: auto; padding: 10px 16px; font-size: 12px;" onclick="App.toggleFilter('taskFilterPanel')">
+            <i class="fa-solid fa-filter" style="margin-right: 6px;"></i> BỘ LỌC
+          </button>
+          <button class="btn btn-primary" style="width: auto; padding: 10px 20px; font-size: 12px;" onclick="App.nav('page-task-assign')">
+            <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> GIAO VIỆC
+          </button>
+        </div>
       </div>
 
-      <!-- ĐÃ TỐI ƯU CĂN LỀ: Ép 3 bộ lọc vào 1 hàng ngang (grid-3) để tiết kiệm chiều dọc -->
-      <div class="card" style="padding: 15px 20px; margin-bottom: 20px;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; align-items: end;">
+      <div id="taskFilterPanel" class="card filter-panel" style="display: none; padding: 20px; margin-bottom: 20px; border-top: 4px solid var(--warning);">
+        <div style="font-weight: 800; font-size: 11px; color: var(--text-light); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 0.5px;">TÌM KIẾM NHIỆM VỤ</div>
+        <div class="grid-2">
           <div>
-            <label class="form-label" style="margin-bottom: 6px;">Nhân Viên</label>
-            <select id="filterTaskStaff" class="form-control" onchange="App.renderAllTasks()" style="padding: 10px 14px; font-size: 13px;"><option value="ALL">Tất cả</option></select>
+            <label class="form-label" style="margin-bottom: 6px;">NGƯỜI GIAO</label>
+            <select id="filterTaskGiver" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả</option></select>
           </div>
           <div>
-            <label class="form-label" style="margin-bottom: 6px;">Trạng Thái</label>
-            <select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()" style="padding: 10px 14px; font-size: 13px;">
+            <label class="form-label" style="margin-bottom: 6px;">NGƯỜI NHẬN</label>
+            <select id="filterTaskReceiver" class="form-control" onchange="App.renderAllTasks()"><option value="ALL">Tất cả</option></select>
+          </div>
+          <div>
+            <label class="form-label" style="margin-bottom: 6px;">TRẠNG THÁI</label>
+            <select id="filterTaskStatus" class="form-control" onchange="App.renderAllTasks()">
               <option value="ALL">Tất cả</option>
               <option value="Chưa hoàn thành" selected>Đang xử lý</option>
               <option value="Hoàn thành">Đã Xong</option>
             </select>
           </div>
           <div>
-            <label class="form-label" style="margin-bottom: 6px;">Thời gian</label>
-            <select id="filterTaskSort" class="form-control" onchange="App.renderAllTasks()" style="padding: 10px 14px; font-size: 13px;">
+            <label class="form-label" style="margin-bottom: 6px;">THỜI GIAN</label>
+            <select id="filterTaskSort" class="form-control" onchange="App.renderAllTasks()">
               <option value="DESC">Mới nhất</option>
               <option value="ASC">Cũ nhất</option>
             </select>
           </div>
         </div>
       </div>
+      <!-- KẾT THÚC BẢNG LỌC NHIỆM VỤ -->
 
       <div id="bulkActionContainer" style="margin-bottom: 20px; display: none;">
           <button class="btn" style="background: var(--success); color: #fff; box-shadow: 0 4px 15px rgba(16,185,129,0.3);" onclick="App.confirmCompleteMultipleTasks()">
