@@ -49,10 +49,6 @@ Object.assign(window.App, {
             return;
         }
 
-        // =========================================================
-        // TỪ ĐIỂN ĐỒNG BỘ TÊN (MMENU -> GETFLY)
-        // Nếu tên trên MMENU khác với Getfly, hãy khai báo vào đây
-        // =========================================================
         const nameMapping = {
             "Văn Nhân": "Trương Nhân",
             "Anh Cường": "Đỗ Trí Cường",
@@ -64,12 +60,12 @@ Object.assign(window.App, {
             "Mai Hương": "Mai Hương"
         };
         
-        // Lấy tên chuẩn của Getfly, nếu không có trong từ điển thì lấy mặc định tên MMENU
         let mappedGetflyName = nameMapping[this.user] || this.user;
 
         this.showL();
         try {
-            const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwoYcgjwe2ab5DW9Z-yeXLsUSMHZF5gXU3CGvJsc5rgB3Xy_Nouv-28kQrJbJEvReBH/exec'; // Hãy chắc chắn bạn đã dán URL của Google Apps Script vào đây
+            // URL CỦA GOOGLE APPS SCRIPT ĐÃ ĐƯỢC CHÈN VÀO ĐÂY
+            const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwoYcgjwe2ab5DW9Z-yeXLsUSMHZF5gXU3CGvJsc5rgB3Xy_Nouv-28kQrJbJEvReBH/exec';
 
             const response = await fetch(GAS_API_URL, {
                 method: 'POST',
@@ -77,7 +73,7 @@ Object.assign(window.App, {
                 body: JSON.stringify({ 
                     action: "sync_getfly", 
                     date: dateVal, 
-                    staffName: mappedGetflyName // Truyền tên đã được "dịch" sang cho Getfly tìm
+                    staffName: mappedGetflyName
                 })
             });
 
@@ -87,7 +83,6 @@ Object.assign(window.App, {
                 let counts = resData.data;
 
                 if (counts.tong === 0) {
-                    // Cập nhật câu thông báo để hiển thị rõ tên nào đang được dùng để quét
                     this.showPopup(`Hệ thống quét không thấy khách hàng mới nào của [${this.user}] (Tên Getfly: ${mappedGetflyName}) trong ngày ${dateVal}.`, false);
                 } else {
                     if(document.getElementById('d_tong')) document.getElementById('d_tong').value = counts.tong;
