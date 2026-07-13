@@ -41,7 +41,7 @@ Object.assign(window.App, {
         }
     },
 
-    // ĐÃ THÊM: Hàm Quét và Đồng bộ Getfly
+    // ĐÃ NÂNG CẤP LÊN CƠ CHẾ GỌI API POLLING THAY VÌ ĐỌC SUPABASE
     async syncGetflyData() {
         let d_date = document.getElementById('d_date');
         let dateVal = d_date ? d_date.value : '';
@@ -52,49 +52,45 @@ Object.assign(window.App, {
 
         this.showL();
         try {
-            // Quét dữ liệu từ bảng getfly_customers trên Supabase
-            const { data, error } = await supabaseClient
-                .from('getfly_customers')
-                .select('*')
-                .eq('staff_name', this.user)
-                .like('created_at', `${dateVal}%`);
+            // DÁN URL CỦA GOOGLE APPS SCRIPT VÀO ĐÂY
+            const GAS_API_URL = 'DÁN_ĐƯỜNG_LINK_WEB_APP_URL_VÀO_ĐÂY';
 
-            if (error) throw error;
-
-            if (!data || data.length === 0) {
-                this.showPopup(`Không có dữ liệu khách hàng mới nào trên Getfly cho [${this.user}] trong ngày ${dateVal}.`, false);
-                this.hideL();
-                return;
-            }
-
-            let counts = { tong: data.length, nhan: 0, tu: 0, tn: 0, dm: 0, bg: 0, tc: 0 };
-
-            // Phân tách trạng thái dựa trên dữ liệu thu về
-            data.forEach(lead => {
-                let st = (lead.status || '').toLowerCase();
-                let src = (lead.source || '').toLowerCase();
-
-                if (src.includes('tự tìm')) counts.tu++;
-                else counts.nhan++;
-
-                if (st.includes('tiềm năng')) counts.tn++;
-                else if (st.includes('demo') || st.includes('gặp')) counts.dm++;
-                else if (st.includes('báo giá')) counts.bg++;
-                else if (st.includes('từ chối') || st.includes('fail') || st.includes('hủy')) counts.tc++;
+            // Gửi lệnh sang Google Apps Script yêu cầu quét Getfly
+            const response = await fetch(GAS_API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ 
+                    action: "sync_getfly", 
+                    date: dateVal, 
+                    staffName: this.user 
+                })
             });
 
-            // Fill số liệu ra Form cho nhân viên kiểm tra
-            if(document.getElementById('d_tong')) document.getElementById('d_tong').value = counts.tong;
-            if(document.getElementById('d_nhan')) document.getElementById('d_nhan').value = counts.nhan;
-            if(document.getElementById('d_tu')) document.getElementById('d_tu').value = counts.tu;
-            if(document.getElementById('d_tn')) document.getElementById('d_tn').value = counts.tn;
-            if(document.getElementById('d_dm')) document.getElementById('d_dm').value = counts.dm;
-            if(document.getElementById('d_bg')) document.getElementById('d_bg').value = counts.bg;
-            if(document.getElementById('d_tc')) document.getElementById('d_tc').value = counts.tc;
+            const resData = await response.json();
 
-            this.showPopup(`Đã đồng bộ thành công ${counts.tong} khách hàng từ Getfly! Vui lòng kiểm tra và điều chỉnh lại số liệu (nếu cần) trước khi xác nhận.`, true);
+            if (resData.status === 'success') {
+                let counts = resData.data;
+
+                if (counts.tong === 0) {
+                    this.showPopup(`Hệ thống quét không thấy khách hàng mới nào của [${this.user}] trên Getfly trong ngày ${dateVal}.`, false);
+                } else {
+                    // Fill số liệu thu thập được ra Form để nhân viên tự đối chiếu
+                    if(document.getElementById('d_tong')) document.getElementById('d_tong').value = counts.tong;
+                    if(document.getElementById('d_nhan')) document.getElementById('d_nhan').value = counts.nhan;
+                    if(document.getElementById('d_tu')) document.getElementById('d_tu').value = counts.tu;
+                    if(document.getElementById('d_tn')) document.getElementById('d_tn').value = counts.tn;
+                    if(document.getElementById('d_dm')) document.getElementById('d_dm').value = counts.dm;
+                    if(document.getElementById('d_bg')) document.getElementById('d_bg').value = counts.bg;
+                    if(document.getElementById('d_tc')) document.getElementById('d_tc').value = counts.tc;
+
+                    this.showPopup(`Getfly rà soát xong! Đã đồng bộ ${counts.tong} Leads. Bạn có thể kiểm tra và gõ điều chỉnh lại số liệu nếu cần thiết.`, true);
+                }
+            } else {
+                throw new Error(resData.message);
+            }
+
         } catch (err) {
-            this.showPopup("Lỗi đồng bộ Getfly: " + err.message, false);
+            this.showPopup("Lỗi kết nối Trạm API: " + err.message, false);
         } finally {
             this.hideL();
         }
