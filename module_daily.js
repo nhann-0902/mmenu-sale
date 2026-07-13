@@ -64,7 +64,6 @@ Object.assign(window.App, {
 
         this.showL();
         try {
-            // URL CỦA GOOGLE APPS SCRIPT ĐÃ ĐƯỢC CHÈN VÀO ĐÂY
             const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwoYcgjwe2ab5DW9Z-yeXLsUSMHZF5gXU3CGvJsc5rgB3Xy_Nouv-28kQrJbJEvReBH/exec';
 
             const response = await fetch(GAS_API_URL, {
@@ -78,6 +77,13 @@ Object.assign(window.App, {
             });
 
             const resData = await response.json();
+
+            // KIỂM TRA CHẾ ĐỘ DEBUG
+            if (resData.status === 'debug') {
+                let debugString = JSON.stringify(resData.raw_data, null, 2);
+                this.showPopup(`<b>DỮ LIỆU GETFLY THỰC TẾ:</b><br><br><textarea style="width:100%; height:250px; font-size:11px; font-family:monospace;" onclick="this.select()">${debugString}</textarea><br><br>Hãy copy toàn bộ chữ trong ô trên và gửi cho tôi!`, false);
+                return;
+            }
 
             if (resData.status === 'success') {
                 let counts = resData.data;
