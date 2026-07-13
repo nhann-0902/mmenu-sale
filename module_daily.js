@@ -1,47 +1,4 @@
-Object.assign(window.App, {
-    tasks: [],
-
-    async loadDailyTasks() { 
-        this.showL();
-        try {
-            const { data, error } = await supabaseClient.from('data_tasks').select('*')
-                .eq('receiver', this.user)
-                .eq('status', 'Chưa hoàn thành')
-                .order('deadline', { ascending: true });
-            if(error) throw error;
-
-            this.tasks = (data || []).map(t => {
-                let rawTime = t.deadline ? new Date(t.deadline).getTime() : 0;
-                let isOverdue = (rawTime > 0 && rawTime < new Date().getTime());
-                let formattedDate = t.deadline ? new Date(t.deadline).toLocaleDateString('vi-VN', {day: '2-digit', month: '2-digit', year: 'numeric'}) : '-';
-                return { id: t.id, nguoiGiao: t.giver, noiDung: t.content, thoiHan: formattedDate, isOverdue: isOverdue };
-            });
-
-            let html = ''; 
-            this.tasks.forEach(task => { 
-                let alertClass = task.isOverdue ? "task-alert-overdue" : "task-normal"; 
-                let colorDead = task.isOverdue ? "var(--danger)" : "var(--text-light)"; 
-                html += `
-                  <div class="card task-item ${alertClass}" style="padding: 12px; margin-bottom: 10px;">
-                    <div class="task-content" data-text="${task.noiDung}" style="font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">
-                      <span style="color:var(--accent);">[${task.nguoiGiao}]</span> ${task.noiDung}
-                    </div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; border-top: 1px dashed var(--border); padding-top: 8px;">
-                      <label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="checkbox" class="task-check" value="${task.id}" style="width:16px; height:16px; accent-color: var(--success);"><span style="font-size:10px; font-weight:800; color:var(--success);">TÍCH XONG</span></label>
-                      <div style="font-size:10px; font-weight:700; color:${colorDead};">Hạn: ${task.thoiHan}</div>
-                    </div>
-                  </div>`; 
-            }); 
-            
-            safeSet('dailyTaskList', html || '<div style="text-align:center; font-style:italic; font-size:12px; color:var(--text-light);">Bạn đã dọn dẹp sạch sẽ task cá nhân!</div>', 'html'); 
-        } catch(error) {
-            console.error(error);
-        } finally {
-            this.hideL();
-        }
-    },
-
-    async syncGetflyData() {
+async syncGetflyData() {
         let d_date = document.getElementById('d_date');
         let dateVal = d_date ? d_date.value : '';
         if (!dateVal) {
@@ -59,11 +16,11 @@ Object.assign(window.App, {
             "Cao Văn Đức": "Cao Văn Đức",
             "Mai Hương": "Mai Hương"
         };
-        
         let mappedGetflyName = nameMapping[this.user] || this.user;
 
         this.showL();
         try {
+            // DÁN URL CỦA GOOGLE APPS SCRIPT VÀO ĐÂY
             const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwoYcgjwe2ab5DW9Z-yeXLsUSMHZF5gXU3CGvJsc5rgB3Xy_Nouv-28kQrJbJEvReBH/exec';
 
             const response = await fetch(GAS_API_URL, {
@@ -78,31 +35,23 @@ Object.assign(window.App, {
 
             const resData = await response.json();
 
-            // KIỂM TRA CHẾ ĐỘ DEBUG
+            // CHẾ ĐỘ DEBUG: Hiển thị nguyên văn dữ liệu Getfly trả về
             if (resData.status === 'debug') {
-                let debugString = JSON.stringify(resData.raw_data, null, 2);
-                this.showPopup(`<b>DỮ LIỆU GETFLY THỰC TẾ:</b><br><br><textarea style="width:100%; height:250px; font-size:11px; font-family:monospace;" onclick="this.select()">${debugString}</textarea><br><br>Hãy copy toàn bộ chữ trong ô trên và gửi cho tôi!`, false);
+                this.hideL();
+                let debugString = resData.raw_data;
+                
+                // Tạo một màn hình đen với ô copy to đùng
+                let div = document.createElement('div');
+                div.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px;";
+                div.innerHTML = `
+                    <div style="background:#fff; padding:25px; border-radius:12px; width:100%; max-width:600px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+                        <h3 style="margin-top:0; color:#0f172a; margin-bottom: 15px;">DỮ LIỆU GETFLY THỰC TẾ:</h3>
+                        <div style="font-size:12px; color:#ef4444; margin-bottom:10px;"><b>Hãy click vào ô bên dưới, bấm Ctrl+C (hoặc Sao chép) và gửi lên cho tôi!</b></div>
+                        <textarea style="width:100%; height:350px; font-family:monospace; font-size:13px; padding:15px; border:2px solid #3b82f6; border-radius:8px; background:#f8fafc; resize:none;" onclick="this.select()">${debugString}</textarea>
+                        <button onclick="this.parentElement.parentElement.remove()" style="margin-top:15px; width: 100%; padding:14px; background:#0f172a; color:#fff; font-weight:800; border:none; border-radius:8px; cursor:pointer;">ĐÓNG</button>
+                    </div>`;
+                document.body.appendChild(div);
                 return;
-            }
-
-            if (resData.status === 'success') {
-                let counts = resData.data;
-
-                if (counts.tong === 0) {
-                    this.showPopup(`Hệ thống quét không thấy khách hàng mới nào của [${this.user}] (Tên Getfly: ${mappedGetflyName}) trong ngày ${dateVal}.`, false);
-                } else {
-                    if(document.getElementById('d_tong')) document.getElementById('d_tong').value = counts.tong;
-                    if(document.getElementById('d_nhan')) document.getElementById('d_nhan').value = counts.nhan;
-                    if(document.getElementById('d_tu')) document.getElementById('d_tu').value = counts.tu;
-                    if(document.getElementById('d_tn')) document.getElementById('d_tn').value = counts.tn;
-                    if(document.getElementById('d_dm')) document.getElementById('d_dm').value = counts.dm;
-                    if(document.getElementById('d_bg')) document.getElementById('d_bg').value = counts.bg;
-                    if(document.getElementById('d_tc')) document.getElementById('d_tc').value = counts.tc;
-
-                    this.showPopup(`Getfly rà soát xong cho [${mappedGetflyName}]! Đã đồng bộ ${counts.tong} Leads. Bạn có thể kiểm tra và gõ điều chỉnh lại số liệu nếu cần thiết.`, true);
-                }
-            } else {
-                throw new Error(resData.message);
             }
 
         } catch (err) {
@@ -111,121 +60,3 @@ Object.assign(window.App, {
             this.hideL();
         }
     },
-
-    renderDailyConfirm() { 
-        const ids = ['d_tong','d_nhan','d_tu','d_tn','d_dm','d_bg','d_tc']; 
-        const labels = ['Tổng Lead','Lead nhận','Tự tìm','Tiềm năng','Demo/gặp gỡ','Báo giá','Từ chối']; 
-        
-        let htmlStats = ''; 
-        ids.forEach((id, idx) => { 
-          const el = document.getElementById(id);
-          let val = (el && el.value !== '') ? el.value : 0; 
-          htmlStats += `<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding:6px 0;"><span style="color:var(--text-light);">${labels[idx]}</span> <b style="color:var(--primary)">${val}</b></div>`; 
-        }); 
-        safeSet('dailyConfirmStats', htmlStats, 'html'); 
-        
-        let taskHtml = ''; let countDone = 0; 
-        document.querySelectorAll('.task-item').forEach(item => { 
-          const cb = item.querySelector('.task-check'); 
-          if(cb && cb.checked) { 
-            countDone++;
-            let content = item.querySelector('.task-content').getAttribute('data-text'); 
-            taskHtml += `<div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--success); padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size:11px; color: var(--primary);"><b>✓</b> ${content}</div>`;
-          } 
-        });
-        if(countDone === 0) taskHtml = `<div style="text-align:center; font-size:11px; color:var(--text-light); font-style:italic;">Bạn chưa hoàn thành nhiệm vụ nào.</div>`; 
-        safeSet('dailyConfirmTasksList', taskHtml, 'html');
-    },
-
-    async submitDaily() { 
-        let d_date = document.getElementById('d_date');
-        let d_tong = document.getElementById('d_tong');
-        let d_nhan = document.getElementById('d_nhan');
-        let d_tu = document.getElementById('d_tu');
-        let d_tn = document.getElementById('d_tn');
-        let d_dm = document.getElementById('d_dm');
-        let d_bg = document.getElementById('d_bg');
-        let d_tc = document.getElementById('d_tc');
-        
-        const escapeHtml = (str) => String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-        let p = {
-          date: d_date ? d_date.value : '',
-          userFullName: this.user,
-          tong: (d_tong && d_tong.value !== '') ? d_tong.value : 0, 
-          nhan: (d_nhan && d_nhan.value !== '') ? d_nhan.value : 0,
-          tu: (d_tu && d_tu.value !== '') ? d_tu.value : 0, 
-          tn: (d_tn && d_tn.value !== '') ? d_tn.value : 0,
-          dm: (d_dm && d_dm.value !== '') ? d_dm.value : 0, 
-          bg: (d_bg && d_bg.value !== '') ? d_bg.value : 0,
-          tc: (d_tc && d_tc.value !== '') ? d_tc.value : 0, 
-          completedTaskIds: [], 
-          taskNotes: "",
-          completedTaskDetails: [] 
-        };
-
-        document.querySelectorAll('.task-item').forEach(item => {
-           const cb = item.querySelector('.task-check');
-           if(cb && cb.checked) {
-               p.completedTaskIds.push(cb.value); 
-               let txt = item.querySelector('.task-content').getAttribute('data-text');
-               p.taskNotes += "Xong: " + txt + " | ";
-               p.completedTaskDetails.push(txt); 
-           }
-        });
-
-        this.showL(); 
-        try {
-            const { error: err1 } = await supabaseClient.from('data_leads').insert([{
-                date: p.date, staff_name: p.userFullName, total_lead: p.tong, lead_nhan: p.nhan, lead_tu: p.tu, 
-                tiem_nang: p.tn, demo_gap: p.dm, bao_gia: p.bg, tu_choi: p.tc, task_notes: p.taskNotes
-            }]);
-            if(err1) throw err1;
-
-            if(p.completedTaskIds.length > 0) {
-                const { error: err2 } = await supabaseClient.from('data_tasks')
-                    .update({ status: 'Hoàn thành', updated_at: new Date().toISOString() }).in('id', p.completedTaskIds);
-                if(err2) throw err2;
-            }
-
-            let dateParts = p.date.split('-'); 
-            let displayDate = dateParts.length === 3 ? `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}` : p.date;
-
-            let msg = `<b>🚨 BÁO CÁO NGÀY ${displayDate}</b>\n`;
-            msg += `*****************************\n`;
-            msg += `Tên: ${p.userFullName}\n`;
-            msg += `*****************************\n`;
-            msg += `<b><i>-Report lead</i></b>\n`;
-            msg += `<b>Total lead:</b> ${p.tong}\n`;
-            msg += `<b>Lead nhận:</b> ${p.nhan}\n`;
-            msg += `<b>Tự tìm:</b> ${p.tu}\n`;
-            msg += `<b>Tiềm năng:</b> ${p.tn}\n`;
-            msg += `<b>Demo/gặp:</b> ${p.dm}\n`;
-            msg += `<b>Báo giá:</b> ${p.bg}\n`;
-            msg += `<b>Từ chối:</b> ${p.tc}\n`;
-            msg += `*****************************\n`;
-            msg += `<b><i>-Task done</i></b>\n`;
-
-            if (p.completedTaskDetails.length > 0) {
-                p.completedTaskDetails.forEach((txt, idx) => {
-                    let taskNum = (idx + 1).toString().padStart(2, '0');
-                    msg += `<i>Task ${taskNum}: ${escapeHtml(txt)}\n         ${p.date}</i>\n`;
-                });
-            } else {
-                msg += `<i>(Không có nhiệm vụ hoàn thành)</i>`;
-            }
-
-            if (typeof this.sendTelegram === 'function') {
-                this.sendTelegram(msg);
-            }
-
-            document.querySelectorAll('.daily-input').forEach(el => el.value = '0'); 
-            this.showPopup("Báo cáo ngày đã được niêm phong!", true); 
-            this.nav('page-launchpad'); 
-        } catch(error) {
-            this.showPopup("Lỗi lưu báo cáo: " + error.message, false);
-        } finally {
-            this.hideL();
-        }
-    }
-});
