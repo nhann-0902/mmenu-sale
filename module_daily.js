@@ -53,7 +53,7 @@ Object.assign(window.App, {
         this.showL();
         try {
             // DÁN URL CỦA GOOGLE APPS SCRIPT VÀO ĐÂY
-            const GAS_API_URL = 'DÁN_ĐƯỜNG_LINK_WEB_APP_URL_VÀO_ĐÂY';
+            const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwoYcgjwe2ab5DW9Z-yeXLsUSMHZF5gXU3CGvJsc5rgB3Xy_Nouv-28kQrJbJEvReBH/exec';
 
             // Gửi lệnh sang Google Apps Script yêu cầu quét Getfly
             const response = await fetch(GAS_API_URL, {
