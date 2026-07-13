@@ -41,7 +41,6 @@ Object.assign(window.App, {
         }
     },
 
-    // ĐÃ NÂNG CẤP LÊN CƠ CHẾ GỌI API POLLING THAY VÌ ĐỌC SUPABASE
     async syncGetflyData() {
         let d_date = document.getElementById('d_date');
         let dateVal = d_date ? d_date.value : '';
@@ -50,19 +49,35 @@ Object.assign(window.App, {
             return;
         }
 
+        // =========================================================
+        // TỪ ĐIỂN ĐỒNG BỘ TÊN (MMENU -> GETFLY)
+        // Nếu tên trên MMENU khác với Getfly, hãy khai báo vào đây
+        // =========================================================
+        const nameMapping = {
+            "Văn Nhân": "Trương Nhân",
+            "Anh Cường": "Đỗ Trí Cường",
+            "Huyền Trang": "Đinh Thị Huyền Trang",
+            "Minh Hoàng": "Minh Hoàng",
+            "Thanh Dung": "Thanh Dung",
+            "Bùi Hữu Quân": "Bùi Hữu Quân",
+            "Cao Văn Đức": "Cao Văn Đức",
+            "Mai Hương": "Mai Hương"
+        };
+        
+        // Lấy tên chuẩn của Getfly, nếu không có trong từ điển thì lấy mặc định tên MMENU
+        let mappedGetflyName = nameMapping[this.user] || this.user;
+
         this.showL();
         try {
-            // DÁN URL CỦA GOOGLE APPS SCRIPT VÀO ĐÂY
-            const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwoYcgjwe2ab5DW9Z-yeXLsUSMHZF5gXU3CGvJsc5rgB3Xy_Nouv-28kQrJbJEvReBH/exec';
+            const GAS_API_URL = 'https://script.google.com/macros/s/AKfycbwoYcgjwe2ab5DW9Z-yeXLsUSMHZF5gXU3CGvJsc5rgB3Xy_Nouv-28kQrJbJEvReBH/exec'; // Hãy chắc chắn bạn đã dán URL của Google Apps Script vào đây
 
-            // Gửi lệnh sang Google Apps Script yêu cầu quét Getfly
             const response = await fetch(GAS_API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                 body: JSON.stringify({ 
                     action: "sync_getfly", 
                     date: dateVal, 
-                    staffName: this.user 
+                    staffName: mappedGetflyName // Truyền tên đã được "dịch" sang cho Getfly tìm
                 })
             });
 
@@ -72,9 +87,9 @@ Object.assign(window.App, {
                 let counts = resData.data;
 
                 if (counts.tong === 0) {
-                    this.showPopup(`Hệ thống quét không thấy khách hàng mới nào của [${this.user}] trên Getfly trong ngày ${dateVal}.`, false);
+                    // Cập nhật câu thông báo để hiển thị rõ tên nào đang được dùng để quét
+                    this.showPopup(`Hệ thống quét không thấy khách hàng mới nào của [${this.user}] (Tên Getfly: ${mappedGetflyName}) trong ngày ${dateVal}.`, false);
                 } else {
-                    // Fill số liệu thu thập được ra Form để nhân viên tự đối chiếu
                     if(document.getElementById('d_tong')) document.getElementById('d_tong').value = counts.tong;
                     if(document.getElementById('d_nhan')) document.getElementById('d_nhan').value = counts.nhan;
                     if(document.getElementById('d_tu')) document.getElementById('d_tu').value = counts.tu;
@@ -83,7 +98,7 @@ Object.assign(window.App, {
                     if(document.getElementById('d_bg')) document.getElementById('d_bg').value = counts.bg;
                     if(document.getElementById('d_tc')) document.getElementById('d_tc').value = counts.tc;
 
-                    this.showPopup(`Getfly rà soát xong! Đã đồng bộ ${counts.tong} Leads. Bạn có thể kiểm tra và gõ điều chỉnh lại số liệu nếu cần thiết.`, true);
+                    this.showPopup(`Getfly rà soát xong cho [${mappedGetflyName}]! Đã đồng bộ ${counts.tong} Leads. Bạn có thể kiểm tra và gõ điều chỉnh lại số liệu nếu cần thiết.`, true);
                 }
             } else {
                 throw new Error(resData.message);
